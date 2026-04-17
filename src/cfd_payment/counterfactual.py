@@ -9,7 +9,7 @@ import pandas as pd
 
 from cfd_payment.data import load_gas_price
 
-CCGT_EFFICIENCY = 0.50
+CCGT_EFFICIENCY = 0.55
 GAS_CO2_INTENSITY_THERMAL = 0.184  # tCO2 per MWh thermal (natural gas)
 
 # Annual average carbon prices (£/tCO2).
