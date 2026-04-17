@@ -1,0 +1,12 @@
+datasets:
+  - name: "Actual CfD Generation and avoided GHG emissions"
+    uuid: "37d1bef4-55d7-4b8e-8a47-1d24b123a20e"
+    filename: "lccc-actual-cfd-generation.csv"
+    description: "This dataset includes the historic actual CfD generation (from 2016) eligible for CfD payments"
+    url: "https://dp.lowcarboncontracts.uk/dataset/actual-cfd-generation-and-avoided-ghg-emissions"
+
+  - name: "CfD Contract Portfolio Status"
+    uuid: "fdaf09d2-8cff-4799-a5b0-1c59444e492b"
+    filename: "lccc-cfd-contract-portfolio-status.csv"
+    description: "This dataset includes each CfD Contract, its Maximum Contract Capacity and latest status of each project"
+    url: "https://dp.lowcarboncontracts.uk/dataset/cfd-contract-portfolio-status"

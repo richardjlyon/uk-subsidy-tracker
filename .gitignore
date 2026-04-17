@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.venv/
+
+# Downloaded datasets
+data/*.csv
+data/*.xlsx
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.env
+
+# OS
+.DS_Store
+
+# Plot output
+output/*.html
+output/*.png
+output/*.json
