@@ -21,10 +21,9 @@ Methodology:
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 COLORSCALE = [
     [0.0, "#08306b"],
@@ -51,15 +50,19 @@ def _compute_daily_cf(
     cap = df_cap[df_cap["Technology_Type"].isin(tech_types)]
     unit_cap = cap.groupby("CfD_ID")["Maximum_Contract_Capacity_MW"].sum()
 
-    gen = df[df["Technology"].isin(
-        df[df["CfD_ID"].isin(unit_cap.index)]["Technology"].unique()
-    )]
+    gen = df[
+        df["Technology"].isin(
+            df[df["CfD_ID"].isin(unit_cap.index)]["Technology"].unique()
+        )
+    ]
     gen = gen[gen["CfD_ID"].isin(unit_cap.index)]
 
     first_gen = gen.groupby("CfD_ID")["Settlement_Date"].min().rename("start_date")
     unit_info = pd.concat([first_gen, unit_cap], axis=1).dropna()
 
-    all_dates = pd.date_range(gen["Settlement_Date"].min(), gen["Settlement_Date"].max())
+    all_dates = pd.date_range(
+        gen["Settlement_Date"].min(), gen["Settlement_Date"].max()
+    )
 
     cap_by_date = np.zeros(len(all_dates))
     for _, row in unit_info.iterrows():
@@ -98,7 +101,11 @@ def main() -> None:
     month_labels = [pd.Timestamp(2024, m, 1).strftime("%b") for m in range(1, 13)]
 
     panels = list(TECH_GROUPS.keys())
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="CfD Fleet Daily Capacity Factor — Wind Stripes",
+        height=800,
+    )
+    fig = builder.create_subplots(
         rows=len(panels),
         cols=1,
         shared_xaxes=True,
@@ -140,12 +147,7 @@ def main() -> None:
         )
         fig.update_yaxes(autorange="reversed", row=row_idx, col=1)
 
-    fig.update_layout(
-        title="CfD Fleet Daily Capacity Factor — Wind Stripes",
-        height=800,
-    )
-
-    save_chart(fig, "intermittency_generation_heatmap")
+    builder.save(fig, "intermittency_generation_heatmap", export_twitter=True)
 
 
 if __name__ == "__main__":

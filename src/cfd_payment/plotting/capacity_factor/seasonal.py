@@ -17,7 +17,7 @@ months are roughly equal length.
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 from cfd_payment.plotting.capacity_factor import (
     WIND_AND_SOLAR,
     aggregate_by_technology,
@@ -25,8 +25,18 @@ from cfd_payment.plotting.capacity_factor import (
 )
 
 MONTH_NAMES = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
 ]
 
 DESNZ_ASSUMPTIONS = {
@@ -54,7 +64,13 @@ def main() -> None:
     by_year["month_name"] = by_year["calendar_month"].map(lambda m: MONTH_NAMES[m - 1])
 
     techs = WIND_AND_SOLAR
-    fig = make_subplots(
+
+    builder = ChartBuilder(
+        title="Seasonal Capacity Factor by Technology — Average (bold) vs Individual Years (gray)",
+        height=700,
+    )
+
+    fig = builder.create_subplots(
         rows=1,
         cols=len(techs),
         shared_yaxes=True,
@@ -64,7 +80,9 @@ def main() -> None:
     for col_idx, tech in enumerate(techs, start=1):
         tech_years = by_year[by_year["Technology_Type"] == tech]
         for year in sorted(tech_years["year"].unique()):
-            year_data = tech_years[tech_years["year"] == year].sort_values("calendar_month")
+            year_data = tech_years[tech_years["year"] == year].sort_values(
+                "calendar_month"
+            )
             fig.add_trace(
                 go.Scatter(
                     x=year_data["month_name"],
@@ -128,12 +146,10 @@ def main() -> None:
         categoryarray=MONTH_NAMES,
     )
     fig.update_layout(
-        title="Seasonal Capacity Factor by Technology — Average (bold) vs Individual Years (gray)",
         showlegend=False,
-        height=700,
     )
 
-    save_chart(fig, "capacity_factor_seasonal")
+    builder.save(fig, "capacity_factor_seasonal", export_twitter=True)
 
 
 if __name__ == "__main__":

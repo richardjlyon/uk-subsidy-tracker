@@ -11,7 +11,7 @@ join and weighting details.
 
 import plotly.express as px
 
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 from cfd_payment.plotting.capacity_factor import (
     WIND_AND_SOLAR,
     aggregate_by_technology,
@@ -24,6 +24,8 @@ def main() -> None:
     by_tech = aggregate_by_technology(merged, groupby_cols=["month"])
     by_tech["month"] = by_tech["month"].dt.to_timestamp()
 
+    builder = ChartBuilder(title="Monthly Capacity Factor by Technology", height=600)
+
     fig = px.line(
         by_tech,
         x="month",
@@ -35,15 +37,29 @@ def main() -> None:
             "capacity_factor": "Capacity Factor",
             "Technology_Type": "Technology",
         },
-        title="Monthly Capacity Factor by Technology",
         markers=False,
+    )
+
+    # Apply ChartBuilder title with info icon
+    title_with_icon = f"<b>{builder.title}</b>&nbsp;&nbsp;&nbsp;<span style='color:#00d9ff; border:2px solid #00d9ff; border-radius:50%; padding:2px 6px; font-size:16px;'>ⓘ</span>"
+    fig.update_layout(
+        title={
+            "text": title_with_icon,
+            "subtitle": {
+                "text": "─" * 150,
+                "font": {"size": 8, "color": "#4a5568"},
+            },
+            "x": 0.05,
+            "xanchor": "left",
+        },
+        height=builder.height,
     )
 
     fig.update_yaxes(tickformat=".0%", title="Capacity Factor", matches="y")
     fig.update_xaxes(title="")
     fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
 
-    save_chart(fig, "capacity_factor_monthly")
+    builder.save(fig, "capacity_factor_monthly", export_twitter=True)
 
 
 if __name__ == "__main__":

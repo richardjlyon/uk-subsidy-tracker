@@ -51,11 +51,10 @@ What's excluded (and why it matters):
 """
 
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.counterfactual import compute_counterfactual
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 
 def _prepare_monthly():
@@ -86,7 +85,11 @@ def main() -> None:
     monthly_m = monthly / 1e6
     cum_bn = monthly.cumsum() / 1e9
 
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="What CfD electricity cost vs what the same electricity would cost from gas (no carbon tax)",
+        height=900,
+    )
+    fig = builder.create_subplots(
         rows=2,
         cols=1,
         shared_xaxes=True,
@@ -172,31 +175,27 @@ def main() -> None:
 
     fig.update_layout(
         barmode="relative",
-        title=(
-            "What CfD electricity cost vs what the same electricity"
-            " would cost from gas (no carbon tax)"
-        ),
-        height=900,
         hovermode="x unified",
     )
-    fig.update_yaxes(
-        title_text="£ millions",
-        tickprefix="£",
-        ticksuffix=" m",
-        tickformat="~g",
+
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix="m",
+        title="£ millions",
         row=1,
         col=1,
     )
-    fig.update_yaxes(
-        title_text="£ billions",
-        tickprefix="£",
-        ticksuffix=" bn",
-        tickformat="~g",
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix="bn",
+        title="£ billions",
         row=2,
         col=1,
     )
 
-    save_chart(fig, "subsidy_cfd_vs_gas_total")
+    builder.save(fig, "subsidy_cfd_vs_gas_total", export_twitter=True)
 
 
 if __name__ == "__main__":

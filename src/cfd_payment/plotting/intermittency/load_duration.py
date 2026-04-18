@@ -18,10 +18,9 @@ Methodology:
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 TECH_GROUPS = {
     "Wind": {
@@ -49,7 +48,9 @@ def _installed_capacity_by_date(
     first_gen = gen.groupby("CfD_ID")["Settlement_Date"].min().rename("start_date")
     unit_info = pd.concat([first_gen, unit_cap], axis=1).dropna()
 
-    all_dates = pd.date_range(gen["Settlement_Date"].min(), gen["Settlement_Date"].max())
+    all_dates = pd.date_range(
+        gen["Settlement_Date"].min(), gen["Settlement_Date"].max()
+    )
     cap_by_date = np.zeros(len(all_dates))
     for _, row in unit_info.iterrows():
         mask = all_dates >= row["start_date"]
@@ -62,9 +63,9 @@ def _compute_daily_cf(
     df_cap: pd.DataFrame,
     tech_types: list[str],
 ) -> np.ndarray:
-    gen = df[df["CfD_ID"].isin(
-        df_cap[df_cap["Technology_Type"].isin(tech_types)]["CfD_ID"]
-    )]
+    gen = df[
+        df["CfD_ID"].isin(df_cap[df_cap["Technology_Type"].isin(tech_types)]["CfD_ID"])
+    ]
     daily_gen = gen.groupby("Settlement_Date")["CFD_Generation_MWh"].sum()
 
     installed = _installed_capacity_by_date(df, df_cap, tech_types)
@@ -81,7 +82,11 @@ def main() -> None:
     df_cap = df_cap.rename(columns={"CFD_ID": "CfD_ID"})
 
     panels = list(TECH_GROUPS.keys())
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="CfD Load-Duration Curves — Wind and Solar daily capacity factor",
+        height=600,
+    )
+    fig = builder.create_subplots(
         rows=1,
         cols=len(panels),
         shared_yaxes=True,
@@ -104,7 +109,7 @@ def main() -> None:
                 fill="tozeroy",
                 fillcolor=cfg["color"].replace(")", ",0.15)").replace("rgb", "rgba")
                 if "rgb" in cfg["color"]
-                else f"rgba({int(cfg['color'][1:3],16)},{int(cfg['color'][3:5],16)},{int(cfg['color'][5:7],16)},0.15)",
+                else f"rgba({int(cfg['color'][1:3], 16)},{int(cfg['color'][3:5], 16)},{int(cfg['color'][5:7], 16)},0.15)",
                 hovertemplate=f"{name}<br>Day %{{x}}<br>CF: %{{y:.1%}}<extra></extra>",
                 showlegend=False,
             ),
@@ -146,12 +151,8 @@ def main() -> None:
     fig.update_yaxes(title="Daily Capacity Factor", tickformat=".0%", col=1)
     fig.update_yaxes(tickformat=".0%", col=2)
     fig.update_xaxes(title="Days (best → worst)")
-    fig.update_layout(
-        title="CfD Load-Duration Curves — Wind and Solar daily capacity factor",
-        height=600,
-    )
 
-    save_chart(fig, "intermittency_load_duration")
+    builder.save(fig, "intermittency_load_duration", export_twitter=True)
 
 
 if __name__ == "__main__":

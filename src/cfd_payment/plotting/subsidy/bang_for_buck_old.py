@@ -22,16 +22,25 @@ Methodology:
 """
 
 import numpy as np
+import plotly.express as px
 import plotly.graph_objects as go
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from cfd_payment.plotting import save_chart
 
 MIN_GEN_MWH = 100_000
 
+ROUND_COLORS = {
+    "Investment Contract": "#d62728",
+    "Allocation Round 1": "#1f77b4",
+    "Allocation Round 2": "#2ca02c",
+    "Allocation Round 4": "#9467bd",
+    "Allocation Round 5": "#8c564b",
+    "Allocation Round 6": "#e377c2",
+}
+
 
 def main() -> None:
-    # === Data Preparation (unchanged) ===
     df = load_lccc_dataset("Actual CfD Generation and avoided GHG emissions")
 
     by_unit = (
@@ -44,7 +53,9 @@ def main() -> None:
         .reset_index()
     )
 
-    by_unit = by_unit[(by_unit["payments"] > 0) & (by_unit["gen"] >= MIN_GEN_MWH)]
+    by_unit = by_unit[
+        (by_unit["payments"] > 0) & (by_unit["gen"] >= MIN_GEN_MWH)
+    ]
     by_unit["payments_m"] = by_unit["payments"] / 1e6
     by_unit["co2_kt"] = by_unit["co2"] / 1e3
     by_unit["gen_gwh"] = by_unit["gen"] / 1e3
@@ -58,18 +69,7 @@ def main() -> None:
     xs = np.geomspace(x_lo, x_hi, 200)
     ets_ys = xs * 20  # y = x / 50 * 1000
 
-    # === Chart Creation (NEW: using ChartBuilder) ===
-    builder = ChartBuilder(
-        title="Bang for Buck — subsidy received vs CO₂ avoided per CfD project",
-        height=750,
-    )
-
-    # Create figure with dark theme automatically applied
-    fig = builder.create_basic()
-
-    # Get allocation round colors from builder
-    round_colors = builder.get_allocation_round_colors()
-    semantic_colors = builder.get_semantic_colors()
+    fig = go.Figure()
 
     # Green zone (above ETS line — good value)
     fig.add_trace(
@@ -97,20 +97,21 @@ def main() -> None:
         )
     )
 
-    # ETS reference line (using semantic color)
+    # ETS reference line
     fig.add_trace(
         go.Scatter(
             x=xs,
             y=ets_ys,
             mode="lines",
-            line={"color": semantic_colors["negative"], "width": 2, "dash": "dash"},
+            line={"color": "red", "width": 2, "dash": "dash"},
             name="UK ETS carbon price (£50/tCO₂)",
             hoverinfo="skip",
         )
     )
 
-    # Scatter points by allocation round (using builder's color palette)
-    for ar, color in round_colors.items():
+
+    # Scatter points by allocation round
+    for ar, color in ROUND_COLORS.items():
         ar_data = by_unit[by_unit["Allocation_round"] == ar]
         if ar_data.empty:
             continue
@@ -143,42 +144,39 @@ def main() -> None:
             x=labels["payments_m"],
             y=labels["co2_kt"],
             mode="text",
-            text=labels["Name_of_CfD_Unit"]
-            .str.replace(" Offshore Wind Farm", "", regex=False)
-            .str.replace(" Phase ", " P", regex=False)
+            text=labels["Name_of_CfD_Unit"].str.replace(
+                " Offshore Wind Farm", "", regex=False
+            ).str.replace(" Phase ", " P", regex=False)
             .str.replace("3rd conversion unit (unit 1)", "", regex=False),
             textposition="top center",
-            textfont={"size": 9, "color": "#e8e8e8"},  # Light text for dark theme
+            textfont={"size": 9, "color": "#333"},
             showlegend=False,
             hoverinfo="skip",
         )
     )
 
-    # === Axis Formatting (NEW: using builder helper methods) ===
-    # X-axis: Currency formatting with log scale
-    builder.format_currency_axis(
-        fig,
-        axis="x",
-        suffix="m",
+    fig.update_xaxes(
+        type="log",
         title="Total subsidy received (£m)",
+        tickprefix="£",
+        ticksuffix="m",
+        range=[np.log10(x_lo), np.log10(x_hi)],
     )
-    fig.update_xaxes(type="log", range=[np.log10(x_lo), np.log10(x_hi)])
-
-    # Y-axis: No currency prefix, just suffix
-    builder.format_currency_axis(
-        fig,
-        axis="y",
-        prefix="",
-        suffix=" kt",
+    fig.update_yaxes(
+        type="log",
         title="Total CO₂ avoided (kt)",
+        ticksuffix=" kt",
+        range=[np.log10(y_lo), np.log10(y_hi)],
     )
-    fig.update_yaxes(type="log", range=[np.log10(y_lo), np.log10(y_hi)])
+    fig.update_layout(
+        title="Bang for Buck — subsidy received vs CO₂ avoided per CfD project",
+        height=750,
+        hovermode="closest",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+    )
 
-    # Additional layout settings
-    fig.update_layout(hovermode="closest")
-
-    # === Save (NEW: exports both HTML and Twitter PNG) ===
-    paths = builder.save(fig, "subsidy_bang_for_buck", export_twitter=True)
+    save_chart(fig, "subsidy_bang_for_buck")
 
 
 if __name__ == "__main__":

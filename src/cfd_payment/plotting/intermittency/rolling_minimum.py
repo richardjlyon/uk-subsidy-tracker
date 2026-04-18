@@ -29,10 +29,9 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from scipy.signal import find_peaks
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 WINDOW = 21
 
@@ -64,7 +63,9 @@ def _installed_capacity_by_date(
     first_gen = gen.groupby("CfD_ID")["Settlement_Date"].min().rename("start_date")
     unit_info = pd.concat([first_gen, unit_cap], axis=1).dropna()
 
-    all_dates = pd.date_range(gen["Settlement_Date"].min(), gen["Settlement_Date"].max())
+    all_dates = pd.date_range(
+        gen["Settlement_Date"].min(), gen["Settlement_Date"].max()
+    )
     cap_by_date = np.zeros(len(all_dates))
     for _, row in unit_info.iterrows():
         mask = all_dates >= row["start_date"]
@@ -79,7 +80,9 @@ def _compute_daily_cf(
     tech_types: list[str],
 ) -> pd.Series:
     tech_df = df[df["Technology"].str.contains(tech_filter, na=False)]
-    daily_gen = tech_df.groupby("Settlement_Date")["CFD_Generation_MWh"].sum().sort_index()
+    daily_gen = (
+        tech_df.groupby("Settlement_Date")["CFD_Generation_MWh"].sum().sort_index()
+    )
 
     installed = _installed_capacity_by_date(df, df_cap, tech_types)
     daily_cf = daily_gen / (installed.reindex(daily_gen.index) * 24)
@@ -95,11 +98,17 @@ def main() -> None:
     df_cap = df_cap.rename(columns={"CFD_ID": "CfD_ID"})
 
     panels = list(TECH_GROUPS.keys())
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title=f"CfD Rolling {WINDOW}-Day Capacity Factor — Wind and Solar",
+        height=800,
+    )
+    fig = builder.create_subplots(
         rows=len(panels),
         cols=1,
         shared_xaxes=True,
-        subplot_titles=[f"{name} — Rolling {WINDOW}-Day Capacity Factor" for name in panels],
+        subplot_titles=[
+            f"{name} — Rolling {WINDOW}-Day Capacity Factor" for name in panels
+        ],
         vertical_spacing=0.08,
     )
 
@@ -188,12 +197,8 @@ def main() -> None:
         )
 
     fig.update_xaxes(dtick="M12", tickformat="%Y")
-    fig.update_layout(
-        title=f"CfD Rolling {WINDOW}-Day Capacity Factor — Wind and Solar",
-        height=800,
-    )
 
-    save_chart(fig, "intermittency_rolling_minimum")
+    builder.save(fig, "intermittency_rolling_minimum", export_twitter=True)
 
 
 if __name__ == "__main__":

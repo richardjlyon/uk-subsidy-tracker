@@ -41,10 +41,15 @@ import numpy as np
 import plotly.graph_objects as go
 
 from cfd_payment.data.elexon import load_elexon_prices_daily, load_elexon_wind_daily
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 
 def main() -> None:
+    builder = ChartBuilder(
+        title="Wind cannibalisation — more wind capacity means wind increasingly crashes the price",
+        height=500,
+    )
+
     wind = load_elexon_wind_daily()
     prices = load_elexon_prices_daily()
     merged = wind.merge(prices, on="date")
@@ -63,7 +68,7 @@ def main() -> None:
 
     bar_colors = ["#d62728" if c < 0 else "#2ca02c" for c in corrs]
 
-    fig = go.Figure()
+    fig = builder.create_basic()
 
     fig.add_trace(
         go.Bar(
@@ -83,12 +88,10 @@ def main() -> None:
     fig.update_xaxes(title="Year", dtick=1)
     fig.update_yaxes(title="Correlation between wind output and wholesale price (r)")
     fig.update_layout(
-        title="Wind cannibalisation — more wind capacity means wind increasingly crashes the price",
-        height=500,
         showlegend=False,
     )
 
-    save_chart(fig, "cannibalisation_price_vs_wind")
+    builder.save(fig, "cannibalisation_price_vs_wind", export_twitter=True)
 
 
 if __name__ == "__main__":

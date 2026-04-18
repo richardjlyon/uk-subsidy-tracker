@@ -42,10 +42,9 @@ Caveats:
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 ROUND_COLORS = {
     "Investment Contract": "#d62728",
@@ -107,7 +106,9 @@ def main() -> None:
         .apply(
             lambda g: np.average(
                 g["Strike_Price_GBP_Per_MWh"].dropna(),
-                weights=g.loc[g["Strike_Price_GBP_Per_MWh"].notna(), "CFD_Generation_MWh"],
+                weights=g.loc[
+                    g["Strike_Price_GBP_Per_MWh"].notna(), "CFD_Generation_MWh"
+                ],
             )
             if g["CFD_Generation_MWh"].sum() > 0
             else np.nan
@@ -129,17 +130,25 @@ def main() -> None:
 
     future["remaining_years"] = future["end_year"] - current_year
     total_flat_bn = (future["annual_cost"] * future["remaining_years"]).sum() / 1e9
-    total_growth_bn = sum(
-        future[future["end_year"] > yr]["annual_cost"].sum() * _demand_multiplier(yr)
-        for yr in years
-    ) / 1e9
+    total_growth_bn = (
+        sum(
+            future[future["end_year"] > yr]["annual_cost"].sum()
+            * _demand_multiplier(yr)
+            for yr in years
+        )
+        / 1e9
+    )
 
     scenarios = [
         ("flat", lambda yr: 1.0),
         ("growth", _demand_multiplier),
     ]
 
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="Existing CfD Obligations — contracts already signed (future rounds will add more)",
+        height=900,
+    )
+    fig = builder.create_subplots(
         rows=2,
         cols=2,
         shared_xaxes=True,
@@ -162,9 +171,7 @@ def main() -> None:
             annual_bn = []
             for yr in years:
                 active = ar_units[ar_units["end_year"] > yr]
-                annual_bn.append(
-                    active["annual_cost"].sum() * multiplier_fn(yr) / 1e9
-                )
+                annual_bn.append(active["annual_cost"].sum() * multiplier_fn(yr) / 1e9)
 
             cumulative_bn = list(np.cumsum(annual_bn))
 
@@ -191,7 +198,7 @@ def main() -> None:
                     stackgroup="cum",
                     fillcolor=color.replace(")", ",0.6)").replace("rgb", "rgba")
                     if "rgb" in color
-                    else f"rgba({int(color[1:3],16)},{int(color[3:5],16)},{int(color[5:7],16)},0.6)",
+                    else f"rgba({int(color[1:3], 16)},{int(color[3:5], 16)},{int(color[5:7], 16)},0.6)",
                     showlegend=False,
                     hovertemplate=f"{ar}<br>%{{x}}<br>£%{{y:.1f}}bn<extra></extra>",
                 ),
@@ -201,31 +208,31 @@ def main() -> None:
 
     fig.update_layout(
         barmode="stack",
-        title="Existing CfD Obligations — contracts already signed (future rounds will add more)",
-        height=900,
         hovermode="x unified",
     )
     for col in [1, 2]:
         fig.update_xaxes(title="Year", dtick=2, row=2, col=col)
-        fig.update_yaxes(
-            title="£bn/yr" if col == 1 else "",
-            tickprefix="£",
-            ticksuffix="bn",
+        builder.format_currency_axis(
+            fig,
+            axis="y",
+            suffix="bn",
             tickformat=".1f",
+            title="£bn/yr" if col == 1 else "",
             row=1,
             col=col,
         )
-        fig.update_yaxes(
-            title="Cumulative £bn" if col == 1 else "",
-            tickprefix="£",
-            ticksuffix="bn",
+        builder.format_currency_axis(
+            fig,
+            axis="y",
+            suffix="bn",
             tickformat=".0f",
-            range=[0, 50],
+            title="Cumulative £bn" if col == 1 else "",
             row=2,
             col=col,
         )
+        fig.update_yaxes(range=[0, 50], row=2, col=col)
 
-    save_chart(fig, "subsidy_remaining_obligations")
+    builder.save(fig, "subsidy_remaining_obligations", export_twitter=True)
 
 
 if __name__ == "__main__":

@@ -24,7 +24,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 
 def main() -> None:
@@ -35,9 +35,7 @@ def main() -> None:
         .agg(payments=("CFD_Payments_GBP", "sum"))
         .reset_index()
     )
-    by_unit = by_unit[by_unit["payments"] > 0].sort_values(
-        "payments", ascending=False
-    )
+    by_unit = by_unit[by_unit["payments"] > 0].sort_values("payments", ascending=False)
 
     total = by_unit["payments"].sum()
     n = len(by_unit)
@@ -46,7 +44,11 @@ def main() -> None:
 
     total_bn = total / 1e9
 
-    fig = go.Figure()
+    builder = ChartBuilder(
+        title=f"CfD Subsidy Concentration — £{total_bn:.0f}bn across {n} projects, shared very unequally",
+        height=650,
+    )
+    fig = builder.create_basic()
 
     # Equality line
     fig.add_trace(
@@ -131,13 +133,9 @@ def main() -> None:
         ticksuffix="%",
         range=[0, 100],
     )
-    fig.update_layout(
-        title=f"CfD Subsidy Concentration — £{total_bn:.0f}bn across {n} projects, shared very unequally",
-        height=650,
-        showlegend=False,
-    )
+    fig.update_layout(showlegend=False)
 
-    save_chart(fig, "subsidy_lorenz")
+    builder.save(fig, "subsidy_lorenz", export_twitter=True)
 
 
 if __name__ == "__main__":

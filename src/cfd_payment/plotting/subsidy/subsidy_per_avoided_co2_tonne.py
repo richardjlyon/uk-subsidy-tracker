@@ -27,10 +27,9 @@ Methodology:
 
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 ROUNDS_TO_SHOW = ["Investment Contract", "Allocation Round 1", "Allocation Round 2"]
 ROUND_COLORS = {
@@ -68,7 +67,11 @@ def main() -> None:
     )
     fleet["co2_per_mwh"] = fleet["co2_avoided"] / fleet["generation"]
 
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="CfD Subsidy Cost per Tonne of CO₂ Avoided — rising as the grid gets cleaner",
+        height=800,
+    )
+    fig = builder.create_subplots(
         rows=2,
         cols=1,
         shared_xaxes=True,
@@ -136,13 +139,15 @@ def main() -> None:
         col=1,
     )
 
-    fig.update_yaxes(
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix="",
         title="£ per tonne CO₂ avoided",
-        tickprefix="£",
-        rangemode="tozero",
         row=1,
         col=1,
     )
+    fig.update_yaxes(rangemode="tozero", row=1, col=1)
     fig.update_yaxes(
         title="tCO₂ per MWh",
         rangemode="tozero",
@@ -152,12 +157,10 @@ def main() -> None:
     fig.update_xaxes(dtick=1, row=1, col=1)
     fig.update_xaxes(dtick=1, row=2, col=1)
     fig.update_layout(
-        title="CfD Subsidy Cost per Tonne of CO₂ Avoided — rising as the grid gets cleaner",
-        height=800,
         hovermode="x unified",
     )
 
-    save_chart(fig, "subsidy_cost_per_avoided_co2_tonne")
+    builder.save(fig, "subsidy_cost_per_avoided_co2_tonne", export_twitter=True)
 
 
 if __name__ == "__main__":

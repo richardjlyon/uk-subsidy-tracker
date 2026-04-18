@@ -21,11 +21,10 @@ Methodology:
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.counterfactual import compute_counterfactual_monthly
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 
 def _weighted_monthly(df: pd.DataFrame, col: str) -> pd.Series:
@@ -50,11 +49,13 @@ def main() -> None:
     cf = compute_counterfactual_monthly(carbon_prices={})
     cf.index = cf["date"].dt.to_period("M").dt.to_timestamp()
 
-    monthly_payments = (
-        df.groupby("month")["CFD_Payments_GBP"].sum() / 1e6
-    )
+    monthly_payments = df.groupby("month")["CFD_Payments_GBP"].sum() / 1e6
 
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="What we pay CfD generators vs what the electricity is worth",
+        height=900,
+    )
+    fig = builder.create_subplots(
         rows=2,
         cols=1,
         shared_xaxes=True,
@@ -123,9 +124,7 @@ def main() -> None:
     )
 
     # --- Bottom panel: monthly CfD payments ---
-    bar_colors = [
-        "#1f77b4" if v >= 0 else "#2ca02c" for v in monthly_payments.values
-    ]
+    bar_colors = ["#1f77b4" if v >= 0 else "#2ca02c" for v in monthly_payments.values]
 
     fig.add_trace(
         go.Bar(
@@ -139,30 +138,30 @@ def main() -> None:
         col=1,
     )
 
-    fig.update_yaxes(
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix="/MWh",
         title="£/MWh",
-        tickprefix="£",
-        ticksuffix="/MWh",
-        rangemode="tozero",
         row=1,
         col=1,
     )
-    fig.update_yaxes(
+    fig.update_yaxes(rangemode="tozero", row=1, col=1)
+
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix=" m",
         title="£ millions",
-        tickprefix="£",
-        ticksuffix=" m",
-        tickformat="~g",
         row=2,
         col=1,
     )
     fig.update_layout(
-        title="What we pay CfD generators vs what the electricity is worth",
-        height=900,
         hovermode="x unified",
         bargap=0,
     )
 
-    save_chart(fig, "subsidy_scissors")
+    builder.save(fig, "subsidy_scissors", export_twitter=True)
 
 
 if __name__ == "__main__":

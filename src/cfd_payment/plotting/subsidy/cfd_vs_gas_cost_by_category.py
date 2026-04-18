@@ -16,10 +16,9 @@ Methodology:
 """
 
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 CATEGORIES = {
     "Offshore Wind": "#1f77b4",
@@ -60,7 +59,11 @@ def main() -> None:
     cum_bn = pivot_m.cumsum() / 1e3
     total_bn = cum_bn.iloc[-1].sum()
 
-    fig = make_subplots(
+    builder = ChartBuilder(
+        title="CfD Payments by Technology — where does the money go?",
+        height=900,
+    )
+    fig = builder.create_subplots(
         rows=2,
         cols=1,
         shared_xaxes=True,
@@ -101,7 +104,7 @@ def main() -> None:
                 stackgroup="cumulative",
                 fillcolor=CATEGORIES[cat].replace(")", ",0.6)").replace("rgb", "rgba")
                 if "rgb" in CATEGORIES[cat]
-                else f"rgba({int(CATEGORIES[cat][1:3],16)},{int(CATEGORIES[cat][3:5],16)},{int(CATEGORIES[cat][5:7],16)},0.6)",
+                else f"rgba({int(CATEGORIES[cat][1:3], 16)},{int(CATEGORIES[cat][3:5], 16)},{int(CATEGORIES[cat][5:7], 16)},0.6)",
                 hovertemplate=f"{cat}<br>%{{x|%b %Y}}<br>£%{{y:.1f}}bn<extra></extra>",
                 showlegend=False,
             ),
@@ -111,28 +114,27 @@ def main() -> None:
 
     fig.update_layout(
         barmode="relative",
-        title="CfD Payments by Technology — where does the money go?",
-        height=900,
         hovermode="x unified",
     )
-    fig.update_yaxes(
-        title_text="£ millions",
-        tickprefix="£",
-        ticksuffix=" m",
-        tickformat="~g",
+
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix="m",
+        title="£ millions",
         row=1,
         col=1,
     )
-    fig.update_yaxes(
-        title_text="£ billions",
-        tickprefix="£",
-        ticksuffix=" bn",
-        tickformat="~g",
+    builder.format_currency_axis(
+        fig,
+        axis="y",
+        suffix="bn",
+        title="£ billions",
         row=2,
         col=1,
     )
 
-    save_chart(fig, "subsidy_cfd_payments_by_category")
+    builder.save(fig, "subsidy_cfd_payments_by_category", export_twitter=True)
 
 
 if __name__ == "__main__":

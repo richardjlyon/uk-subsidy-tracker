@@ -29,10 +29,9 @@ Caveats:
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from cfd_payment.plotting import ChartBuilder
 
 TECH_CONFIG = {
     "Offshore Wind": {"color": "#1f77b4"},
@@ -43,6 +42,11 @@ MIN_ANNUAL_GEN_MWH = 10_000
 
 
 def main() -> None:
+    builder = ChartBuilder(
+        title="The Cannibalisation Effect — wind crashes its own price, consumers pay more",
+        height=800,
+    )
+
     df = load_lccc_dataset("Actual CfD Generation and avoided GHG emissions")
     df = df.dropna(
         subset=[
@@ -57,10 +61,12 @@ def main() -> None:
     current_year = pd.Timestamp.now().year
     df = df[df["year"] < current_year]
 
-    daily_avg = df.groupby("Settlement_Date")["Market_Reference_Price_GBP_Per_MWh"].mean()
+    daily_avg = df.groupby("Settlement_Date")[
+        "Market_Reference_Price_GBP_Per_MWh"
+    ].mean()
     yearly_tw = daily_avg.groupby(daily_avg.index.year).mean()
 
-    fig = make_subplots(
+    fig = builder.create_subplots(
         rows=2,
         cols=1,
         shared_xaxes=True,
@@ -92,7 +98,8 @@ def main() -> None:
             ratio = capture / yearly_tw[year] * 100
 
             levy = np.average(
-                yr["Strike_Price_GBP_Per_MWh"] - yr["Market_Reference_Price_GBP_Per_MWh"],
+                yr["Strike_Price_GBP_Per_MWh"]
+                - yr["Market_Reference_Price_GBP_Per_MWh"],
                 weights=yr["CFD_Generation_MWh"],
             )
 
@@ -165,12 +172,10 @@ def main() -> None:
     )
     fig.update_xaxes(dtick=1)
     fig.update_layout(
-        title="The Cannibalisation Effect — wind crashes its own price, consumers pay more",
-        height=800,
         hovermode="x unified",
     )
 
-    save_chart(fig, "cannibalisation_capture_ratio")
+    builder.save(fig, "cannibalisation_capture_ratio", export_twitter=True)
 
 
 if __name__ == "__main__":
