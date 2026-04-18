@@ -1,0 +1,106 @@
+site_name: CfD Payment Analysis
+site_description: Analysis of UK Contracts for Difference (CfD) renewable energy subsidy payments
+site_author: Richard Lyon
+
+# Repository
+repo_name: cfd-payment
+repo_url: https://github.com/yourusername/cfd-payment
+
+# Theme
+theme:
+  name: material
+  palette:
+    # Dark mode matching our charts
+    scheme: slate
+    primary: blue grey
+    accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  font:
+    text: Inter
+    code: Roboto Mono
+
+# Navigation
+nav:
+  - Home: index.md
+  - Charts:
+      - Overview: charts/index.md
+      - Subsidy Economics:
+          - Bang for Buck: charts/subsidy/bang-for-buck.md
+          - CfD vs Gas Cost: charts/subsidy/cfd-vs-gas-cost.md
+          - CfD vs Gas by Category: charts/subsidy/cfd-vs-gas-by-category.md
+          - Scissors Chart: charts/subsidy/scissors.md
+          - Subsidy per tCO₂: charts/subsidy/subsidy-per-co2.md
+          - Lorenz Curve: charts/subsidy/lorenz.md
+          - Remaining Obligations: charts/subsidy/remaining-obligations.md
+      - Capacity Factor:
+          - Monthly Trends: charts/capacity-factor/monthly.md
+          - Seasonal Patterns: charts/capacity-factor/seasonal.md
+      - Intermittency:
+          - Generation Heatmap: charts/intermittency/heatmap.md
+          - Load Duration: charts/intermittency/load-duration.md
+          - Rolling Minimum: charts/intermittency/rolling-minimum.md
+      - Cannibalisation:
+          - Capture Ratio: charts/cannibalisation/capture-ratio.md
+          - Price vs Wind: charts/cannibalisation/price-vs-wind.md
+  - Data Sources: data-sources.md
+  - Methodology: methodology.md
+  - About: about.md
+
+# Markdown extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search
+  - tags
+
+# Extra
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yourusername/cfd-payment
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX # Replace with your GA4 ID
+
+# Copyright
+copyright: Copyright &copy; 2024 CfD Payment Analysis
