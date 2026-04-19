@@ -314,6 +314,7 @@ class ChartBuilder:
         *,
         export_twitter: bool = False,
         export_html: bool = True,
+        export_div: bool = True,
     ) -> dict[str, Path]:
         """Save chart as HTML and/or PNG for Twitter.
 
@@ -321,13 +322,38 @@ class ChartBuilder:
             fig: The figure to save
             name: Filename (without extension)
             export_twitter: Whether to export PNG for Twitter (1200x675)
-            export_html: Whether to export interactive HTML
+            export_html: Whether to export interactive HTML (full page)
+            export_div: Whether to export div-only HTML (for markdown embedding)
 
         Returns:
-            Dictionary with paths: {'html': Path, 'twitter': Path}
+            Dictionary with paths: {'html': Path, 'twitter': Path, 'div': Path}
         """
         self.output_dir.mkdir(exist_ok=True, parents=True)
         paths = {}
+
+        # Add attribution at bottom right using paper coordinates
+        # Increase bottom margin to make room
+        margin = fig.layout.margin
+        current_b = getattr(margin, "b", None) or 80
+
+        fig.update_layout(
+            margin=dict(b=current_b + 30),
+            annotations=list(fig.layout.annotations)
+            + [
+                dict(
+                    text="richardlyon.substack.com",
+                    xref="paper",
+                    yref="paper",
+                    x=1.0,  # Right edge of plot area
+                    y=0,  # Bottom of plot area
+                    xanchor="right",
+                    yanchor="top",
+                    yshift=-40,  # Push below x-axis labels
+                    showarrow=False,
+                    font=dict(size=10, color="#9ca3af"),
+                )
+            ],
+        )
 
         # Export interactive HTML for dashboard
         if export_html:
@@ -335,6 +361,18 @@ class ChartBuilder:
             fig.write_html(html_path)
             print(f"✓ Saved HTML: {html_path}")
             paths["html"] = html_path
+
+        # Export div-only HTML for markdown embedding (no iframe needed)
+        if export_div:
+            div_path = self.output_dir / f"{name}.div.html"
+            fig.write_html(
+                div_path,
+                full_html=False,
+                include_plotlyjs="cdn",
+                div_id=f"chart-{name}",
+            )
+            print(f"✓ Saved DIV: {div_path}")
+            paths["div"] = div_path
 
         # Export static PNG for Twitter
         if export_twitter:
