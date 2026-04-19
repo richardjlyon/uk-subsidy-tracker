@@ -1,14 +1,21 @@
 """CfD payments by technology category — monthly and cumulative.
 
 Two-panel chart with shared x-axis:
-- Top: monthly CfD cost (strike × MWh) stacked by technology category.
+- Top: monthly CfD electricity cost stacked by technology category.
   Shows where the money goes each month.
 - Bottom: cumulative stacked area of the same — shows how total spend
   accumulates and which technologies dominate the lifetime cost.
 
 Sources: LCCC "Actual CfD Generation and avoided GHG emissions".
 Methodology:
-- CfD cost = sum(strike_price × generation_MWh) per category per month.
+- CfD cost per row = (reference_price × generation) + CFD_Payments_GBP,
+  summed per category per month. Matches the cost basis used in
+  cfd_vs_gas_cost.py so cumulative totals reconcile exactly (wholesale
+  paid on the bill + CfD levy top-up paid via the Supplier Obligation).
+- Using CFD_Payments_GBP directly (rather than strike × gen − reference × gen)
+  picks up LCCC settlement adjustments — negative-pricing suspensions,
+  cap/floor rules, settlement re-runs — so the totals here match cash
+  actually transferred.
 - Categories: Offshore Wind, Onshore Wind, Biomass Conversion, Other.
   Wind split into onshore/offshore to reveal which drives the cost.
 - No gas counterfactual here — that comparison is in cfd_vs_gas_cost.py.
@@ -43,13 +50,16 @@ def main() -> None:
 
     df["category"] = df["Technology"].map(_categorise)
     df["month"] = df["Settlement_Date"].dt.to_period("M").dt.to_timestamp()
-    df["strike_times_gen"] = df["Strike_Price_GBP_Per_MWh"] * df["CFD_Generation_MWh"]
+    df["cfd_cost"] = (
+        df["Market_Reference_Price_GBP_Per_MWh"] * df["CFD_Generation_MWh"]
+        + df["CFD_Payments_GBP"]
+    )
 
     pivot_m = (
         df.pivot_table(
             index="month",
             columns="category",
-            values="strike_times_gen",
+            values="cfd_cost",
             aggfunc="sum",
             fill_value=0,
         )

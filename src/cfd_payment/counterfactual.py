@@ -12,6 +12,25 @@ from cfd_payment.data import load_gas_price
 CCGT_EFFICIENCY = 0.55
 GAS_CO2_INTENSITY_THERMAL = 0.184  # tCO2 per MWh thermal (natural gas)
 
+# Non-fuel, non-carbon opex for a CCGT (£/MWh of electricity).
+#
+# EXISTING FLEET — capex sunk, only O&M needed. Used as the default because
+# the UK CCGT fleet was largely built 1995–2012 and had its capital cost paid
+# off by the start of the CfD era (2015). Source: BEIS Electricity Generation
+# Costs 2023, Table ES.1 — fixed O&M ~£3/MWh + variable O&M ~£2/MWh for
+# operational H-class CCGT.
+CCGT_EXISTING_FLEET_OPEX_PER_MWH = 5.0
+
+# NEW-BUILD — adds overnight capex + finance + fixed/variable O&M. Use when
+# modelling a hypothetical "build new gas instead of renewables" scenario.
+# Source: BEIS Electricity Generation Costs 2023, Table ES.1 — levelised
+# capex @ 8% WACC (~£15/MWh) + fixed/variable O&M (~£5/MWh).
+CCGT_NEW_BUILD_CAPEX_OPEX_PER_MWH = 20.0
+
+# Default: existing fleet. Answers the policy question "what if we'd stuck
+# with the gas fleet we already had instead of building renewables?"
+DEFAULT_NON_FUEL_OPEX = CCGT_EXISTING_FLEET_OPEX_PER_MWH
+
 # Annual average carbon prices (£/tCO2).
 # 2018–2020: EU ETS converted EUR→GBP.  2021+: UK ETS (GOV.UK published).
 DEFAULT_CARBON_PRICES: dict[int, float] = {
@@ -31,12 +50,19 @@ def compute_counterfactual(
     gas_df: pd.DataFrame | None = None,
     carbon_prices: dict[int, float] | None = None,
     ccgt_efficiency: float = CCGT_EFFICIENCY,
+    non_fuel_opex_per_mwh: float = DEFAULT_NON_FUEL_OPEX,
 ) -> pd.DataFrame:
     """
     Compute the counterfactual gas-only electricity price, daily.
 
     Returns columns: date, gas_p_per_kwh, gas_fuel_cost,
-    carbon_price_per_t, carbon_cost, counterfactual_total (all £/MWh).
+    carbon_price_per_t, carbon_cost, plant_opex, counterfactual_total
+    (all £/MWh).
+
+    counterfactual_total = gas_fuel_cost + carbon_cost + plant_opex.
+
+    Callers who want fuel-only (e.g. scissors chart) should reference
+    gas_fuel_cost directly instead of counterfactual_total.
     """
     if gas_df is None:
         gas_df = load_gas_price()
@@ -49,7 +75,10 @@ def compute_counterfactual(
     co2_intensity = GAS_CO2_INTENSITY_THERMAL / ccgt_efficiency
     df["carbon_price_per_t"] = df["date"].dt.year.map(carbon_prices).fillna(0.0)
     df["carbon_cost"] = df["carbon_price_per_t"] * co2_intensity
-    df["counterfactual_total"] = df["gas_fuel_cost"] + df["carbon_cost"]
+    df["plant_opex"] = non_fuel_opex_per_mwh
+    df["counterfactual_total"] = (
+        df["gas_fuel_cost"] + df["carbon_cost"] + df["plant_opex"]
+    )
 
     return df
 
