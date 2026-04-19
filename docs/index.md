@@ -1,34 +1,35 @@
 # CfD Payment Analysis
 
-Welcome to the **CfD Payment Analysis** documentation — a comprehensive analysis of UK Contracts for Difference (CfD) renewable energy subsidy payments.
+"Renewable" electricity—electricty obtained from low-carbon generation sources like wind and solar—is eye-wateringly expensive. So expensive, in fact, that it costs almost three as much to generate it from those sources than it would if we were to generate it directly from gas.
+
+![CfD vs Gas Cost](charts/html/subsidy_cfd_vs_gas_total_twitter.png)
+
+That fact is not well known. One reason that it is not well known is that advocates for it simply claim that it is inexpensive, and they repeat that claim until it aquires the appearance of being true.
+
+But every day, the UK government [publishes every payment we made the previous day](https://dp.lowcarboncontracts.uk/dataset/actual-cfd-generation-and-avoided-ghg-emissions) to the producers of "renewable" electricity under its "Contract for Differences" scheme. By analysing the pattern of these payments over time, we can understand its true cost to us.
+
+Welcome to the **CfD Payment Analysis** documentation—a comprehensive analysis of UK Contracts for Difference (CfD) renewable energy subsidy payments.
 
 ## What are CfDs?
 
-**Contracts for Difference (CfDs)** are the UK government's main mechanism for supporting low-carbon electricity generation. They work by:
+**Contracts for Difference (CfDs)** are the UK government's main mechanism for subsidising low-carbon electricity generation. They work by:
 
 1. **Guaranteeing a "strike price"** — a fixed price per MWh of electricity generated
-2. **Topping up the market price** — when wholesale prices are low, generators receive payments to bring their revenue up to the strike price
+2. **Topping up the market price** — when wholesale prices are lower than the guaranteed price, the public pay subsidies to generators to bring their revenue up to the strike price
 3. **Clawing back excess** — when wholesale prices are high, generators pay money back
 
-The result is **price certainty** for renewable generators and **cost predictability** for consumers.
+The result is **profit certainty** for renewable generators and **expensive electricity** for consumers.
 
 ## About This Analysis
 
 This project analyzes real-world CfD performance data from 2015 onwards, covering:
 
-- 💷 **Subsidy costs** — how much consumers have paid and what we got for it
-- ⚡ **Generation patterns** — capacity factors, seasonality, and intermittency
-- 📊 **Cost-effectiveness** — bang for buck, CO₂ abatement costs
-- 📉 **Market impacts** — price cannibalisation and capture ratios
+- **Subsidy costs** — how much consumers have paid and what we got for it
+- **Generation patterns** — capacity factors, seasonality, and intermittency
+- **Cost-effectiveness** — bang for buck, CO₂ abatement costs
+- **Market impacts** — price cannibalisation and capture ratios
 
-All charts feature:
-
-- 🌙 **Dark theme** matching Energy Dashboard UK aesthetic
-- 📱 **Interactive visualizations** built with Plotly
-- 🐦 **Twitter-ready exports** (1200×675 PNG)
-- ℹ️ **Info icons** linking to detailed methodology
-
-## Chart Categories
+<!--## Chart Categories
 
 ### [Subsidy Economics](charts/index.md)
 
@@ -60,7 +61,7 @@ Explore the challenges of variable generation:
 Examine how renewables affect their own economics:
 
 - **[Capture Ratio](charts/cannibalisation/capture-ratio.md)** — Wind selling into cheaper hours as capacity grows
-- **[Price vs Wind](charts/cannibalisation/price-vs-wind.md)** — Market price correlation with wind output
+- **[Price vs Wind](charts/cannibalisation/price-vs-wind.md)** — Market price correlation with wind output-->
 
 ## Data Sources
 
@@ -71,18 +72,9 @@ All analysis uses publicly available data:
 - **[National Grid ESO](https://www.nationalgrideso.com/)** — Carbon Intensity API
 - **[ONS](https://www.ons.gov.uk/)** — System Average Price of gas
 
-See [Data Sources](data-sources.md) for detailed information.
+See [Data Sources](technical-details/data-sources.md) for detailed information.
 
 ## Key Features
-
-### Dark Theme
-
-All charts use a dark navy theme (`#1a1d29`) matching the Energy Dashboard UK aesthetic, with:
-
-- Left-aligned bold titles
-- Cyan accent colors (`#00d9ff`)
-- High contrast for readability
-- Info icons (ⓘ) for methodology
 
 ### Interactive Charts
 
@@ -97,15 +89,7 @@ Every chart exports a Twitter-optimized PNG (1200×675) perfect for sharing insi
 
 ## Methodology
 
-Our analysis follows these principles:
-
-1. **Transparency** — All calculations documented and reproducible
-2. **Primary sources** — Direct from LCCC, Elexon, National Grid
-3. **Daily granularity** — Captures price spikes and generation patterns
-4. **Lifetime perspective** — Cumulative totals from project start to present
-5. **Like-for-like comparisons** — Gas counterfactuals use actual generation profiles
-
-See [Methodology](methodology.md) for detailed explanations.
+See [Methodology](technical-details/methodology.md) for detailed explanations.
 
 ## Quick Start
 
@@ -119,10 +103,10 @@ Browse the charts by category using the navigation menu, or:
 
 This analysis is an independent examination of publicly available CfD data. It aims to:
 
-- 📊 **Inform public debate** with transparent, data-driven analysis
-- 🔍 **Highlight trade-offs** between carbon reduction and cost
-- 📈 **Track real-world performance** against policy goals
-- 🌍 **Contribute to energy policy** discussions
+- **Inform public debate** with transparent, data-driven analysis
+- **Highlight trade-offs** between carbon reduction and cost
+- **Track real-world performance** against policy goals
+- **Contribute to energy policy** discussions
 
 All code and analysis is available on [GitHub](https://github.com/yourusername/cfd-payment).
 
