@@ -8,7 +8,7 @@ from cfd_payment.plotting.intermittency.rolling_minimum import main as rolling_m
 from cfd_payment.plotting.subsidy.bang_for_buck import main as bang_for_buck
 from cfd_payment.plotting.subsidy.lorenz import main as lorenz
 from cfd_payment.plotting.subsidy.cfd_vs_gas_cost import main as cfd_vs_gas_total
-from cfd_payment.plotting.subsidy.cfd_vs_gas_cost_by_category import (
+from cfd_payment.plotting.subsidy.cfd_payments_by_category import (
     main as cfd_payments_by_category,
 )
 from cfd_payment.plotting.subsidy.remaining_obligations import (
