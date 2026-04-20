@@ -1,3 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://richardjlyon.github.io/cfd-payment/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/cfd-payment/charts/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/cfd-payment/charts/subsidy/cfd-dynamics/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/cfd-payment/charts/subsidy/cfd-vs-gas-cost/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/cfd-payment/charts/subsidy/remaining-obligations/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/cfd-payment/technical-details/gas-counterfactual/</loc>
+         <lastmod>2026-04-20</lastmod>
+    </url>
 </urlset>
