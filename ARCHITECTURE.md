@@ -875,10 +875,17 @@ an exit criterion. Do not advance until exit is met.
 **Entry:** P0 complete.
 **Deliverables:**
 - `tests/test_counterfactual.py` pinning the formula.
-- `tests/test_benchmarks.py` with CfD-only benchmarks against Ben Pile's
-  2021 + 2026 numbers (documented divergence), REF subset, Turver aggregate.
-- `tests/test_determinism.py` proving rebuilds are byte-identical.
+- `tests/test_schemas.py` pandera validation of raw CSV sources
+  (pre-Parquet scaffolding; Parquet variants land in P3).
+- `tests/test_aggregates.py` in-memory row-conservation checks on
+  the CfD pipeline (pre-Parquet scaffolding; Parquet variants land in P3).
+- `tests/test_benchmarks.py` reconciles CfD totals against LCCC
+  self-reconciliation (mandatory floor) + regulator-native external
+  anchors (OBR, Ofgem, DESNZ, HoC Library, NAO).
 - CI workflow runs pytest on every push.
+
+**Note:** `tests/test_determinism.py` is deferred to P3 (Publishing
+layer), when Parquet outputs first exist to verify byte-identity of.
 
 **Exit:** Green CI on `main`; benchmark deltas explicitly documented.
 
