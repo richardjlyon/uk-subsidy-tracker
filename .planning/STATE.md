@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-03-PLAN.md (TRIAGE-02 + GOV-01 closed; 7 PROMOTE charts authored to full D-01)
-last_updated: "2026-04-22T16:37:09.579Z"
+stopped_at: Phase 3 complete
+last_updated: "2026-04-22T16:45:00.000Z"
 progress:
   total_phases: 12
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 13
-  completed_plans: 12
-  percent: 92
+  completed_plans: 13
+  percent: 100
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 03 Plan 03 — complete (TRIAGE-02 + GOV-01 closed: 7 PROMOTE chart pages filled with full D-01 content (127-172 lines each); adversarial rhetorical payloads locked; GOV-01 four-way coverage demonstrated on every page; mkdocs --strict remains clean; pytest baseline 16 passed + 4 skipped preserved)
+**Session:** Phase 03 complete (all 4 plans executed: CUT files deleted; 5-theme docs tree built; 7 PROMOTE chart pages filled with full D-01 content; chart output regenerated clean; mkdocs --strict promoted to CI gate; tests/test_docs_structure.py added as regression guard; pytest 23 passed + 4 skipped; TRIAGE-01..04 + GOV-01 delivered)
 
 ---
 
@@ -38,25 +38,24 @@ progress:
 
 ## Current Position
 
-Phase: 03 (chart-triage-execution) — EXECUTING
-Plan: 4 of 4 (Plans 01-03 complete)
-**Phase:** 3
-**Plan:** 01-03 complete; 04 next (Wave 4 — full chart regen + CI strict-build gate, TRIAGE-04)
-**Status:** Executing Phase 03
-**Focus:** CUT file deletion [DONE, P01], docs tree + nav [DONE, P02], seven PROMOTE chart-page content fill [DONE, P03], full regen + CI strict gate [NEXT, P04]
+Phase: 03 (chart-triage-execution) — COMPLETE
+**Phase:** 4 (publishing-layer)
+**Plan:** Not started
+**Status:** Ready to plan
+**Focus:** Manifest.json, CSV mirror, snapshot, Parquet migration for CfD scheme
 
 ```
-Progress: [█████████░] 12/13 plans complete (Phase 3: 3/4 plans)
+Progress: [██████░░░░░░░░░░░░░░░░░░] 3/12 phases complete
 ```
 
 ---
 
 ## Performance Metrics
 
-**Phases complete:** 2/12
-**Plans complete:** 12/13 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3: 3/4)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04, TRIAGE-01, TRIAGE-03, TRIAGE-02, GOV-01 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
-**Test coverage:** 16 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
+**Phases complete:** 3/12
+**Plans complete:** 13/13 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04 + (Phase 3: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01) (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
+**Test coverage:** 23 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), `test_docs_structure.py` (7, Phase-3 invariants: CUT files absent, 5 themes present, 7 PROMOTE pages exist, D-01 sections present, GOV-01 four-way coverage, mkdocs validation block intact), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
@@ -68,6 +67,7 @@ Progress: [█████████░] 12/13 plans complete (Phase 3: 3/4 pl
 | Phase 03 P01 | 2min | 2 tasks | 3 files |
 | Phase 03 P02 | 6min | 5 tasks | 22 files (17 created, 5 modified, 2 deleted) |
 | Phase 03 P03 | 9min | 7 tasks | 7 files |
+| Phase 03 P04 | 5min | 5 tasks | 3 files (charts regen, ci.yml, test_docs_structure.py, STATE.md) |
 
 ## Accumulated Context
 
@@ -120,9 +120,11 @@ None currently.
 - [x] Execute Phase 3 Plan 01 — Wave 1 cleanup: TRIAGE-01 (scissors + bang_for_buck_old deleted) + mkdocs.yml D-06 theme features + validation: block
 - [x] Execute Phase 3 Plan 02 — Wave 2: five-theme docs tree + nav: rewrite (TRIAGE-03 shipped; mkdocs --strict clean)
 - [x] Execute Phase 3 Plan 03 — Wave 3: PROMOTE chart pages filled with D-01 content (TRIAGE-02 + GOV-01 shipped; mkdocs --strict clean; 7 pages 127-172 lines)
-- [ ] Execute Phase 3 Plan 04 — Wave 4: full regen + CI strict-build gate (TRIAGE-04)
+- [x] Execute Phase 3 Plan 04 — Wave 4: full regen + CI strict-build gate (TRIAGE-04)
 - [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check
 - [ ] Phase 3/4: populate external benchmark anchors (OBR EFO calendar-year translation, DESNZ, HoC, NAO) as transcribable figures surface
+- [ ] Phase 4+: Author `docs/abbreviations.md` glossary (CfD, AR1, CCGT, MWh, ETS, SCC, LCCC) to populate `content.tooltips` Material feature (OQ5 seed from Phase 3 Plan 03-04 — feature enabled, glossary empty)
+- [ ] Phase 4+: Add CF-formula pin test — `tests/test_capacity_factor.py` freezing `CF = generation / (capacity × hours)` per Reliability theme methodology (OQ4 seed from Phase 3 Plan 03-04 — capacity-factor-seasonal chart caveat tracks this)
 
 ### Notes
 
@@ -146,9 +148,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-execute-phase 03` will resume Plan 03-04 (Wave 4: full chart regeneration + CI strict-build gate, TRIAGE-04). Plan 03-03 shipped TRIAGE-02 + GOV-01 cleanly — 7 PROMOTE chart pages filled with full D-01 content (127-172 lines each), GOV-01 four-way coverage grep-verifiable per page, adversarial rhetorical payloads locked, mkdocs --strict clean, pytest 16 passed + 4 skipped preserved (commits 7f38d46 / 3e55b22 / 4d57874 / 30638bf / 3656da3 / b75d36d / f527479).
+**Next command:** `/gsd-plan-phase 4` — begin planning Phase 4 (Publishing Layer). Phase 3 closed with 5 success criteria green: scissors + bang_for_buck_old deleted (TRIAGE-01); 7 PROMOTE chart pages authored with GOV-01 four-way coverage (TRIAGE-02, GOV-01); 5-theme docs tree complete (TRIAGE-03); every PRODUCTION chart reachable from its theme index via the rewritten 22-entry mkdocs.yml nav under `validation.nav.omitted_files: warn` (TRIAGE-04); `mkdocs build --strict` green locally + as the new `docs` CI job.
 
-**Stopped at:** Completed 03-03-PLAN.md (TRIAGE-02 + GOV-01 closed; 7 PROMOTE charts authored to full D-01)
+**Stopped at:** Phase 3 complete
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
