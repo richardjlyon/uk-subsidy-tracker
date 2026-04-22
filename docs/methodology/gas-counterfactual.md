@@ -21,7 +21,7 @@ For each day, compute an implied £/MWh for gas-generated electricity:
 gas_alt_£/MWh  =  fuel  +  carbon  +  O&M
 
 fuel    =  gas_price_p_per_kWh × 10 / 0.55
-carbon  =  UK_ETS_£_per_tCO2 × (0.184 / 0.55)
+carbon  =  UK_ETS_£_per_tCO2 × (0.18290 / 0.55)
 O&M     =  £5 / MWh   (existing fleet, capex sunk)
 ```
 
@@ -31,10 +31,12 @@ summed to monthly, then cumulative, totals.
 | Term | Source | Value |
 |------|--------|-------|
 | Gas price | [ONS System Average Price of gas](https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/gk36/mm22) | Daily, p/kWh thermal |
-| CCGT efficiency | Modern H-class CCGT typical rating | 55% |
-| Gas CO₂ intensity | Natural gas combustion | 0.184 tCO₂/MWh thermal |
-| Carbon price | EU ETS (2018–20) → UK ETS (2021+), annual average | £13–£53/tCO₂ |
-| O&M | BEIS *Electricity Generation Costs 2023*, Table ES.1 | £5/MWh |
+| CCGT efficiency | [BEIS *Electricity Generation Costs 2023*, Table ES.1](https://www.gov.uk/government/publications/electricity-generation-costs-2023) | 55% |
+| Gas CO₂ intensity | [DESNZ 2024 *UK Government GHG Conversion Factors*](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024) (gross CV) | 0.18290 tCO₂/MWh thermal |
+| Carbon price | EU ETS (2018–20) → UK ETS (2021+), annual average ([OBR](https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/)) | £13–£73/tCO₂ |
+| O&M | [BEIS *Electricity Generation Costs 2023*, Table ES.1](https://www.gov.uk/government/publications/electricity-generation-costs-2023) | £5/MWh |
+
+<sub>Constants last audited against primary sources: **2026-04-22**. Full provenance (source URL, basis, retrieval date, next-audit trigger) is recorded on each constant's docstring in [`counterfactual.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/counterfactual.py). Grep `^Provenance:` across the source tree to enumerate every audited constant.</sub>
 
 The `× 10 / 0.55` converts p/kWh of gas (thermal) into £/MWh of electricity:
 the `× 10` is a unit conversion, and dividing by 0.55 accounts for the heat lost
@@ -110,10 +112,16 @@ The full calculation lives in [`src/uk_subsidy_tracker/counterfactual.py`](https
 Key constants:
 
 - `CCGT_EFFICIENCY = 0.55`
-- `GAS_CO2_INTENSITY_THERMAL = 0.184`  (tCO₂/MWh thermal)
+- `GAS_CO2_INTENSITY_THERMAL = 0.18290`  (tCO₂/MWh thermal, DESNZ 2024 gross CV)
 - `CCGT_EXISTING_FLEET_OPEX_PER_MWH = 5.0`
 - `CCGT_NEW_BUILD_CAPEX_OPEX_PER_MWH = 20.0`
-- `DEFAULT_CARBON_PRICES`  (dict keyed by year)
+- `DEFAULT_CARBON_PRICES`  (dict keyed by year; 2018–2020 EU ETS, 2021+ UK ETS)
+
+Each constant carries a full `Provenance:` block in its docstring. To list all audited constants:
+
+```bash
+grep -rn "^Provenance:" src/ tests/
+```
 
 To reproduce the chart:
 

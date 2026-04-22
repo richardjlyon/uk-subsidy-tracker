@@ -10,7 +10,30 @@ import pandas as pd
 from uk_subsidy_tracker.data import load_gas_price
 
 CCGT_EFFICIENCY = 0.55
-GAS_CO2_INTENSITY_THERMAL = 0.18290  # tCO2 per MWh thermal (DESNZ 2024 GHG conversion factor, gross CV)
+"""Fleet-average thermal efficiency of UK CCGT, dimensionless.
+
+55% reflects a blend of older F-class plants (~50%) and modern H-class
+(~60%). Appropriate for an existing-fleet counterfactual; a new-build-only
+study should use 0.60.
+
+Provenance:
+  source:       BEIS Electricity Generation Costs 2023, Table ES.1
+  url:          https://www.gov.uk/government/publications/electricity-generation-costs-2023
+  basis:        Net HHV efficiency, H-class CCGT mid-range
+  retrieved_on: 2026-04-22
+  next_audit:   when BEIS/DESNZ publishes next Electricity Generation Costs edition
+"""
+
+GAS_CO2_INTENSITY_THERMAL = 0.18290
+"""tCO2 per MWh thermal, natural gas (gross CV basis).
+
+Provenance:
+  source:       DESNZ 2024 UK Government Greenhouse Gas Conversion Factors
+  url:          https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024
+  basis:        Gross CV (UK convention — gas suppliers bill in kWh gross CV)
+  retrieved_on: 2026-04-22
+  next_audit:   2027-04-01  (DESNZ publishes annually, typically June)
+"""
 
 METHODOLOGY_VERSION: str = "0.1.0"
 """Semantic version for the gas counterfactual formula.
@@ -26,27 +49,42 @@ discipline. After 1.0.0:
 Post-1.0.0 bumps require an entry in CHANGES.md under ## Methodology versions.
 """
 
-# Non-fuel, non-carbon opex for a CCGT (£/MWh of electricity).
-#
-# EXISTING FLEET — capex sunk, only O&M needed. Used as the default because
-# the UK CCGT fleet was largely built 1995–2012 and had its capital cost paid
-# off by the start of the CfD era (2015). Source: BEIS Electricity Generation
-# Costs 2023, Table ES.1 — fixed O&M ~£3/MWh + variable O&M ~£2/MWh for
-# operational H-class CCGT.
 CCGT_EXISTING_FLEET_OPEX_PER_MWH = 5.0
+"""Non-fuel, non-carbon opex for EXISTING-fleet CCGT (£/MWh electricity).
 
-# NEW-BUILD — adds overnight capex + finance + fixed/variable O&M. Use when
-# modelling a hypothetical "build new gas instead of renewables" scenario.
-# Source: BEIS Electricity Generation Costs 2023, Table ES.1 — levelised
-# capex @ 8% WACC (~£15/MWh) + fixed/variable O&M (~£5/MWh).
+Capex sunk, only O&M needed. Used as the default because the UK CCGT
+fleet was largely built 1995–2012 and had its capital cost paid off
+by the start of the CfD era (2015).
+
+Provenance:
+  source:       BEIS Electricity Generation Costs 2023, Table ES.1
+  url:          https://www.gov.uk/government/publications/electricity-generation-costs-2023
+  basis:        Operational H-class CCGT, fixed O&M ~£3/MWh + variable O&M ~£2/MWh
+  retrieved_on: 2026-04-22
+  next_audit:   when BEIS/DESNZ publishes next Electricity Generation Costs edition
+"""
+
 CCGT_NEW_BUILD_CAPEX_OPEX_PER_MWH = 20.0
+"""Non-fuel opex for NEW-BUILD CCGT including capex amortisation (£/MWh).
 
-# Default: existing fleet. Answers the policy question "what if we'd stuck
-# with the gas fleet we already had instead of building renewables?"
+Use when modelling a hypothetical "build new gas instead of renewables"
+scenario (typically for sensitivity analysis, not the default).
+
+Provenance:
+  source:       BEIS Electricity Generation Costs 2023, Table ES.1
+  url:          https://www.gov.uk/government/publications/electricity-generation-costs-2023
+  basis:        Levelised capex @ 8% WACC (~£15/MWh) + fixed/variable O&M (~£5/MWh)
+  retrieved_on: 2026-04-22
+  next_audit:   when BEIS/DESNZ publishes next Electricity Generation Costs edition
+"""
+
 DEFAULT_NON_FUEL_OPEX = CCGT_EXISTING_FLEET_OPEX_PER_MWH
+"""Default non-fuel opex: existing-fleet (capex sunk).
 
-# Annual average carbon prices (£/tCO2).
-# 2018–2020: EU ETS converted EUR→GBP.  2021+: UK ETS (GOV.UK published).
+Answers the policy question: "what if we'd stuck with the gas fleet we
+already had instead of building renewables?"
+"""
+
 DEFAULT_CARBON_PRICES: dict[int, float] = {
     2018: 13.0,
     2019: 22.0,
@@ -58,6 +96,29 @@ DEFAULT_CARBON_PRICES: dict[int, float] = {
     2025: 42.0,
     2026: 40.0,
 }
+"""Annual carbon prices, £/tCO2.
+
+2018–2020: EU ETS annual averages (UK still in EU ETS pre-Brexit
+carbon-scheme divergence), converted EUR→GBP at contemporary average rates.
+
+2021+: UK ETS annual averages.
+
+Provenance:
+  sources:      EU ETS 2018–2020 spot (via EEX / ICE reference);
+                UK ETS 2021+ via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK
+  urls:
+    - https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/
+    - https://www.gov.uk/government/publications/determinations-of-the-uk-ets-carbon-price/uk-ets-carbon-prices-for-use-in-civil-penalties-2024
+  basis:        Calendar-year annual average, £/tCO2
+  retrieved_on: 2026-04-22
+  next_audit:   2027-01-15  (OBR EFO published late-March; refresh for full 2026 + 2027 initial estimate)
+
+Notes:
+- 2022 (73.0) is OBR-cited; UK ETS 2022 was volatile, peaking near
+  £100 mid-year; OBR uses 73 as its calendar-year reference.
+- 2023 (45.0) and 2025 (42.0) are approximate — revisit before v1.0.0
+  public release.
+"""
 
 
 def compute_counterfactual(
