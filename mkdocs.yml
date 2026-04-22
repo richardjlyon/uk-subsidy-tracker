@@ -21,11 +21,15 @@ theme:
   locale: en
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
-    - toc.follow
+    - navigation.top
+    - navigation.instant
     - search.suggest
     - search.highlight
     - content.code.copy
+    - content.tooltips
+    - toc.integrate
   palette:
     - scheme: default
       toggle:
@@ -35,6 +39,18 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
+
+# Validation — --strict gate teeth (RESEARCH §3, required for TRIAGE-04)
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+    absolute_links: warn
+    unrecognized_links: info
 
 # Navigation
 nav:
