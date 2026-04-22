@@ -22,12 +22,12 @@ and the gas counterfactual are available; early 2016–17 generation of
 | **Wholesale (red)** | **£15.9bn** | Market reference price × CfD generation. Paid by consumers via the per-kWh price on their electricity bill. |
 | **CfD levy (blue)** | **£12.6bn** | `CFD_Payments_GBP` from LCCC. Paid by consumers via the Supplier Obligation levy line. Goes negative in 2022 when wholesale > strike. |
 | **Total CfD cost** | **£28.5bn** | Wholesale + levy = strike price × generation. The full cost of CfD electricity to consumers over this window. |
-| **Gas alternative (orange line)** | **£14.3bn** | What the same MWh would have cost from the existing UK gas fleet: fuel + carbon + £5/MWh O&M. |
-| **Premium** | **£14.2bn** | Total CfD cost − gas alternative. The policy cost of choosing CfDs over the existing gas fleet. |
+| **Gas alternative (orange line)** | **£14.4bn** | What the same MWh would have cost from the existing UK gas fleet: fuel + carbon + £5/MWh O&M. |
+| **Premium** | **£14.1bn** | Total CfD cost − gas alternative. The policy cost of choosing CfDs over the existing gas fleet. |
 
 Including the early 2016–17 period (which has no gas comparator), the
-full LCCC cumulative CfD cost to date is **£29.2bn** — the headline
-figure commonly cited. The £0.7bn difference is real CfD spending but
+full LCCC cumulative CfD cost to date is **£29.1bn** — the headline
+figure commonly cited. The ~£0.6bn difference is real CfD spending but
 cannot be set against a like-for-like gas counterfactual.
 
 ## How to read the chart
@@ -114,10 +114,11 @@ have cost *more*, not less.
 
 In most months outside 2021–23, the orange line sits below the bar top —
 the gas alternative would have been cheaper for that specific MWh.
-Cumulatively, the CfD system cost £14.9bn more than the existing gas fleet
-would have over the same period. That is the real cost of the policy
-choice, separated from wholesale prices that every consumer pays regardless
-of generation technology.
+Cumulatively, over the Jan 2018 – Apr 2026 like-for-like window, the CfD
+system cost **£14.1bn** more than the existing gas fleet would have over
+the same period. That is the real cost of the policy choice, separated
+from wholesale prices that every consumer pays regardless of generation
+technology.
 
 ## Methodology
 
@@ -150,9 +151,10 @@ the policy choice was *"pay for CfDs or keep running the gas fleet we
 already had,"* not *"build renewables or build new gas plants."*
 
 Sensitivity: using new-build gas assumptions (£20/MWh all-in) raises the
-gas alternative to £17.2bn (premium drops to £12.0bn). Stripping carbon
-tax entirely drops it to £11.9bn (premium £17.3bn). The direction and
-order of magnitude are robust to these choices.
+gas alternative to £17.3bn (premium drops to £11.2bn). Stripping carbon
+tax entirely drops it to £11.9bn (premium £16.6bn). The direction and
+order of magnitude are robust to these choices. Full sensitivity table in
+the [gas counterfactual methodology](../../methodology/gas-counterfactual.md#sensitivity).
 
 ## Data & code
 

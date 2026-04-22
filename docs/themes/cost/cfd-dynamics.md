@@ -30,7 +30,10 @@ below it.
 **Panel [4] — Cumulative premium (£bn).** Running total of
 `premium_per_mwh × generation` since the scheme began. This is the bill
 consumers paid *over and above* what the existing gas fleet would have
-cost for the same electricity. Endpoint currently **£14.1bn**.
+cost for the same electricity. Endpoint currently **£14.0bn** (panel [4]
+aggregates to daily fleet-weighted strike prices; the row-level
+decomposition on [cfd-vs-gas-cost](cfd-vs-gas-cost.md) gives £14.1bn —
+the two figures are the same quantity to rounding at the 0.1bn level).
 
 ## What the chart reveals
 

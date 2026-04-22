@@ -59,23 +59,28 @@ question the chart is answering.
 
 ## Sensitivity
 
-All figures are cumulative totals over Jun 2016 – Apr 2026 against £29.2bn
-of actual CfD electricity cost (wholesale + levy).
+All figures are cumulative totals over **Jan 2018 – Apr 2026** (the window
+where both the LCCC CfD data and the gas counterfactual are available)
+against **£28.5bn** of actual CfD electricity cost (wholesale + levy) over
+the same window. Numbers are generated from the current code via
+`compute_counterfactual(...)` — see the snippet at the end of this page.
 
 | Scenario | O&M (£/MWh) | Carbon tax | Gas alternative | Premium vs CfD |
 |---|---|---|---|---|
-| **Default (existing fleet)** | 5 | UK ETS | **£14.3bn** | **£14.9bn** |
-| Fuel + carbon, no O&M | 0 | UK ETS | £9.3bn | £19.9bn |
-| Fuel only (no carbon, no O&M) | 0 | — | £10.9bn* | £18.3bn |
-| New-build (capex + O&M) | 20 | UK ETS | £17.2bn | £12.0bn |
-| No carbon tax, existing O&M | 5 | — | £11.9bn | £17.3bn |
+| **Default (existing fleet)** | 5 | UK ETS | **£14.4bn** | **£14.1bn** |
+| Fuel + carbon, no O&M | 0 | UK ETS | £13.5bn | £15.1bn |
+| Fuel only (no carbon, no O&M) | 0 | — | £10.9bn | £17.6bn |
+| New-build (capex + O&M) | 20 | UK ETS | £17.3bn | £11.2bn |
+| No carbon tax, existing O&M | 5 | — | £11.9bn | £16.6bn |
 
-<sup>*Fuel-only figure is higher than fuel+no-O&M because the latter retains
-the carbon tax term. The "no carbon, no O&M" scenario is the hypothetical
-minimum; all realistic variants sit between £12bn and £17bn.</sup>
+Including the earlier 2016–17 CfD generation (no gas counterfactual
+available for that period) brings the full-window CfD total to **£29.1bn**
+— the headline "~£29bn over ten years" figure on the home page. The £0.7bn
+difference is real CfD spending but cannot be set against a like-for-like
+gas comparator.
 
 The choice of O&M and carbon-price assumptions moves the cumulative gas
-alternative within a **£12–17bn band**. The actual CfD cost (£29bn) sits
+alternative within a **£11–17bn band**. The actual CfD cost (£28.5bn) sits
 comfortably above that band in every scenario: the premium is robust to
 plausible assumption changes.
 
