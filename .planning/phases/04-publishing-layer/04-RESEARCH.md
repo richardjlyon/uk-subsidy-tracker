@@ -1464,32 +1464,32 @@ class RawMeta(BaseModel):
 - A1 (LCCC figure) — planner should surface the exact transcribed value and page number for user sign-off.
 - A4 (PAT vs no-PAT) — user must decide whether to create `REFRESH_PAT` secret before Phase 4 execution, or accept that refresh PRs have no auto-CI.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **LCCC ARA 2024/25 — what's the calendar-year 2024 CfD total to 4 significant figures?**
    - What we know: LCCC ARA 2024/25 PDF is published at `https://www.lowcarboncontracts.uk/documents/293/LCCC_ARA_24-25_11.pdf`. Secondary reporting (Watts Up With That Jan 2025, David Turver Substack) cites £2.4bn rounded.
    - What's unclear: the exact figure on the primary source; whether the ARA publishes CY quarterly aggregates or only FY totals.
-   - Recommendation: Wave 0 of Phase 4 execution: plan-checker agent downloads PDF, transcribes Table X (CfD payments quarterly breakdown), and confirms calendar-year 2024 aggregate before Plan E authoring `benchmarks.yaml`. If PDF has only FY figures, ship D-11 fallback (`lccc_self: []`) and log a follow-up todo for the next ARA (or the annual LCCC quarterly-reconciliation exercise).
+   - **RESOLVED:** Wave 0 of Phase 4 execution: plan-checker agent downloads PDF, transcribes Table X (CfD payments quarterly breakdown), and confirms calendar-year 2024 aggregate before Plan E authoring `benchmarks.yaml`. If PDF has only FY figures, ship D-11 fallback (`lccc_self: []`) and log a follow-up todo for the next ARA (or the annual LCCC quarterly-reconciliation exercise). Implemented via Plan 06 Task 3 checkpoint with A/B/C disposition matrix + 24h autonomous fallback to Disposition C.
 
 2. **Refresh PR CI — do we want a PAT?**
    - What we know: default `GITHUB_TOKEN` is intentionally restricted from triggering workflow cascades. [CITED: GitHub docs]
    - What's unclear: whether the user wants to create a `REFRESH_PAT` secret or whether manual trigger of ci.yml on the refresh PR is acceptable.
-   - Recommendation: default to no PAT (simpler); reviewer manually dispatches ci.yml on the refresh branch if they want a test run before merge. Re-evaluate after 30 days.
+   - **RESOLVED:** default to no PAT (simpler); reviewer manually dispatches ci.yml on the refresh branch if they want a test run before merge. Re-evaluate after 30 days. Implemented in Plan 05 Task 1 refresh.yml with comment block documenting the PAT follow-up for Phase 4.1.
 
 3. **Does the first Phase-4 snapshot tag get published immediately?**
    - What we know: `deploy.yml` fires on `git tag -a v<YYYY.MM> && git push --tags`.
    - What's unclear: whether Phase 4 should conclude with an actual v2026.04 snapshot release (to prove the pipeline) or whether the first tag event is Phase 5 (RO module).
-   - Recommendation: Phase 4 exit checkpoint should include a dry-run of deploy.yml against a pre-release tag like `v2026.04-rc1`, asserting release artifacts upload cleanly. The "first real" v2026.04 tag can wait for Phase 5. This also lets the planner verify `softprops/action-gh-release@v2` behaves as expected on a real repo.
+   - **RESOLVED:** Phase 4 exit checkpoint should include a dry-run of deploy.yml against a pre-release tag like `v2026.04-rc1`, asserting release artifacts upload cleanly. The "first real" v2026.04 tag can wait for Phase 5. This also lets the planner verify `softprops/action-gh-release@v2` behaves as expected on a real repo. Implemented in Plan 04 Task 3 snapshot.py dry-run + Plan 05 Task 2 deploy.yml with D-14 tag format validation (W-04).
 
 4. **Cloudflare Pages virtual URL for `v<date>/` path — redirect rule or HTML stub?**
    - What we know: D-14 says the `site/data/v<date>/...` URL is a "virtual URL served via Cloudflare Pages redirect rules OR by the deploy.yml workflow writing a small index page". Both are valid.
    - What's unclear: which option the user prefers.
-   - Recommendation: default to **Cloudflare Pages redirect rules** (`_redirects` file in site/) — zero GitHub-side workflow changes, and Cloudflare reads `_redirects` natively. Planner writes a small `site/_redirects` rule `/data/v:date/* https://github.com/richardjlyon/uk-subsidy-tracker/releases/download/v:date/:splat 302` and documents in VERIFICATION.md. If that pattern doesn't work with GitHub release URL templating, fall back to the `_headers` + static-stub approach.
+   - **RESOLVED:** default to **Cloudflare Pages redirect rules** (`_redirects` file in site/) — zero GitHub-side workflow changes, and Cloudflare reads `_redirects` natively. Out of scope for Phase 4 direct implementation per Plan 05 objective block (manifest.json::versioned_url fields reference GitHub release asset URLs directly, which are citable without a redirect layer). Plan-checker files a `_redirects` follow-up if/when needed in Phase 5+.
 
 5. **`schemes/cfd/validate()` scope — which warnings does it emit?**
    - What we know: D-discretion says "returns list[str] where each entry is a human-readable warning".
    - What's unclear: exact envelope checks.
-   - Recommendation: ship with three checks: (a) row count for latest year within 10% of previous year (catches a broken upstream), (b) no null Technology in station_month (echoes the Phase 2 `test_no_orphan_technologies`), (c) `methodology_version` column matches `counterfactual.METHODOLOGY_VERSION` constant (catches stale Parquet written with an older version). Planner may add a benchmark-floor cross-check here too.
+   - **RESOLVED:** ship with three checks: (a) row count for latest year within 10% of previous year (catches a broken upstream), (b) no null Technology in station_month (echoes the Phase 2 `test_no_orphan_technologies`), (c) `methodology_version` column matches `counterfactual.METHODOLOGY_VERSION` constant (catches stale Parquet written with an older version). Implemented in Plan 03 Task 2 Step 2F `validate()` body; also forms the D-12 chain closure cross-check cited in Plan 04 manifest.py docstring (W-07).
 
 ## Environment Availability
 

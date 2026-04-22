@@ -263,13 +263,15 @@ df.to_csv(
         """Rebuild derived + build manifest once per test module."""
         out = tmp_path_factory.mktemp("manifest-artifacts")
         (out / "data" / "raw").mkdir(parents=True)
-        # Symlink raw files so the manifest walker finds sidecars.
-        import os
+        # Copy raw files into tmp so the manifest walker finds sidecars.
+        # shutil.copytree is portable to any CI runner / sandbox (including
+        # filesystems or container mounts that disable symlinks).
+        import shutil
         from uk_subsidy_tracker import DATA_DIR
         for sub in ("lccc", "elexon", "ons"):
             target = DATA_DIR / "raw" / sub
             link = out / "data" / "raw" / sub
-            link.symlink_to(target, target_is_directory=True)
+            shutil.copytree(target, link, dirs_exist_ok=True)
         derived = out / "data" / "derived" / "cfd"
         cfd.rebuild_derived(output_dir=derived)
         manifest_path = out / "site" / "data" / "manifest.json"
@@ -320,6 +322,17 @@ df.to_csv(
     - `_site_url()`: prefers `SITE_URL` env var; else `yaml.safe_load(mkdocs.yml)["site_url"]`.
       Strips trailing `/`.
     - `_read_methodology_version()`: imports and returns `counterfactual.METHODOLOGY_VERSION`.
+      **D-12 chain closure (include verbatim in manifest.py module docstring):**
+      "D-12 chain: `METHODOLOGY_VERSION` (counterfactual.py) → DataFrame column
+      (compute_counterfactual) → Parquet column (rebuild_derived) →
+      cross-check (schemes/cfd/__init__.py::validate() Check 3 —
+      `methodology_version` Parquet column == `METHODOLOGY_VERSION` constant)
+      → manifest top-level field (here). The Parquet-column read is validated
+      upstream by `validate()` which runs before manifest build in
+      `refresh_all.refresh_scheme()`; manifest.py therefore reads the constant
+      directly rather than re-reading the Parquet column, avoiding duplicate
+      I/O while preserving end-to-end provenance."
+
     - `_latest_retrieved_at(raw_dir)`: walks `raw_dir/**/*.meta.json`,
       `max(json.load(m)["retrieved_at"] for m in metas)` — this is the
       content-addressed `generated_at` value per Pitfall 3.
@@ -331,11 +344,50 @@ df.to_csv(
         - `csv_url = f"{base}/data/latest/cfd/{grain}.csv"`
         - `schema_url = f"{base}/data/latest/cfd/{grain}.schema.json"`
         - `versioned_url = f"{base}/data/{version}/cfd/{grain}.parquet"`
-        - Sources derived by matching grain → the raw files it consumed
-          (CfD station_month consumes LCCC gen + portfolio + ONS gas +
-          Elexon prices; conservative approach: all five raw files under
-          `data/raw/` are sources for every CfD dataset in Phase 4. Phase 5+
-          schemes can narrow this to per-grain actual dependencies).
+        - Sources derived by matching grain → the raw files it consumed via
+          an explicit `GRAIN_SOURCES: dict[str, list[str]]` module-level
+          mapping (verbatim — copy into `manifest.py`):
+
+          ```python
+          GRAIN_SOURCES: dict[str, list[str]] = {
+              "station_month": [
+                  "lccc/actual-cfd-generation.csv",
+                  "lccc/cfd-contract-portfolio-status.csv",
+                  "ons/gas-sap.xlsx",
+                  "elexon/system-prices.csv",
+              ],
+              "annual_summary": [
+                  "lccc/actual-cfd-generation.csv",
+                  "lccc/cfd-contract-portfolio-status.csv",
+                  "ons/gas-sap.xlsx",
+                  "elexon/system-prices.csv",
+              ],
+              "by_technology": [
+                  "lccc/actual-cfd-generation.csv",
+                  "lccc/cfd-contract-portfolio-status.csv",
+                  "ons/gas-sap.xlsx",
+                  "elexon/system-prices.csv",
+              ],
+              "by_allocation_round": [
+                  "lccc/actual-cfd-generation.csv",
+                  "lccc/cfd-contract-portfolio-status.csv",
+              ],
+              "forward_projection": [
+                  "lccc/cfd-contract-portfolio-status.csv",
+              ],
+          }
+          ```
+
+          `_assemble_dataset_entries` reads `GRAIN_SOURCES[grain]` for each
+          dataset's `sources[]` list — provenance is per-grain, not "all
+          five to every dataset". Phase 5+ schemes add their own
+          `GRAIN_SOURCES` tables in per-scheme manifest-builder helpers.
+        - For each Source entry: `source_sha256 = _sha256(Path('data/raw') / relative_path)`
+          — re-compute from the raw file on disk, do NOT trust the
+          sidecar-reported `sha256`. Compare against sidecar as a sanity
+          check; if mismatch, log a warning via `logging.warning(...)`
+          (still emit the manifest using the freshly-computed hash — raw
+          file is truth, sidecar is metadata).
         - `methodology_page = f"{base}/methodology/gas-counterfactual/"`
         - `grain` = a human-readable string from a dict lookup
           `{"station_month": "station × month", "annual_summary": "year", ...}`.
@@ -394,6 +446,8 @@ df.to_csv(
     - NO `datetime.now()` in manifest.py body (Pitfall 3): `! grep -n 'datetime.now\|time.time\|utcnow' src/uk_subsidy_tracker/publish/manifest.py` returns empty
     - `uv run pytest tests/test_manifest.py -v` reports ≥8 passed
     - Round-trip proof: `uv run python -c "from pathlib import Path; import tempfile, os; from uk_subsidy_tracker.schemes import cfd; from uk_subsidy_tracker.publish import manifest as m; tmp = Path(tempfile.mkdtemp()); d = tmp / 'derived'; cfd.rebuild_derived(output_dir=d); from uk_subsidy_tracker import DATA_DIR; mp = tmp / 'manifest.json'; m.build(version='v2026.04-rc1', derived_dir=d, raw_dir=DATA_DIR / 'raw', output_path=mp); body1 = mp.read_text(); reloaded = m.Manifest.model_validate_json(body1); import json; body2 = json.dumps(reloaded.model_dump(mode='json'), sort_keys=True, indent=2, ensure_ascii=False) + '\n'; assert body1 == body2, 'round-trip not byte-identical'"` exits 0
+    - Per-grain provenance (B-02 mitigation): `grep -q 'GRAIN_SOURCES' src/uk_subsidy_tracker/publish/manifest.py && uv run python -c "from uk_subsidy_tracker.publish.manifest import GRAIN_SOURCES; assert 'elexon/system-prices.csv' not in GRAIN_SOURCES['forward_projection'], 'forward_projection must not list Elexon system-prices'"` exits 0
+    - Raw-file sha recompute (W-05 mitigation): `grep -qE '_sha256\(Path' src/uk_subsidy_tracker/publish/manifest.py || grep -qE 'source_sha256.*_sha256' src/uk_subsidy_tracker/publish/manifest.py` exits 0
     - `uv run pytest tests/` (full suite) green
   </acceptance_criteria>
   <done>manifest.py builds a provenance-rich manifest.json with absolute URLs, GOV-02-complete fields, and stable generated_at. test_manifest.py passes 8/8 including round-trip byte-identity.</done>
@@ -677,9 +731,30 @@ df.to_csv(
     - .gitignore (check current entries; avoid duplicates)
   </read_first>
   <action>
-    ### Step 4A — `.gitignore` — add site/ subtree
+    ### Step 4A — `.gitignore` preflight + intent comment
 
-    Append (only if not already present):
+    **Preflight (N-03):** Verify `site/` is NOT already gitignored:
+
+    ```bash
+    git check-ignore site/ && echo "WARN: site/ is gitignored" || echo "OK: site/ is tracked"
+    ```
+
+    If the command reports `site/` is ignored, add an exception line
+    `!site/data/` to `.gitignore` BEFORE proceeding. The daily refresh PR
+    MUST be able to commit `site/data/latest/cfd/*` — if `site/` is ignored,
+    the PR body will be empty and the workflow silently succeeds-without-
+    committing.
+
+    **Chart regen cost note (W-03):** `regenerate_charts()` delegates to
+    `runpy.run_module('uk_subsidy_tracker.plotting')` (see schemes/cfd/__init__.py
+    Task 2 Step 2F of Plan 03). The current CfD dataset is well under the
+    `refresh.yml` 30-min timeout (typical chart regen: ~1-2 min end-to-end);
+    D-18 dirty-check via `cfd.upstream_changed()` short-circuits on unchanged
+    upstream, so the cost is only incurred when data actually changed. No
+    caching layer required for Phase 4; revisit only if a future scheme
+    (e.g. Phase 8 NESO BM half-hourly) pushes past the 30-min cap.
+
+    Append to `.gitignore` (only if not already present):
 
     ```gitignore
     # Phase 4 publishing layer: site/data/latest is produced by refresh_all.

@@ -321,6 +321,23 @@ See PATTERNS §F for full "extend, don't replace" discipline on tests/test_schem
     - No ABC (Python `abc.ABC`) — RESEARCH rejects class-wrapping.
   </behavior>
   <action>
+    ### Step 1.0 — Pre-flight: determine StationMonthRow shape
+
+    Before authoring the Pydantic row model, confirm which LCCC column names
+    are actually present in the raw files. In particular, `Market_Reference_Price_GBP_Per_MWh`
+    may or may not exist under that exact name — if absent, drop the
+    `market_reference_price_gbp_per_mwh` field from StationMonthRow (Step 1C)
+    and from `station_month_schema` (Task 2 Step 2B) in one coherent edit:
+
+    ```bash
+    grep -l 'Market_Reference_Price_GBP_Per_MWh' data/raw/lccc/*.csv
+    head -1 data/raw/lccc/actual-cfd-generation.csv | tr ',' '\n'
+    ```
+
+    Record the outcome in the Task 1 SUMMARY so Task 2 authors the same
+    column set. Do NOT guess; if the column is missing, remove it from the
+    Pydantic model before Step 1A, not after determinism fails.
+
     ### Step 1A — Author `tests/test_determinism.py` FIRST (RED)
 
     File content = RESEARCH §Pattern 1 Code Examples lines 386-460 verbatim,
@@ -478,6 +495,17 @@ See PATTERNS §F for full "extend, don't replace" discipline on tests/test_schem
 
     Still fails because `cfd` module doesn't exist. That's expected — Task 2
     ships cfd and turns determinism green.
+
+    <tdd_note>
+    Before Task 2 runs, `uv run pytest tests/test_determinism.py` should error
+    with ModuleNotFoundError (no `uk_subsidy_tracker.schemes` package yet) —
+    this is the expected RED state. Task 2 flips it to GREEN by implementing
+    the `schemes/cfd/` package. This is a TDD expectation, not a gate — do
+    NOT add pytest-output-grep acceptance criteria (output format varies
+    across versions). The module-import smoke test in `<verify><automated>`
+    remains a valid gate (it checks successful imports after Task 1's schema
+    files land; the `cfd` module import only succeeds after Task 2).
+    </tdd_note>
   </action>
   <verify>
     <automated>uv run python -c "from uk_subsidy_tracker.schemas import StationMonthRow, AnnualSummaryRow, ByTechnologyRow, ByAllocationRoundRow, ForwardProjectionRow; from uk_subsidy_tracker.schemes import SchemeModule; print('OK')"</automated>
@@ -497,7 +525,6 @@ See PATTERNS §F for full "extend, don't replace" discipline on tests/test_schem
     - `grep -q "methodology_version" src/uk_subsidy_tracker/schemas/cfd.py` — every row model has this field
     - `grep -q "emit_schema_json" src/uk_subsidy_tracker/schemas/cfd.py` exits 0
     - `uv run python -c "from uk_subsidy_tracker.schemas import StationMonthRow; import json; s = StationMonthRow.model_json_schema(mode='serialization'); assert 'properties' in s; assert 'methodology_version' in s['properties']"` exits 0
-    - `uv run pytest tests/test_determinism.py -v 2>&1 | grep -qE 'ModuleNotFoundError|ImportError'` — confirms RED state (determinism test fails because cfd module not yet built; Task 2 turns green)
     - `uv run pytest tests/test_counterfactual.py tests/test_constants_provenance.py tests/test_schemas.py tests/test_aggregates.py -x` all pass (no regression from adding packages)
   </acceptance_criteria>
   <done>Pydantic table schemas + Protocol + determinism test authored. Determinism test fails in expected way (cfd module missing). Pre-existing tests still green.</done>

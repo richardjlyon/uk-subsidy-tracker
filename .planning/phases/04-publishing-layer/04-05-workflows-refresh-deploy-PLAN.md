@@ -381,6 +381,14 @@ jobs:
         steps:
           - uses: actions/checkout@v5
 
+          - name: Validate tag format (v<YYYY.MM> per D-14)
+            run: |
+              tag="${{ github.ref_name }}"
+              if [[ ! "$tag" =~ ^v[0-9]{4}\.[0-9]{2}(-rc[0-9]+)?$ ]]; then
+                echo "::error::Tag '$tag' does not match D-14 calendar format v<YYYY.MM> (or v<YYYY.MM>-rc<N>)." >&2
+                exit 1
+              fi
+
           - name: Install uv
             uses: astral-sh/setup-uv@v8.1.0
             with:
@@ -429,6 +437,7 @@ jobs:
     - `--output snapshot-out/` used: `grep -q 'snapshot-out' .github/workflows/deploy.yml` exits 0
     - files glob present for all 4 artefact types: `grep -c "snapshot-out/\*\*" .github/workflows/deploy.yml` ≥ 3 (manifest.json is a single path; **/*.parquet + **/*.csv + **/*.schema.json are 3)
     - Release body references manifest URL: `grep -q "releases/download" .github/workflows/deploy.yml` exits 0
+    - Tag format validation present (W-04): `grep -q 'Validate tag format' .github/workflows/deploy.yml` exits 0
   </acceptance_criteria>
   <done>deploy.yml ships with minimal permissions, pinned actions, snapshot.py CLI invocation matching its contract, and release-asset upload glob covering all four artefact types.</done>
 </task>

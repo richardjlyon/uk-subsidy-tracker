@@ -689,6 +689,21 @@ nav:
     - "Disposition C — D-11 fallback re-confirmed; PDF reviewed and found to report FY only. Todo logged for future CY source."
   </how-to-verify>
   <resume-signal>Reply with disposition (A / B / C), the chosen value if applicable, and "approved"</resume-signal>
+  <autonomous_fallback>
+    If the user does not respond within 24 hours of checkpoint pause, the
+    executor MAY proceed autonomously with Disposition C (D-11 fallback
+    re-confirmed: keep `tests/fixtures/benchmarks.yaml::lccc_self: []`; the
+    `test_lccc_self_reconciliation_floor` test stays skipped per Phase 2
+    D-11 posture). This is consistent with CONTEXT.md §Benchmark floor
+    activation, which treats the ARA 2024/25 transcription as best-effort
+    — a skipped floor is strictly better than a silently-wrong one (Pitfall 7).
+    The phase SUMMARY MUST document the auto-selection explicitly (e.g.
+    "Disposition C auto-selected after 24h checkpoint timeout on
+    2026-MM-DD; user review not received. TODO: revisit when ARA 2024/25
+    quarterly primary source is transcribed.") and open a TODO in STATE.md
+    tracking the follow-up. Disposition A/B require human PDF reading and
+    cannot be auto-selected.
+  </autonomous_fallback>
 </task>
 
 <task type="auto" tdd="false">
