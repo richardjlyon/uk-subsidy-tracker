@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 02-02-PLAN.md (3 tasks, 3 commits: be34caf, 6f8a2bb, af68831; pandera schemas + test_schemas.py + test_aggregates.py scaffolding)."
-last_updated: "2026-04-22T10:53:27.909Z"
+stopped_at: "Completed 02-03-PLAN.md (2 tasks, 2 commits: 396fed2, 09e6621; Pydantic benchmarks loader + test_benchmarks.py LCCC floor + external anchors, shipped D-11 fallback)"
+last_updated: "2026-04-22T11:00:42.798Z"
 progress:
   total_phases: 12
   completed_phases: 1
   total_plans: 9
-  completed_plans: 7
-  percent: 78
+  completed_plans: 8
+  percent: 89
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 02 Plan 02 — complete (pandera schemas on elexon/ons_gas + test_schemas.py + test_aggregates.py pre-Parquet scaffolding)
+**Session:** Phase 02 Plan 03 — complete (Pydantic benchmarks loader + test_benchmarks.py LCCC floor + external anchors; D-11 fallback posture shipped)
 
 ---
 
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 02 (test-benchmark-scaffolding) — EXECUTING
-Plan: 4 of 5 (Plans 02-01, 02-02, 02-05 complete; 02-03/04 remaining)
+Plan: 5 of 5 (Plans 02-01, 02-02, 02-03, 02-05 complete; 02-04 remaining)
 **Phase:** 2 — Test & Benchmark Scaffolding
-**Plan:** 02-03 (next — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`)
+**Plan:** 02-04 (next — GitHub Actions CI workflow running uv + pytest on push/PR, TEST-06)
 **Status:** Executing Phase 02
 **Focus:** Formula pinning tests, schema conformance, row conservation, external benchmarks, determinism
 
 ```
-Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 3/5 plans)
+Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 4/5 plans)
 ```
 
 ---
@@ -54,15 +54,16 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 1/12
-**Plans complete:** 7/9 (Phase 1 closed 4/4; Phase 2 now 3/5)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
-**Test coverage:** 16 passing + 2 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), plus legacy `tests/data/*` (3 passing + 2 skipped). Still 1 of §9.6's Phase-2 test classes outstanding (`test_benchmarks.py` — lands in Plan 02-03). `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
+**Plans complete:** 8/9 (Phase 1 closed 4/4; Phase 2 now 4/5)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
+**Test coverage:** 16 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | 02-01 Counterfactual pin + GOV-04 | 3 min | 3 | 3 |
 | 02-05 Scope-correction bookkeeping | 5 min | 4 (incl. Task 0 user-approved) | 4 |
 | 02-02 Pandera schemas + test_schemas.py + test_aggregates.py scaffolding | 2 min | 3 | 5 |
+| Phase 02 P03 | 8min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,10 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 | TEST-02/03/05 formally reassigned Phase 2 → Phase 4 (02-05) | Phase 2 ships pre-Parquet scaffolding variants of test_schemas.py + test_aggregates.py today (useful-today scaffolding, not formal satisfaction); Phase 4 adds Parquet variants + test_determinism.py to close the three formal requirements. ROADMAP.md + REQUIREMENTS.md + CHANGES.md all aligned. |
 | Loader-owned pandera validation (02-02) | `.validate()` inside the loader body (not in the test) means every caller benefits — charts, ad-hoc notebooks, future scheme modules — not only the pytest run. Matches the pre-existing `load_lccc_dataset` idiom verbatim. Schema drift fails at read-time, not silently downstream. |
 | Row-conservation via `pd.testing.assert_series_equal` (02-02) | Decomposed-then-collapsed groupby sums are algebraically identical under pandas; exact equality is the correct assertion. Tolerance-based comparison would mask the actual failure mode (groupby drops rows on NaN keys). |
+| TEST-04: D-11 fallback shipped, not D-10 floor activation (02-03) | `lccc_self: []` in benchmarks.yaml, all external sections empty. LCCC ARA 2024/25 PDF transcription deferred to Phase 3/4 — per plan's own guidance, a wrong floor is worse than no floor. Floor test skips cleanly with D-11-citing reason string; external test parametrises over zero entries (not a failure). |
+| TEST-04: Two-layer Pydantic model + source-key injection (02-03) | `BenchmarkEntry` + `Benchmarks` mirrors `LCCCDatasetConfig` + `LCCCAppConfig` from `src/uk_subsidy_tracker/data/lccc.py`. Loader injects parent YAML key as `source` field on each entry before Pydantic validation so test-side failure messages can cite the source by name. |
+| TEST-04: Tolerance constants named per-source, not per-entry (02-03) | `LCCC_SELF_TOLERANCE_PCT`, `OBR_EFO_TOLERANCE_PCT` etc. are module-level constants with docstring rationale (D-06). `_TOLERANCE_BY_SOURCE` dict dispatches by source key; `entry.tolerance_pct` YAML field is only a fallback for unnamed sources. Tolerance bumps require CHANGES.md `## Methodology versions` entry (D-07), which means a code PR, which is grep-visible in review. |
+| `tests/__init__.py` added as Rule 3 blocking fix (02-03) | Pytest 9.0.3 could not resolve `from tests.fixtures import ...` at collection time without `tests/` being a package. Minimal empty `__init__.py` fixes this without pytest/pyproject config changes; existing `tests/data/*` still collects and passes. |
 
 ### Blockers
 
@@ -96,8 +101,10 @@ None currently.
 - [x] Execute Phase 2 Plan 01 — counterfactual pin + GOV-04 seed
 - [x] Execute Phase 2 Plan 05 — scope-correction bookkeeping (ROADMAP + REQUIREMENTS + CHANGES + ARCHITECTURE §11 P1 amendment)
 - [x] Execute Phase 2 Plan 02 — pandera schemas on elexon/ons_gas + `tests/test_schemas.py` + `tests/test_aggregates.py` pre-Parquet scaffolding
-- [ ] Execute Phase 2 Plan 03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`
+- [x] Execute Phase 2 Plan 03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml` (D-11 fallback shipped)
 - [ ] Execute Phase 2 Plan 04 — GitHub Actions CI workflow (uv + pytest on push/PR)
+- [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check
+- [ ] Phase 3/4: populate external benchmark anchors (OBR EFO calendar-year translation, DESNZ, HoC, NAO) as transcribable figures surface
 
 ### Notes
 
@@ -116,9 +123,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** Execute next plan in Phase 2 (Plan 02-03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`). The full test suite is now 16 passing + 2 skipped; schemas and aggregates scaffolding are in place and CI (02-04) will exercise them once the benchmarks plan lands.
+**Next command:** Execute next plan in Phase 2 (Plan 02-04 — GitHub Actions CI workflow running uv + pytest on push/PR, TEST-06). The full test suite is now 16 passing + 4 skipped (the two new skips are the D-11 fallback of the benchmarks tests — LCCC floor skips cleanly until an lccc_self entry is transcribed, external test has zero parametrisations until anchors land). All four Phase-2 test classes (counterfactual + schemas + aggregates + benchmarks) are present and green ahead of CI wiring.
 
-**Stopped at:** Completed 02-02-PLAN.md (3 tasks, 3 commits: be34caf, 6f8a2bb, af68831; pandera schemas + test_schemas.py + test_aggregates.py scaffolding).
+**Stopped at:** Completed 02-03-PLAN.md (2 tasks, 2 commits: 396fed2, 09e6621; Pydantic benchmarks loader + test_benchmarks.py LCCC floor + external anchors, shipped D-11 fallback)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*

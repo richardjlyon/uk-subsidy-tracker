@@ -50,11 +50,11 @@ Plans:
   3. `tests/test_benchmarks.py` documents divergence from LCCC self-reconciliation and any regulator-native external sources the researcher located (OBR, Ofgem, DESNZ, HoC Library, NAO) explicitly in the fixture notes or test docstring
   4. GitHub Actions CI workflow triggers on every push to `main` and reports pass/fail
   5. `counterfactual.py` carries a `methodology_version` string; `CHANGES.md` logs the initial version
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 Plans:
 - [x] 02-01-PLAN.md — Counterfactual pin test + METHODOLOGY_VERSION + CHANGES.md 1.0.0 entry (TEST-01, GOV-04)
 - [x] 02-02-PLAN.md — Pandera schemas on Elexon/ONS loaders + test_schemas.py + test_aggregates.py pre-Parquet scaffolding (TEST-02, TEST-03)
-- [ ] 02-03-PLAN.md — Benchmarks fixture (Pydantic + YAML) + test_benchmarks.py with LCCC floor + external anchors (TEST-04)
+- [x] 02-03-PLAN.md — Benchmarks fixture (Pydantic + YAML) + test_benchmarks.py with LCCC floor + external anchors (TEST-04)
 - [ ] 02-04-PLAN.md — GitHub Actions CI workflow running uv + pytest on push/PR (TEST-06)
 - [x] 02-05-PLAN.md — REQ-ID bookkeeping: reassign TEST-02/03/05 to Phase 4 in ROADMAP + REQUIREMENTS + CHANGES
 

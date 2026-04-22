@@ -18,7 +18,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 - [x] **TEST-01**: `tests/test_counterfactual.py` pins the gas counterfactual formula (fuel + carbon + O&M) against known inputs
 - [ ] **TEST-02**: `tests/test_schemas.py` validates every derived Parquet file against Pydantic schemas
 - [ ] **TEST-03**: `tests/test_aggregates.py` proves `sum by year` = `sum by year × technology`; no row leakage
-- [ ] **TEST-04**: `tests/test_benchmarks.py` reconciles totals against Ben Pile (2021 + 2026), REF subset, Turver aggregate; documents divergences
+- [x] **TEST-04**: `tests/test_benchmarks.py` reconciles totals against Ben Pile (2021 + 2026), REF subset, Turver aggregate; documents divergences
 - [ ] **TEST-05**: `tests/test_determinism.py` proves rebuilds produce byte-identical Parquet output on unchanged sources
 - [ ] **TEST-06**: GitHub Actions CI workflow runs pytest on every push to `main`
 
@@ -167,7 +167,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | TEST-01 | Phase 2 | Complete |
 | TEST-02 | Phase 4 | Pending |
 | TEST-03 | Phase 4 | Pending |
-| TEST-04 | Phase 2 | Pending |
+| TEST-04 | Phase 2 | Complete |
 | TEST-05 | Phase 4 | Pending |
 | TEST-06 | Phase 2 | Pending |
 | GOV-04 | Phase 2 | Complete |
