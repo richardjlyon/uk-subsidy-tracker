@@ -163,7 +163,16 @@ def compute_counterfactual_monthly(
     gas_df: pd.DataFrame | None = None,
     carbon_prices: dict[int, float] | None = None,
     ccgt_efficiency: float = CCGT_EFFICIENCY,
+    non_fuel_opex_per_mwh: float = DEFAULT_NON_FUEL_OPEX,
 ) -> pd.DataFrame:
-    """Monthly-averaged version of compute_counterfactual."""
-    daily = compute_counterfactual(gas_df, carbon_prices, ccgt_efficiency)
+    """Monthly-averaged version of compute_counterfactual.
+
+    Accepts the same keyword arguments as :func:`compute_counterfactual` and
+    forwards them through, so sensitivity scenarios (e.g. new-build opex =
+    ``CCGT_NEW_BUILD_CAPEX_OPEX_PER_MWH``) work identically at monthly
+    granularity.
+    """
+    daily = compute_counterfactual(
+        gas_df, carbon_prices, ccgt_efficiency, non_fuel_opex_per_mwh
+    )
     return daily.set_index("date").resample("ME").mean(numeric_only=True).reset_index()
