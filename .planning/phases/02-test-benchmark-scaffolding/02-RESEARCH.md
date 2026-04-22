@@ -980,7 +980,7 @@ Net Zero Watch, REF Blog, IER, Turver, Ben Pile — commentators. Ignored.
 | A6 | Ben Pile / Turver / REF secondary figures cited in this research doc (e.g., £25.8bn REF total) are NOT committed to `benchmarks.yaml` per D-08 | §Non-canonical sources | If a contributor later commits them without the `commentators:` key flag, it contradicts D-08. Reviewer vigilance required. |
 | A7 | pytest 9.0.3 discovery picks up `tests/test_*.py` at the top level AND `tests/data/test_*.py` in sub-directories without `__init__.py` | §Anti-Patterns, §Project Structure | Verified locally: `uv run pytest tests/data/test_lccc.py` works. No action. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should CI use Python 3.12 only, or also matrix-test 3.13 / 3.14?**
    - What we know: `pyproject.toml` says `requires-python = ">=3.12"`; `.venv` ran on 3.13 during local testing; package has no 3.13-specific features yet.
