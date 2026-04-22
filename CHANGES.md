@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `pyarrow>=24.0.0` and `duckdb>=1.5.2` added to `pyproject.toml`
+  dependencies (04-01 Wave 0). Phase 4 uses `pyarrow` for Parquet I/O
+  in the derived layer + the `test_determinism.py` content-identity
+  strip (D-21/D-22); `duckdb` is referenced in `docs/data/index.md`
+  how-to-use-our-data snippets and declared in ARCHITECTURE §3 stack.
+- `tests/fixtures/constants.yaml` — provenance blocks for the six
+  tracked `src/uk_subsidy_tracker/counterfactual.py` constants
+  (CCGT_EFFICIENCY, GAS_CO2_INTENSITY_THERMAL, DEFAULT_NON_FUEL_OPEX,
+  DEFAULT_CARBON_PRICES_2021/2022/2023). SEED-001 Tier 2 scaffold.
+- `tests/fixtures/__init__.py` — `ConstantProvenance`, `Constants`,
+  `load_constants()` alongside existing `BenchmarkEntry` +
+  `load_benchmarks()` (same two-layer Pydantic + YAML + parent-key
+  injection pattern).
+- `tests/test_constants_provenance.py` — drift tripwire: every live
+  uppercase numeric constant on `counterfactual.py` listed in
+  `_TRACKED` must have a YAML entry with exact-equality value. A
+  non-failing `next_audit` overdue warning surfaces calendar due-dates
+  in pytest output. Remediation-hook failure message cites
+  `METHODOLOGY_VERSION` + `tests/fixtures/constants.yaml` +
+  `CHANGES.md ## Methodology versions` (Phase-2 `test_counterfactual.py`
+  template). Closes the SEED-001 gap that the Phase-2 `0.184` vs
+  `0.18290` incident exposed.
 - `tests/test_counterfactual.py` — pins the gas counterfactual formula
   against known inputs to 4 decimal places (TEST-01). Asserts
   `METHODOLOGY_VERSION` presence + DataFrame propagation.
