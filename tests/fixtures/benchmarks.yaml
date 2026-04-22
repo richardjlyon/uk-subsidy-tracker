@@ -1,0 +1,39 @@
+# Benchmark reconciliation fixtures for `tests/test_benchmarks.py`.
+#
+# Each top-level key is a source category. Each entry carries full
+# provenance: year, value in £bn, upstream URL, retrieval date, notes
+# (scheme-subset / CPI / FY-vs-CY rationale), and per-entry tolerance.
+#
+# `lccc_self:` is the MANDATORY floor per CONTEXT D-10 (0.1% tolerance) —
+# our pipeline reads LCCC raw data, so divergence here is a pipeline bug,
+# not a methodology divergence.
+#
+# External anchor sections (ofgem_transparency, obr_efo, desnz_energy_trends,
+# hoc_library, nao_audit) are present-but-may-be-empty per D-11 fallback
+# posture. Populate as regulator-native figures are transcribed.
+
+# lccc_self posture (CONTEXT D-10 + D-11 fallback):
+#   - If the LCCC ARA 2024/25 PDF figure can be transcribed cleanly, populate
+#     with concrete entries carrying all D-05 fields (year, value_gbp_bn,
+#     url, retrieved_on, notes, tolerance_pct: 0.1).
+#   - Otherwise, ship `lccc_self: []` per D-11 fallback. A wrong floor is
+#     worse than no floor — D-10 forbids pinning the pipeline to a guess.
+#   - When empty, `tests/test_benchmarks.py::test_lccc_self_reconciliation_floor`
+#     skips cleanly with a D-11-citing reason string (see Task 2).
+#   - Follow-up to land the transcribed figure is filed in Phase 3/4.
+lccc_self: []
+
+ofgem_transparency: []
+
+obr_efo:
+  # Secondary reporting cites OBR EFO November 2025 financial-year 2024/25
+  # CfD = £2.3bn. Calendar-year translation needs quarterly breakdown from
+  # the supplementary fiscal tables. Populate when transcribed; until then,
+  # this section is empty (D-11 fallback).
+  []
+
+desnz_energy_trends: []
+
+hoc_library: []
+
+nao_audit: []
