@@ -34,7 +34,7 @@ The five theme pages below document the methodology, data sources,
 and code behind that conclusion, and present the charts that
 substantiate it.
 
-## What are CfDs?
+### What are CfDs?
 
 A **Contract for Difference** guarantees a fixed price per MWh — the
 *strike price* — to a renewable generator for fifteen years. The
@@ -48,7 +48,7 @@ The generator is insulated from market risk. The consumer pays the
 strike price — no more, no less. The consumer was never promised
 anything about the *level* of that stable price.
 
-## Explore by theme
+### Explore by theme
 
 The charts are organised into five argument themes:
 
