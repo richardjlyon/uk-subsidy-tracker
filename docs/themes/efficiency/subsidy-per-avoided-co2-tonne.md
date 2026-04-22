@@ -1,6 +1,6 @@
 # Subsidy per tonne of CO₂ avoided
 
-**£/tCO₂ by allocation round over 2017–2025, benchmarked against DEFRA Social Cost of Carbon and UK ETS auction prices. The scheme's climate value per pound is decaying; recent rounds already sit above the UK ETS ceiling.**
+**£/tCO₂ by allocation round over 2017–2025, benchmarked against DEFRA Social Cost of Carbon and UK ETS auction prices. The scheme's climate value per pound is decaying; the plotted rounds (Investment Contracts, AR1, AR2) already sit well above the UK ETS ceiling, and the denominator of tCO₂ avoided per MWh is still falling.**
 
 ![Subsidy per tonne of CO2 avoided — CfD allocation rounds vs benchmarks](../../charts/html/subsidy_cost_per_avoided_co2_tonne_twitter.png)
 

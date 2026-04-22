@@ -14,7 +14,7 @@ Every pound spent on CfDs produces a quantifiable amount of avoided CO₂ — fe
 
     ---
 
-    £/tCO₂ by allocation round over 2017–2025, with DEFRA Social Cost of Carbon and UK ETS reference lines. Rising trend; AR3 already well above UK ETS.
+    £/tCO₂ by allocation round over 2017–2025, with DEFRA Social Cost of Carbon and UK ETS reference lines. Rising trend across the plotted rounds (Investment Contracts, AR1, AR2); AR3–AR6 omitted pending sufficient generation history.
 
 </div>
 
