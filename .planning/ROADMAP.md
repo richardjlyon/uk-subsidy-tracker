@@ -56,7 +56,7 @@ Plans:
 - [ ] 02-02-PLAN.md — Pandera schemas on Elexon/ONS loaders + test_schemas.py + test_aggregates.py pre-Parquet scaffolding (TEST-02, TEST-03)
 - [ ] 02-03-PLAN.md — Benchmarks fixture (Pydantic + YAML) + test_benchmarks.py with LCCC floor + external anchors (TEST-04)
 - [ ] 02-04-PLAN.md — GitHub Actions CI workflow running uv + pytest on push/PR (TEST-06)
-- [ ] 02-05-PLAN.md — REQ-ID bookkeeping: reassign TEST-02/03/05 to Phase 4 in ROADMAP + REQUIREMENTS + CHANGES
+- [x] 02-05-PLAN.md — REQ-ID bookkeeping: reassign TEST-02/03/05 to Phase 4 in ROADMAP + REQUIREMENTS + CHANGES
 
 ### Phase 3: Chart Triage Execution
 **Goal**: The CfD chart set is tidy and fully documented, with every PRODUCTION chart reachable from a five-theme navigation structure

@@ -3,19 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-04-22T10:21:15.201Z"
+stopped_at: "Completed 02-05-PLAN.md (4 tasks incl. user-approved Task 0 amending ARCHITECTURE.md §11 P1; 4 commits: `ea7db6a`, `0cef764`, `b83272d`, `8b82467`)."
+last_updated: "2026-04-22T10:44:52.511Z"
 progress:
   total_phases: 12
   completed_phases: 1
   total_plans: 9
-  completed_plans: 5
-  percent: 56
+  completed_plans: 6
+  percent: 67
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 02 Plan 01 — complete (METHODOLOGY_VERSION + pin test + CHANGES.md seed)
+**Session:** Phase 02 Plan 05 — complete (scope-correction bookkeeping + user-approved ARCHITECTURE.md §11 P1 amendment)
 
 ---
 
@@ -38,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 02 (test-benchmark-scaffolding) — EXECUTING
-Plan: 2 of 5 (Plan 02-01 complete)
+Plan: 3 of 5 (Plans 02-01 + 02-05 complete; 02-02/03/04 remaining)
 **Phase:** 2 — Test & Benchmark Scaffolding
 **Plan:** 02-02 (next)
 **Status:** Executing Phase 02
 **Focus:** Formula pinning tests, schema conformance, row conservation, external benchmarks, determinism
 
 ```
-Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 1/5 plans)
+Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 2/5 plans)
 ```
 
 ---
@@ -53,13 +54,14 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 1/12
-**Plans complete:** 5/9 (Phase 1 closed 4/4; Phase 2 now 1/5)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, GOV-04
-**Test coverage:** `test_counterfactual.py` passing (6 new tests: 2 GOV-04 guards + 4 parametrised pin cases). Still 4 of §9.6's required test classes outstanding (`test_schemas.py`, `test_aggregates.py`, `test_benchmarks.py` land in Phase 2 plans 02-02/03/04; `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03).
+**Plans complete:** 6/9 (Phase 1 closed 4/4; Phase 2 now 2/5)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping)
+**Test coverage:** `test_counterfactual.py` passing (6 new tests: 2 GOV-04 guards + 4 parametrised pin cases). Still 3 of §9.6's required test classes outstanding in Phase 2 (`test_schemas.py`, `test_aggregates.py`, `test_benchmarks.py` — land in Plans 02-02/03/04). `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | 02-01 Counterfactual pin + GOV-04 | 3 min | 3 | 3 |
+| 02-05 Scope-correction bookkeeping | 5 min | 4 (incl. Task 0 user-approved) | 4 |
 
 ---
 
@@ -77,6 +79,8 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 | Package rename is Phase 1 gate | All subsequent Python code assumes `uk_subsidy_tracker`; rename must land before any new module work |
 | GOV-04: METHODOLOGY_VERSION = 1.0.0 + DataFrame column (02-01) | SemVer-shaped module constant (PATCH/MINOR/MAJOR policy); column on `compute_counterfactual()` output propagates the version into any Phase-4 Parquet/manifest — structural handshake, not convention |
 | TEST-01: 4-parametrised pin test + remediation-hook failure message (02-01) | `round(actual, 4) == expected` at 4dp across 2019/2022 + zero-gas regression; failure message tells the PR author to bump METHODOLOGY_VERSION + add CHANGES.md entry, making silent constant drift structurally impossible |
+| ARCHITECTURE.md §11 P1 amended before ROADMAP edits (02-05 Task 0, user-approved) | Per user memory project_spec_source.md: when ARCHITECTURE.md and ROADMAP disagree, the spec wins. Executor halted correctly on spec-precedence check; user approved Option 1 (amend spec first). test_determinism.py removed from P1 Deliverables (deferred to P3); Ben Pile / REF / Turver anchor replaced by LCCC + regulator-native sources; test_schemas.py + test_aggregates.py added as P1 deliverables with "Parquet variants in P3" qualifier. |
+| TEST-02/03/05 formally reassigned Phase 2 → Phase 4 (02-05) | Phase 2 ships pre-Parquet scaffolding variants of test_schemas.py + test_aggregates.py today (useful-today scaffolding, not formal satisfaction); Phase 4 adds Parquet variants + test_determinism.py to close the three formal requirements. ROADMAP.md + REQUIREMENTS.md + CHANGES.md all aligned. |
 
 ### Blockers
 
@@ -89,8 +93,10 @@ None currently.
 - [ ] Rename GitHub repo `cfd-payment` → `uk-subsidy-tracker` (manual UI step; `correction` label already created and will travel on rename)
 - [x] Plan Phase 2 (`/gsd-plan-phase 2`)
 - [x] Execute Phase 2 Plan 01 — counterfactual pin + GOV-04 seed
+- [x] Execute Phase 2 Plan 05 — scope-correction bookkeeping (ROADMAP + REQUIREMENTS + CHANGES + ARCHITECTURE §11 P1 amendment)
 - [ ] Execute Phase 2 Plan 02 — `tests/test_schemas.py` (pandera scaffolding)
-- [ ] Execute Phase 2 Plans 03–05 — aggregates, benchmarks, CI workflow
+- [ ] Execute Phase 2 Plan 03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`
+- [ ] Execute Phase 2 Plan 04 — GitHub Actions CI workflow (uv + pytest on push/PR)
 
 ### Notes
 
@@ -109,9 +115,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** Execute next plan in Phase 2 (Plan 02-02 — `tests/test_schemas.py` pandera scaffolding).
+**Next command:** Execute next plan in Phase 2 (Plan 02-02 — `tests/test_schemas.py` pandera scaffolding). The ARCHITECTURE.md / ROADMAP / REQUIREMENTS / CHANGES docs are now internally consistent; 02-02/03/04 ship against a clean baseline.
 
-**Stopped at:** Completed 02-01-PLAN.md (3 tasks, 3 commits: `9e991e8`, `d15bd28`, `3f434ad`; 6 new tests passing).
+**Stopped at:** Completed 02-05-PLAN.md (4 tasks incl. user-approved Task 0 amending ARCHITECTURE.md §11 P1; 4 commits: `ea7db6a`, `0cef764`, `b83272d`, `8b82467`).
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
