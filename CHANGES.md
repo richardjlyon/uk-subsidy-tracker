@@ -60,3 +60,14 @@ src/uk_subsidy_tracker/counterfactual.py carries a methodology_version
 constant starting in Phase 2 (test scaffolding). Changes to that constant
 are logged in this section with rationale and the affected chart list.
 -->
+
+### 1.0.0 — 2026-04-22 — Initial formula (fuel + carbon + O&M)
+
+- Formula: `counterfactual_total = gas_fuel_cost + carbon_cost + plant_opex` (all £/MWh).
+- Constants pinned: `CCGT_EFFICIENCY = 0.55`; `GAS_CO2_INTENSITY_THERMAL = 0.184`
+  tCO2/MWh_thermal; `DEFAULT_NON_FUEL_OPEX = 5.0` £/MWh; annual
+  `DEFAULT_CARBON_PRICES` 2018–2026 (EU ETS 2018–2020, UK ETS 2021+).
+- Sources: BEIS Electricity Generation Costs 2023 Table ES.1 (CCGT O&M);
+  GOV.UK UK ETS published prices (carbon).
+- Pinned in `tests/test_counterfactual.py` at 4 decimal places; any change to
+  these constants fails the pin test and requires a CHANGES.md entry here.
