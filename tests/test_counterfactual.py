@@ -38,10 +38,10 @@ def test_methodology_version_in_output():
 @pytest.mark.parametrize(
     "date_str, gas_p_per_kwh, expected",
     [
-        ("2019-01-01", 1.5, 39.6327),
-        ("2019-06-01", 1.2, 34.1782),
-        ("2022-10-01", 8.0, 168.1855),
-        ("2019-01-01", 0.0, 12.3600),  # zero-gas regression
+        ("2019-01-01", 1.5, 39.5887),
+        ("2019-06-01", 1.2, 34.1342),
+        ("2022-10-01", 8.0, 174.7304),
+        ("2019-01-01", 0.0, 12.3160),  # zero-gas regression
     ],
 )
 def test_counterfactual_pin(date_str, gas_p_per_kwh, expected):

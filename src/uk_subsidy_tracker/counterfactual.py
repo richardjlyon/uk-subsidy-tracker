@@ -10,16 +10,20 @@ import pandas as pd
 from uk_subsidy_tracker.data import load_gas_price
 
 CCGT_EFFICIENCY = 0.55
-GAS_CO2_INTENSITY_THERMAL = 0.184  # tCO2 per MWh thermal (natural gas)
+GAS_CO2_INTENSITY_THERMAL = 0.18290  # tCO2 per MWh thermal (DESNZ 2024 GHG conversion factor, gross CV)
 
-METHODOLOGY_VERSION: str = "1.0.0"
+METHODOLOGY_VERSION: str = "0.1.0"
 """Semantic version for the gas counterfactual formula.
 
-Bumps require an entry in CHANGES.md under ## Methodology versions.
+Pre-1.0.0: prototype phase — constants and formula may change without
+ceremony. At first public release, bump to 1.0.0 and resume SemVer
+discipline. After 1.0.0:
 
 - PATCH: Constant tweak with identical formula shape (e.g., new DEFAULT_CARBON_PRICES entry).
 - MINOR: Additive parameter (new kwarg with default preserving old calls).
 - MAJOR: Formula-shape change (new/dropped term, changed unit).
+
+Post-1.0.0 bumps require an entry in CHANGES.md under ## Methodology versions.
 """
 
 # Non-fuel, non-carbon opex for a CCGT (£/MWh of electricity).
@@ -48,7 +52,7 @@ DEFAULT_CARBON_PRICES: dict[int, float] = {
     2019: 22.0,
     2020: 22.0,
     2021: 48.0,
-    2022: 53.0,
+    2022: 73.0,
     2023: 45.0,
     2024: 36.0,
     2025: 42.0,
