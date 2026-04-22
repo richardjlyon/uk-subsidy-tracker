@@ -9,7 +9,7 @@ onwards). The oldest contracts run until the late 2030s. Nuclear
 (Hinkley) runs 35 years. This chart shows the forward commitment from
 contracts already in the ground.
 
-![Remaining CfD obligations](../html/subsidy_remaining_obligations_twitter.png)
+![Remaining CfD obligations](../../charts/html/subsidy_remaining_obligations_twitter.png)
 
 ## The four panels
 

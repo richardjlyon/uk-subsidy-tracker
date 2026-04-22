@@ -8,7 +8,7 @@ CfD scheme — how much electricity was generated, what consumers paid per
 MWh for it, what gas would have cost instead, and the cumulative
 premium that gap represents.
 
-![CfD dynamics — the full mechanism in four panels](../html/subsidy_cfd_dynamics_twitter.png)
+![CfD dynamics — the full mechanism in four panels](../../charts/html/subsidy_cfd_dynamics_twitter.png)
 
 ## The four panels
 

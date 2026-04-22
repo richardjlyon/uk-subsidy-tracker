@@ -9,7 +9,7 @@ plus a top-up via the CfD levy. This chart shows both — and compares the
 total to what the same MWh would have cost from the gas fleet the UK already
 had.
 
-![CfD electricity cost vs gas alternative](../html/subsidy_cfd_vs_gas_total_twitter.png)
+![CfD electricity cost vs gas alternative](../../charts/html/subsidy_cfd_vs_gas_total_twitter.png)
 
 ## Headline numbers
 
