@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `.meta.json` sidecars for all five raw files (D-05):
+  `{retrieved_at, upstream_url, sha256, http_status, publisher_last_modified, backfilled_at}`.
+  `retrieved_at` best-effort from git log (falls back to the backfill
+  date for the initial commit that creates the files at their new
+  paths); `http_status` + `publisher_last_modified` are `null`
+  (backfill markers); `backfilled_at: "2026-04-22"` flags reconstructed
+  entries. These five sidecars feed the Phase-4 Plan 04 `manifest.json`
+  provenance contract (GOV-02).
+- `scripts/backfill_sidecars.py` — one-shot helper that (re-)computes
+  SHA-256 + git-log `retrieved_at` for every `data/raw/<publisher>/<file>`
+  entry. Retained after this plan as reusable tooling for future
+  full re-scrapes.
 - `pyarrow>=24.0.0` and `duckdb>=1.5.2` added to `pyproject.toml`
   dependencies (04-01 Wave 0). Phase 4 uses `pyarrow` for Parquet I/O
   in the derived layer + the `test_determinism.py` content-identity
@@ -51,6 +63,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Pydantic-validated loader at `tests/fixtures/__init__.py`.
 
 ### Changed
+- **Raw data layout migrated** from flat `data/*.csv` / `data/*.xlsx`
+  to the canonical `data/raw/<publisher>/<file>` nested structure per
+  ARCHITECTURE §4.1 (D-04). Filenames hyphenated (underscores → hyphens).
+  Five files renamed atomically via `git mv` (100% rename similarity —
+  `git log --follow` resolves pre-rename history):
+  - `data/lccc-actual-cfd-generation.csv` → `data/raw/lccc/actual-cfd-generation.csv`
+  - `data/lccc-cfd-contract-portfolio-status.csv` → `data/raw/lccc/cfd-contract-portfolio-status.csv`
+  - `data/elexon_agws.csv` → `data/raw/elexon/agws.csv`
+  - `data/elexon_system_prices.csv` → `data/raw/elexon/system-prices.csv`
+  - `data/ons_gas_sap.xlsx` → `data/raw/ons/gas-sap.xlsx`
+- Loaders updated in the same commit (D-06):
+  `src/uk_subsidy_tracker/data/elexon.py` (`AGWS_FILE`, `SYSTEM_PRICE_FILE`),
+  `src/uk_subsidy_tracker/data/ons_gas.py` (`GAS_SAP_DATA_FILENAME`),
+  and `src/uk_subsidy_tracker/data/lccc_datasets.yaml` (both `filename:`
+  fields). CI stayed green across the rename commit
+  (36 passed + 4 skipped, zero regressions) and `uv run python
+  -m uk_subsidy_tracker.plotting` + `uv run mkdocs build --strict`
+  both green.
 - Phase 2 scope correction (CONTEXT D-04): formal `TEST-02`, `TEST-03`,
   `TEST-05` requirement IDs reassigned from Phase 2 to Phase 4.
   Phase 2 still ships pre-Parquet scaffolding variants of
