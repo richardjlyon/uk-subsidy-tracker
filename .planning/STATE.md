@@ -1,3 +1,16 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: Not started
+last_updated: "2026-04-22T01:00:56.219Z"
+progress:
+  total_phases: 12
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+---
+
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-21
@@ -10,6 +23,7 @@
 **Core value:** Every headline number on the site is reproducible from a single `git clone` + `uv sync` + one command, backed by a methodology page, traceable to a primary regulator source, and survives hostile reading.
 
 **Project docs:**
+
 - `.planning/PROJECT.md` — scope, constraints, key decisions
 - `.planning/REQUIREMENTS.md` — v1 requirements with REQ-IDs
 - `.planning/ROADMAP.md` — 12-phase plan (P0–P11 mapping)
