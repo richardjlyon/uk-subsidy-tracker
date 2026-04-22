@@ -12,6 +12,16 @@ from uk_subsidy_tracker.data import load_gas_price
 CCGT_EFFICIENCY = 0.55
 GAS_CO2_INTENSITY_THERMAL = 0.184  # tCO2 per MWh thermal (natural gas)
 
+METHODOLOGY_VERSION: str = "1.0.0"
+"""Semantic version for the gas counterfactual formula.
+
+Bumps require an entry in CHANGES.md under ## Methodology versions.
+
+- PATCH: Constant tweak with identical formula shape (e.g., new DEFAULT_CARBON_PRICES entry).
+- MINOR: Additive parameter (new kwarg with default preserving old calls).
+- MAJOR: Formula-shape change (new/dropped term, changed unit).
+"""
+
 # Non-fuel, non-carbon opex for a CCGT (£/MWh of electricity).
 #
 # EXISTING FLEET — capex sunk, only O&M needed. Used as the default because
@@ -79,6 +89,7 @@ def compute_counterfactual(
     df["counterfactual_total"] = (
         df["gas_fuel_cost"] + df["carbon_cost"] + df["plant_opex"]
     )
+    df["methodology_version"] = METHODOLOGY_VERSION
 
     return df
 
