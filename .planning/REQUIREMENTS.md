@@ -165,10 +165,10 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | GOV-05 | Phase 1 | Pending |
 | GOV-06 | Phase 1 | Pending |
 | TEST-01 | Phase 2 | Complete |
-| TEST-02 | Phase 2 | Pending |
-| TEST-03 | Phase 2 | Pending |
+| TEST-02 | Phase 4 | Pending |
+| TEST-03 | Phase 4 | Pending |
 | TEST-04 | Phase 2 | Pending |
-| TEST-05 | Phase 2 | Pending |
+| TEST-05 | Phase 4 | Pending |
 | TEST-06 | Phase 2 | Pending |
 | GOV-04 | Phase 2 | Complete |
 | TRIAGE-01 | Phase 3 | Pending |
