@@ -1,34 +1,53 @@
-# MkDocs Configuration for CfD Payment Analysis
+# MkDocs Configuration for UK Renewable Subsidy Tracker
 #
 # IMPORTANT: Before building/serving docs, generate charts:
-#   uv run python -m cfd_payment.plotting
+#   uv run python -m uk_subsidy_tracker.plotting
 # This populates docs/charts/html/ with chart files (ignored by git)
 #   uv run mkdocs gh-deploy
 # This updates the GitHub Pages site
 
-site_name: CfD Payment Analysis
-site_url: https://richardjlyon.github.io/cfd-payment/
-site_description: Analysis of UK Contracts for Difference (CfD) renewable energy subsidy payments
+site_name: UK Renewable Subsidy Tracker
+site_url: https://richardjlyon.github.io/uk-subsidy-tracker/
+site_description: Independent, open, data-driven audit of UK renewable electricity subsidy costs
 site_author: Richard Lyon
 
 # Repository
-repo_name: cfd-payment
-repo_url: https://github.com/richardjlyon/cfd-payment
+repo_name: uk-subsidy-tracker
+repo_url: https://github.com/richardjlyon/uk-subsidy-tracker
 
 # Theme
 theme:
-  name: readthedocs
+  name: material
   locale: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
 
 # Navigation
 nav:
   - Home: index.md
   - Charts:
       - Overview: charts/index.md
-      - CfD Dynamics (4-panel): charts/subsidy/cfd-dynamics.md
+      - CfD Dynamics: charts/subsidy/cfd-dynamics.md
       - CfD vs Gas Cost: charts/subsidy/cfd-vs-gas-cost.md
       - Remaining Obligations: charts/subsidy/remaining-obligations.md
-  - Gas Counterfactual: technical-details/gas-counterfactual.md
+  - Gas Counterfactual: methodology/gas-counterfactual.md
+  - About:
+      - Corrections: about/corrections.md
+      - Citation: about/citation.md
 
 # Markdown extensions
 markdown_extensions:
@@ -73,7 +92,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/richardjlyon/cfd-payment
+      link: https://github.com/richardjlyon/uk-subsidy-tracker
 
 # Copyright
 copyright: Copyright &copy; 2026 Richard Lyon
