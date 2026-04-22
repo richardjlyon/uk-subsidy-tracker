@@ -73,7 +73,7 @@ Plans:
 - [x] 03-01-PLAN.md — Triage cleanup: delete scissors.py + bang_for_buck_old.py; mkdocs.yml feature + validation deltas (Wave 1 prep)
 - [x] 03-02-PLAN.md — 5-theme scaffolding: git mv 3 CfD pages, create theme index/methodology + PROMOTE stubs, rewrite nav, fix homepage link-rot
 - [x] 03-03-PLAN.md — 7 PROMOTE chart pages filled (D-01 template, GOV-01 four-way coverage; parallelisable per chart)
-- [ ] 03-04-PLAN.md — Chart regen + mkdocs --strict CI gate + test_docs_structure.py + phase-exit checkpoint
+- [x] 03-04-PLAN.md — Chart regen + mkdocs --strict CI gate + test_docs_structure.py + phase-exit checkpoint
 **UI hint**: yes
 
 ### Phase 4: Publishing Layer
@@ -184,7 +184,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation Tidy | 0/4 | Not started | - |
 | 2. Test & Benchmark Scaffolding | 5/5 | Complete | 2026-04-22 |
-| 3. Chart Triage Execution | 0/4 | Not started | - |
+| 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
 | 4. Publishing Layer | 0/0 | Not started | - |
 | 5. RO Module | 0/0 | Not started | - |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
