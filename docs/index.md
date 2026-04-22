@@ -30,19 +30,15 @@ The generator is insulated from market risk. The consumer pays the
 strike price — no more, no less. The consumer was never promised
 anything about the *level* of that stable price.
 
-## The three charts
+## Explore by theme
 
-1. **[CfD dynamics](charts/subsidy/cfd-dynamics.md)** — the mechanism
-   exposed in four panels: volume, unit prices, premium, cumulative
-   bill.
-2. **[CfD vs Gas Cost](charts/subsidy/cfd-vs-gas-cost.md)** — the
-   same money decomposed into the two cash-flow channels consumers
-   actually pay through.
-3. **[Remaining Obligations](charts/subsidy/remaining-obligations.md)**
-   — what the contracts already signed will cost from here on
-   (£33bn+).
+The charts are organised into five argument themes:
 
-See the [Charts overview](charts/index.md) for how they relate.
+1. **[Cost](themes/cost/index.md)** — the mechanism: volume × price gap = bill. Starts with the four-panel diagnostic.
+2. **[Recipients](themes/recipients/index.md)** — where the money goes. Six projects receive 50% of the pot.
+3. **[Efficiency](themes/efficiency/index.md)** — £/tCO₂ avoided against DEFRA SCC and UK ETS benchmarks.
+4. **[Cannibalisation](themes/cannibalisation/index.md)** — why wind crashes its own price, and who tops the difference up.
+5. **[Reliability](themes/reliability/index.md)** — the drought periods no battery can cover.
 
 ## Data sources
 

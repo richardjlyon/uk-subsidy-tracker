@@ -55,12 +55,33 @@ validation:
 # Navigation
 nav:
   - Home: index.md
-  - Charts:
-      - Overview: charts/index.md
-      - CfD Dynamics: charts/subsidy/cfd-dynamics.md
-      - CfD vs Gas Cost: charts/subsidy/cfd-vs-gas-cost.md
-      - Remaining Obligations: charts/subsidy/remaining-obligations.md
-  - Gas Counterfactual: methodology/gas-counterfactual.md
+  - Cost:
+      - themes/cost/index.md
+      - CfD dynamics: themes/cost/cfd-dynamics.md
+      - CfD vs gas cost: themes/cost/cfd-vs-gas-cost.md
+      - Remaining obligations: themes/cost/remaining-obligations.md
+      - Methodology: themes/cost/methodology.md
+  - Recipients:
+      - themes/recipients/index.md
+      - Lorenz curve: themes/recipients/lorenz.md
+      - Payments by technology: themes/recipients/cfd-payments-by-category.md
+      - Methodology: themes/recipients/methodology.md
+  - Efficiency:
+      - themes/efficiency/index.md
+      - Subsidy per tonne CO₂ avoided: themes/efficiency/subsidy-per-avoided-co2-tonne.md
+      - Methodology: themes/efficiency/methodology.md
+  - Cannibalisation:
+      - themes/cannibalisation/index.md
+      - Capture ratio: themes/cannibalisation/capture-ratio.md
+      - Methodology: themes/cannibalisation/methodology.md
+  - Reliability:
+      - themes/reliability/index.md
+      - Seasonal capacity factor: themes/reliability/capacity-factor-seasonal.md
+      - Generation heatmap: themes/reliability/generation-heatmap.md
+      - Rolling minimum: themes/reliability/rolling-minimum.md
+      - Methodology: themes/reliability/methodology.md
+  - Methodology:
+      - Gas counterfactual: methodology/gas-counterfactual.md
   - About:
       - Corrections: about/corrections.md
       - Citation: about/citation.md
