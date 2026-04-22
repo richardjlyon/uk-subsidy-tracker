@@ -32,7 +32,7 @@ Currently a single-scheme prototype (`cfd-payment`) covering only Contracts for 
 - Markdown - Documentation content
 - HTML/CSS - Static generated site assets
 ## Runtime
-- Python 3.11 or later (declared in `pyproject.toml`: `requires-python = ">=3.11"`)
+- Python 3.12 or later (declared in `pyproject.toml`: `requires-python = ">=3.12"`)
 - Currently running on Python 3.13 (based on `.venv` structure)
 - uv - Fast, modern Python package manager with lockfile support
 - Lockfile: `uv.lock` - Present and maintained
