@@ -46,9 +46,9 @@ Currently a single-scheme prototype (`cfd-payment`) covering only Contracts for 
 - [ ] **TEST-04**: `tests/test_benchmarks.py` reconciles totals against REF, Turver, Ofgem, Ben Pile
 - [ ] **TEST-05**: `tests/test_determinism.py` proves rebuilds are byte-identical
 - [ ] **TEST-06**: GitHub Actions CI runs pytest on every push
-- [ ] **TRIAGE-01**: `bang_for_buck_old.py` and `scissors.py` deleted (CUT verdict from §5.2)
-- [ ] **TRIAGE-02**: Docs pages written for all seven PROMOTE charts
-- [ ] **TRIAGE-03**: `docs/` restructured into five theme pages (cost, recipients, efficiency, cannibalisation, reliability)
+- [x] **TRIAGE-01**: `bang_for_buck_old.py` and `scissors.py` deleted (CUT verdict from §5.2) — Validated in Phase 3
+- [x] **TRIAGE-02**: Docs pages written for all seven PROMOTE charts — Validated in Phase 3
+- [x] **TRIAGE-03**: `docs/` restructured into five theme pages (cost, recipients, efficiency, cannibalisation, reliability) — Validated in Phase 3
 - [ ] **PUB-01**: `src/uk_subsidy_tracker/publish/manifest.py` builds `site/data/manifest.json`
 - [ ] **PUB-02**: `publish/csv_mirror.py` writes CSV alongside every Parquet
 - [ ] **PUB-03**: `publish/snapshot.py` writes versioned snapshot on tag
@@ -74,7 +74,7 @@ Currently a single-scheme prototype (`cfd-payment`) covering only Contracts for 
 - [ ] **PORTAL-01**: Portal homepage — three headline cards + X1 chart with time-horizon tabs + 2×4 scheme grid + theme nav (iamkate.com/grid pattern)
 
 **Governance (cross-cutting):**
-- [ ] **GOV-01**: Every PRODUCTION chart has narrative page, methodology page, test, and linked source file
+- [x] **GOV-01**: Every PRODUCTION chart has narrative page, methodology page, test, and linked source file — Validated in Phase 3
 - [ ] **GOV-02**: `manifest.json` exposes provenance (retrieval timestamp, source SHA-256, pipeline git SHA) per dataset
 - [ ] **GOV-03**: Daily refresh CI workflow (06:00 UTC cron, dirty-check per scheme)
 - [ ] **GOV-04**: Methodology versioning — counterfactual formula is append-only; changes bump `methodology_version`
@@ -176,4 +176,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-21 after initialization*
+*Last updated: 2026-04-22 — Phase 3 (Chart Triage Execution) complete. TRIAGE-01/02/03 + GOV-01 validated; 5-theme docs structure live; `mkdocs build --strict` is now a permanent CI gate.*
