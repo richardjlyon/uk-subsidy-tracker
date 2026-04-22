@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (GOV-04); `compute_counterfactual()` returns it as a DataFrame column.
 - Pandera schemas `elexon_agws_schema`, `elexon_system_price_schema`,
   and `ons_gas_schema`; corresponding loaders now call `.validate()`.
+- `tests/test_benchmarks.py` — reconciles CfD pipeline yearly totals
+  against the mandatory LCCC self-reconciliation floor (0.1% red line
+  per D-10) + regulator-native external anchors at named tolerances
+  (TEST-04).
+- `tests/fixtures/benchmarks.yaml` — structured benchmark values with
+  per-entry source, year, URL, retrieval date, notes, and tolerance;
+  Pydantic-validated loader at `tests/fixtures/__init__.py`.
 
 ### Changed
 - Phase 2 scope correction (CONTEXT D-04): formal `TEST-02`, `TEST-03`,
