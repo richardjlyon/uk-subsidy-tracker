@@ -8,6 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `src/uk_subsidy_tracker/publish/` package (Plan 04-04) — the publishing
+  layer that makes the project citable. Three module-level callables:
+  - `publish/manifest.py` — Pydantic `Manifest` / `Dataset` / `Source`
+    models; `build()` assembles `site/data/manifest.json` via
+    `json.dumps(model.model_dump(mode="json"), sort_keys=True, indent=2)`
+    (Pydantic v2 does NOT support `sort_keys` on `model_dump_json` — issue
+    #7424). Shape is ARCHITECTURE §4.3 verbatim (D-07): top-level
+    `version`, `generated_at`, `methodology_version` (read from
+    `counterfactual.METHODOLOGY_VERSION`, D-12 chain), `pipeline_git_sha`
+    (via `git rev-parse HEAD`, GOV-02), and `datasets[]`; each dataset
+    carries `id`, `title`, `grain`, `row_count`, `schema_url`,
+    `parquet_url`, `csv_url`, `versioned_url`, `sha256`, `sources[]`,
+    `methodology_page`. URLs are absolute (D-09) — base comes from
+    `SITE_URL` env var or `mkdocs.yml::site_url`; `upstream_url: str`
+    (not `HttpUrl`, Pitfall 6) keeps serialisation stable across Pydantic
+    minor versions. `generated_at` sources from
+    `max(retrieved_at across sidecars)` not `datetime.now()` — byte-stable
+    manifest when nothing upstream changes (Pitfall 3).
+  - `publish/csv_mirror.py` — sibling CSV for every derived Parquet
+    (PUB-02). Pinned pandas args per D-10: `index=False`, `encoding="utf-8"`
+    (no BOM), `lineterminator="\n"` (LF even on Windows, Pitfall 4),
+    `date_format="%Y-%m-%dT%H:%M:%S"` (ISO-8601 no sub-seconds),
+    `float_format=None` (full precision), `na_rep=""`.
+  - `publish/snapshot.py` — CLI (`--version`, `--output`, `--dry-run`)
+    assembles a self-contained versioned-snapshot directory for
+    `deploy.yml` to upload as release assets via
+    `softprops/action-gh-release@v2` on `git push --tags` (D-13, D-14).
+    Layout: `manifest.json` + `cfd/` with 5 parquet + 5 csv + 5 schema.json.
+- `src/uk_subsidy_tracker/refresh_all.py` — CI entry point for
+  `.github/workflows/refresh.yml` (D-16, D-18). Walks `SCHEMES` tuple,
+  per-scheme: if `scheme.upstream_changed()` then
+  `scheme.refresh() → rebuild_derived() → regenerate_charts() → validate()`.
+  On any change: copies `data/derived/<scheme>/` to
+  `site/data/latest/<scheme>/`, writes CSV mirrors, rebuilds
+  `site/data/manifest.json`. On no change: short-circuits with exit 0
+  and "no upstream changes; skipping manifest rebuild" — Pitfall 3
+  avoids noisy daily empty PRs. CLI: `--version` (default `latest`).
+- `tests/test_manifest.py` — 8/8 green. Round-trip byte-identity (guards
+  against Pydantic serialisation drift), provenance-field presence
+  (PUB-06 / GOV-02), absolute-URL (D-09), URL-type-is-str (Pitfall 6),
+  sha256-matches-parquet (integrity), methodology-version-matches-constant
+  (D-12), generated_at stability when nothing upstream changed (Pitfall 3).
+- `tests/test_csv_mirror.py` — 7/7 green. Every-parquet-has-sibling-CSV,
+  column order matches Parquet (D-10), LF line endings (Pitfall 4),
+  no UTF-8 BOM, no pandas index leak, ISO-8601 dates, float precision
+  survives round-trip at 1e-9 rel_tol.
+
 - `src/uk_subsidy_tracker/schemas/` package — Pydantic row schemas for
   the five CfD derived grains (`StationMonthRow`, `AnnualSummaryRow`,
   `ByTechnologyRow`, `ByAllocationRoundRow`, `ForwardProjectionRow`).
@@ -99,6 +146,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Pydantic-validated loader at `tests/fixtures/__init__.py`.
 
 ### Changed
+- `.gitignore` (Plan 04-04) — replaced blanket `site/` ignore with explicit
+  patterns for each mkdocs-build subtree (`/site/assets/`,
+  `/site/stylesheets/`, `/site/search/`, `/site/themes/`,
+  `/site/methodology/`, `/site/charts/`, `/site/about/`, `/site/index.html`,
+  `/site/404.html`, sitemap files). Git cannot re-include paths under an
+  ignored directory, so `!site/data/` cannot carve `site/data/` out of
+  `site/`. The explicit list of mkdocs outputs leaves `site/data/latest/*`
+  and `site/data/manifest.json` tracked — the Phase-4 publishing-layer
+  subtree the daily refresh workflow commits (D-15). Verified: `mkdocs
+  build --strict` output paths are all still ignored; publishing-layer
+  files under `site/data/` are not.
 - `methodology_version` column added to every derived Parquet row
   (GOV-02 provenance-per-row). Propagates from
   `src/uk_subsidy_tracker/counterfactual.py::METHODOLOGY_VERSION = "0.1.0"`
