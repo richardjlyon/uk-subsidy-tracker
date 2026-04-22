@@ -8,7 +8,7 @@
 ## Phases
 
 - [ ] **Phase 1: Foundation Tidy** — Repo rename, theme switch, root docs committed; brownfield import paths updated
-- [ ] **Phase 2: Test & Benchmark Scaffolding** — Five test classes, CI green on main; counterfactual formula pinned
+- [ ] **Phase 2: Test & Benchmark Scaffolding** — Four test classes, CI green on main; counterfactual formula pinned
 - [ ] **Phase 3: Chart Triage Execution** — CUT files deleted, seven PROMOTE charts documented, five-theme docs structure built
 - [ ] **Phase 4: Publishing Layer** — manifest.json, CSV mirror, snapshot, data how-to; three-layer pipeline operational for CfD
 - [ ] **Phase 5: RO Module** — Full Renewables Obligation scheme module, S2–S5 charts, benchmarks within 3% of Turver
@@ -43,11 +43,11 @@ Plans:
 ### Phase 2: Test & Benchmark Scaffolding
 **Goal**: The test suite is complete and CI is green, with the gas counterfactual formula pinned and all external benchmark deltas documented
 **Depends on**: Phase 1
-**Requirements**: TEST-01, TEST-02, TEST-03, TEST-04, TEST-05, TEST-06, GOV-04
+**Requirements**: TEST-01, TEST-04, TEST-06, GOV-04
 **Success Criteria** (what must be TRUE):
-  1. `uv run pytest` passes green on `main` — all five test classes present and passing
+  1. `uv run pytest` passes green on `main` — four test classes present and passing: `test_counterfactual.py`, `test_schemas.py`, `test_aggregates.py`, `test_benchmarks.py`
   2. `tests/test_counterfactual.py` fails if the gas formula (fuel + carbon + O&M) constants are changed — formula is pinned
-  3. `tests/test_benchmarks.py` documents divergence from Ben Pile (2021 + 2026), REF subset, and Turver aggregate explicitly in output or docstring
+  3. `tests/test_benchmarks.py` documents divergence from LCCC self-reconciliation and any regulator-native external sources the researcher located (OBR, Ofgem, DESNZ, HoC Library, NAO) explicitly in the fixture notes or test docstring
   4. GitHub Actions CI workflow triggers on every push to `main` and reports pass/fail
   5. `counterfactual.py` carries a `methodology_version` string; `CHANGES.md` logs the initial version
 **Plans:** 5 plans
@@ -74,7 +74,7 @@ Plans:
 ### Phase 4: Publishing Layer
 **Goal**: External consumers can discover, fetch, and cite any dataset via a machine-readable manifest with full provenance, and the three-layer pipeline is operational end-to-end for CfD
 **Depends on**: Phase 3
-**Requirements**: PUB-01, PUB-02, PUB-03, PUB-04, PUB-05, PUB-06, GOV-02, GOV-03, GOV-06 (snapshot URL portion)
+**Requirements**: PUB-01, PUB-02, PUB-03, PUB-04, PUB-05, PUB-06, GOV-02, GOV-03, GOV-06 (snapshot URL portion), TEST-02, TEST-03, TEST-05
 **Success Criteria** (what must be TRUE):
   1. `site/data/manifest.json` is present after build and contains source URL, retrieval timestamp, SHA-256, pipeline git SHA, and `methodology_version` per dataset
   2. External consumer can follow a URL from `manifest.json` and retrieve a Parquet file and its CSV mirror
