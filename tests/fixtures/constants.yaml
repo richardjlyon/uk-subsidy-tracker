@@ -1,0 +1,79 @@
+# Constant provenance fixtures for `tests/test_constants_provenance.py` (SEED-001 Tier 2).
+#
+# Each top-level key is the live attribute name on
+# `src/uk_subsidy_tracker/counterfactual.py`. For dict-valued constants
+# (e.g. DEFAULT_CARBON_PRICES), the key is synthetic: {ATTR}_{DICT_KEY}
+# such as DEFAULT_CARBON_PRICES_2022.
+#
+# Each entry MUST match the `Provenance:` docstring block on the live
+# constant (field-for-field: source, url, basis, retrieved_on, next_audit)
+# and MUST match the live numerical value to exact equality. Drift
+# between the YAML value and the live constant fails
+# `test_yaml_value_matches_live` with a remediation message that points
+# at this file.
+#
+# Remediation when a live constant changes (SEED-001 Tier 2):
+#   1. Update the live value in counterfactual.py.
+#   2. Update the matching `value:` in this file.
+#   3. Bump METHODOLOGY_VERSION in counterfactual.py.
+#   4. Add a CHANGES.md `## Methodology versions` entry documenting the change.
+
+CCGT_EFFICIENCY:
+  source: "BEIS Electricity Generation Costs 2023, Table ES.1"
+  url: "https://www.gov.uk/government/publications/electricity-generation-costs-2023"
+  basis: "Net HHV efficiency, H-class CCGT mid-range; blend of older F-class (~50%) and modern H-class (~60%) for existing-fleet counterfactual."
+  retrieved_on: 2026-04-22
+  next_audit: 2027-06-01
+  value: 0.55
+  unit: "dimensionless (fraction)"
+  notes: "Appropriate for existing-fleet counterfactual; a new-build-only study should use 0.60."
+
+GAS_CO2_INTENSITY_THERMAL:
+  source: "DESNZ 2024 UK Government Greenhouse Gas Conversion Factors"
+  url: "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024"
+  basis: "Gross CV (UK convention — gas suppliers bill in kWh gross CV)"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-04-01
+  value: 0.18290
+  unit: "tCO2 / MWh thermal"
+  notes: "Corrected from 0.184 during 2026-04-22 audit (SEED-001 tripwire origin — the Phase-2 adversarial-audit incident this test was built to catch)."
+
+DEFAULT_NON_FUEL_OPEX:
+  source: "BEIS Electricity Generation Costs 2023, Table ES.1"
+  url: "https://www.gov.uk/government/publications/electricity-generation-costs-2023"
+  basis: "Operational H-class CCGT, fixed O&M ~£3/MWh + variable O&M ~£2/MWh. Existing-fleet posture: capex sunk, only O&M needed."
+  retrieved_on: 2026-04-22
+  next_audit: 2027-06-01
+  value: 5.0
+  unit: "£/MWh electricity"
+  notes: "Default counterfactual opex: UK CCGT fleet was largely built 1995-2012 with capital paid off by the CfD era (2015). Alias of CCGT_EXISTING_FLEET_OPEX_PER_MWH on the live module."
+
+DEFAULT_CARBON_PRICES_2021:
+  source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
+  url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
+  basis: "Calendar-year annual average UK ETS allowance price, £/tCO2"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 48.0
+  unit: "£/tCO2"
+  notes: "First full UK ETS year post-Brexit carbon-scheme divergence (UK left EU ETS 2021-01-01)."
+
+DEFAULT_CARBON_PRICES_2022:
+  source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
+  url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
+  basis: "Calendar-year annual average UK ETS allowance price, £/tCO2"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 73.0
+  unit: "£/tCO2"
+  notes: "UK ETS 2022 was volatile, peaking near £100 mid-year. 73.0 is the OBR-cited calendar-year reference."
+
+DEFAULT_CARBON_PRICES_2023:
+  source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
+  url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
+  basis: "Calendar-year annual average UK ETS allowance price, £/tCO2"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 45.0
+  unit: "£/tCO2"
+  notes: "Approximate; revisit before v1.0.0 public release per counterfactual.py DEFAULT_CARBON_PRICES docstring notes."
