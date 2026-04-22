@@ -11,7 +11,7 @@ pipeline (source → derived → published):
 `refresh_all.py` orchestrates per-scheme refresh + this publishing step.
 """
 
-from uk_subsidy_tracker.publish import csv_mirror
+from uk_subsidy_tracker.publish import csv_mirror, snapshot
 from uk_subsidy_tracker.publish.manifest import (
     Dataset,
     Manifest,
@@ -21,5 +21,5 @@ from uk_subsidy_tracker.publish.manifest import (
 
 __all__ = [
     "Manifest", "Dataset", "Source", "build",
-    "csv_mirror",
+    "csv_mirror", "snapshot",
 ]
