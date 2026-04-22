@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `tests/test_counterfactual.py` — pins the gas counterfactual formula
+  against known inputs to 4 decimal places (TEST-01). Asserts
+  `METHODOLOGY_VERSION` presence + DataFrame propagation.
+- `tests/test_schemas.py` — pandera validation of raw CSV/XLSX sources
+  via the existing loaders (pre-Parquet scaffolding; formal TEST-02 in
+  Phase 4).
+- `tests/test_aggregates.py` — row-conservation assertions on the
+  LCCC CfD pipeline (pre-Parquet scaffolding; formal TEST-03 in Phase 4).
+- `METHODOLOGY_VERSION` constant in `src/uk_subsidy_tracker/counterfactual.py`
+  (GOV-04); `compute_counterfactual()` returns it as a DataFrame column.
+- Pandera schemas `elexon_agws_schema`, `elexon_system_price_schema`,
+  and `ons_gas_schema`; corresponding loaders now call `.validate()`.
+
 ### Changed
 - Phase 2 scope correction (CONTEXT D-04): formal `TEST-02`, `TEST-03`,
   `TEST-05` requirement IDs reassigned from Phase 2 to Phase 4.
