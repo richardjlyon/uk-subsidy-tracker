@@ -15,7 +15,6 @@ from uk_subsidy_tracker.plotting.subsidy.cfd_payments_by_category import (
 from uk_subsidy_tracker.plotting.subsidy.remaining_obligations import (
     main as remaining_obligations,
 )
-from uk_subsidy_tracker.plotting.subsidy.scissors import main as scissors
 from uk_subsidy_tracker.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
     main as subsidy_per_avoided_co2_tonne,
 )
@@ -24,7 +23,6 @@ from uk_subsidy_tracker.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
 cfd_vs_gas_total()
 cfd_dynamics()
 cfd_payments_by_category()
-scissors()
 subsidy_per_avoided_co2_tonne()
 bang_for_buck()
 remaining_obligations()

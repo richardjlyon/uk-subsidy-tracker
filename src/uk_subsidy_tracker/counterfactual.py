@@ -136,8 +136,8 @@ def compute_counterfactual(
 
     counterfactual_total = gas_fuel_cost + carbon_cost + plant_opex.
 
-    Callers who want fuel-only (e.g. scissors chart) should reference
-    gas_fuel_cost directly instead of counterfactual_total.
+    Callers who want fuel-only should reference gas_fuel_cost directly
+    instead of counterfactual_total.
     """
     if gas_df is None:
         gas_df = load_gas_price()
