@@ -1,0 +1,1088 @@
+# Phase 3: Chart Triage Execution — Research
+
+**Researched:** 2026-04-22
+**Domain:** MkDocs Material documentation authoring, Markdown structural discipline, project-specific chart catalogue documentation
+**Confidence:** HIGH
+
+## Summary
+
+Phase 3 is a pure documentation and restructuring phase: 2 Python source files deleted, 7 narrative Markdown pages written against an existing chart catalogue, `docs/` rearranged into a 5-theme tree, `mkdocs.yml` nav rewritten, all gated by `mkdocs build --strict`. No chart code is rewritten; the 7 PROMOTE chart modules exist and produce PNGs today at `docs/charts/html/*_twitter.png` (verified — all 7 PNG files are present on disk).
+
+The technical footprint is small: MkDocs Material ≥9.7.6 is already installed (pyproject.toml) and the three Markdown extensions needed for theme-index chart galleries (`attr_list`, `md_in_html`, plus optional list-syntax card grids) are already enabled in `mkdocs.yml`. `git mv` will preserve blame/history automatically (staging is automatic; intermediate directories must be pre-created). The dominant risk is `mkdocs build --strict` failure modes — specifically that `nav.omitted_files` defaults to `info` (NOT `warn`), so orphan docs pages won't fail `--strict` unless the planner explicitly promotes the warning level.
+
+**Primary recommendation:** Use Material's **list-syntax grid cards** (`<div class="grid cards" markdown>` with list elements) for theme-index chart galleries — zero new dependencies, minimal syntax, works with the already-configured extensions. Opt into `validation.nav.omitted_files: warn` in `mkdocs.yml` so `--strict` actually catches orphan pages (otherwise the TRIAGE-04 exit criterion is enforced by human review only).
+
+<user_constraints>
+## User Constraints (from CONTEXT.md)
+
+### Locked Decisions
+
+**D-01 — Per-chart page template (6 sections, 100–170 lines).** Every PRODUCTION chart page follows this canonical order:
+
+1. **What the chart shows** — short description + panels/layout + axes. Embedded PNG + "view interactively" link.
+2. **The argument** — what the chart reveals, adversarially phrased.
+3. **Methodology** — how every number was computed. Link to `docs/methodology/gas-counterfactual.md` where applicable; cite specific constants with `Provenance:` blocks in `src/uk_subsidy_tracker/counterfactual.py`; reference regulator sources with URLs.
+4. **Caveats** — limits of the model, known assumptions, scenarios where chart would mislead.
+5. **Data & code** — GitHub permalinks to Python source, raw data, and test file (GOV-01 four-way coverage).
+6. **See also** — cross-links to sibling charts + cross-theme pointers.
+
+Length target 100–170 lines; do not pad or compress.
+
+**D-02 — Theme index hybrid structure.** Each `docs/themes/<theme>/index.md` follows:
+
+1. **Theme argument** (2–3 paragraphs, adversarial; e.g. *"Most of this spending goes to a handful of offshore wind farms and Drax."*).
+2. **Chart gallery** — 3–5 cards in iamkate-grid aesthetic. PNG thumbnail → chart page. Flagship first.
+3. **What to look at next** — pointer block to adjacent themes.
+4. **Methodology link** — single-line pointer to theme `methodology.md`.
+
+**D-03 — PNG inline + "Interactive version" link.** PNG is primary visual; below it, small link to the existing Plotly HTML at `docs/charts/html/<name>.html`. Paths do NOT change.
+
+**D-03a — Chart assets stay at `docs/charts/html/`.** Flat, centralised. Do not move PNG/HTML during theme restructure.
+
+**D-03b — Chart regeneration pipeline unchanged.** `uv run python -m uk_subsidy_tracker.plotting` populates `docs/charts/html/` (gitignored). `uv run mkdocs build --strict` runs after chart generation.
+
+**D-04 — Nav reorganised by theme; old Charts section removed.** `git mv` the three existing CfD chart pages to `docs/themes/cost/`. New top-level nav:
+
+```
+Home: index.md
+Cost: themes/cost/index.md
+Recipients: themes/recipients/index.md
+Efficiency: themes/efficiency/index.md
+Cannibalisation: themes/cannibalisation/index.md
+Reliability: themes/reliability/index.md
+Methodology: methodology/gas-counterfactual.md
+About: about/...
+```
+
+**D-04a — Old URLs break; no `mkdocs-redirects`.** Clean break. `mkdocs build --strict` validates internal refs.
+
+**D-05 — Gas counterfactual methodology stays top-level.** `docs/methodology/gas-counterfactual.md` does NOT move. Cost + Efficiency theme `methodology.md` files link OUT to `../../methodology/gas-counterfactual.md`.
+
+**D-05a — No methodology duplication.** Anything cross-theme lives at `docs/methodology/<topic>.md` and is linked from each theme.
+
+**D-06 — Material features (enabled):** `navigation.tabs`, `navigation.tabs.sticky`, `navigation.sections`, `navigation.top`, `navigation.instant`, `search.suggest`, `search.highlight`, `content.code.copy`, `content.tooltips`, `toc.integrate`. Dark-mode palette preserved.
+
+**D-06 — Material features (NOT enabled):** announcement bars, cookie banners, feedback widget, version banner, autogenerated social cards, `navigation.prune`.
+
+### Claude's Discretion
+
+- **GOV-01 test-reference per chart** — default `tests/test_schemas.py` + `tests/test_aggregates.py` for LCCC-reading charts; `tests/test_counterfactual.py` for charts using `compute_counterfactual()`; `tests/test_benchmarks.py` for charts with benchmark anchors. Per-chart mapping locked in Research §GOV-01 Coverage Map below.
+- **Chart-page filename convention** — `kebab-case.md`.
+- **Theme ordering in nav** — Cost → Recipients → Efficiency → Cannibalisation → Reliability (ARCHITECTURE §5.1 A–E).
+- **Per-theme chart classification** — DOCUMENTED inlined in theme `index.md` gallery; PRODUCTION gets full page linked from flagship card.
+- **Chart-gallery visual implementation** — researcher-recommended: list-syntax grid cards (see Architecture Patterns §Chart Gallery).
+
+### Deferred Ideas (OUT OF SCOPE)
+
+- Cross-scheme portal top-strip / homepage redesign — Phase 6.
+- `mkdocs-redirects` plugin — rejected per D-04a.
+- Tier 2/3 constant provenance — SEED-001, Phase 4.
+- Pyright diagnostic cleanup on chart modules — tracked separately.
+- Autogenerated Material social cards — Phase 6 with portal work.
+- `mkdocs build --strict` as CI gate — planner's call whether to fold into Phase 3 or defer to Phase 4. Recommended inclusion (see Risks §10).
+- Publishing layer (`manifest.json`, CSV mirror, snapshot) — Phase 4.
+- New charts or chart-code changes — Phase 3 documents; does not rewrite.
+- Fixing pre-existing Pyright diagnostics in PROMOTE chart sources.
+</user_constraints>
+
+<phase_requirements>
+## Phase Requirements
+
+| ID | Description | Research Support |
+|----|-------------|------------------|
+| **TRIAGE-01** | Delete `scissors.py` + `bang_for_buck_old.py` from working tree (preserved in git history only) | §Runtime State Inventory — both files referenced in `__main__.py` (scissors: 2 lines) and `counterfactual.py:139` (docstring ref); `bang_for_buck_old` has zero working-tree code refs; `docs/charts/html/subsidy_scissors*.html` artefacts exist but are gitignored |
+| **TRIAGE-02** | Docs pages written for 7 PROMOTE charts: `cfd_payments_by_category`, `lorenz`, `subsidy_per_avoided_co2_tonne`, `capture_ratio`, `capacity_factor/seasonal`, `intermittency/generation_heatmap`, `intermittency/rolling_minimum` | §7 PROMOTE Chart Summaries below — per-chart summary, existing `_twitter.png` paths verified, data inputs & argumentative payload identified |
+| **TRIAGE-03** | 5-theme structure: `docs/themes/{cost,recipients,efficiency,cannibalisation,reliability}/` each with `index.md` + `methodology.md` | §Architecture Patterns §Recommended Project Structure; §Theme Index Template (D-02); §Theme-Methodology Delta vs Shared Methodology (D-05) |
+| **TRIAGE-04** | Every PRODUCTION chart navigable from its theme page (no orphans) | §Nav Orphan Detection below — exhaustive list of 22 expected nav entries; `validation.nav.omitted_files: warn` enabling instructions |
+| **GOV-01** | Four-way coverage per PRODUCTION chart: narrative + methodology + test + source link | §GOV-01 Coverage Map — per-chart test file mapping, GitHub source permalink pattern, PNG/HTML embed pattern |
+</phase_requirements>
+
+## Architectural Responsibility Map
+
+Phase 3 is documentation-only. Mapping restricted to the build & publication flow.
+
+| Capability | Primary Tier | Secondary Tier | Rationale |
+|------------|-------------|----------------|-----------|
+| Narrative authoring | Docs / Markdown | — | Plain Markdown in `docs/themes/` |
+| Chart asset generation | Python plotting pipeline | — | `uv run python -m uk_subsidy_tracker.plotting` unchanged; writes PNG+HTML to `docs/charts/html/` |
+| Static site generation | MkDocs build | — | `uv run mkdocs build --strict` consumes Markdown + PNG |
+| Internal link integrity | MkDocs validation | — | `validation.links.not_found` + `validation.nav.omitted_files` |
+| Theme-index gallery | Markdown + `attr_list` + `md_in_html` | CSS (Material's bundled `grid cards` styles) | No custom CSS file; relies on Material's built-in `.grid.cards` class |
+| Source-of-truth for Provenance | Python docstrings in `counterfactual.py` | Markdown references in chart methodology | Tier 1 pattern shipped 2026-04-22 (commit `efdfbbc`); chart pages LINK to `Provenance:` blocks, do not duplicate |
+| Nav hierarchy | `mkdocs.yml → nav` | Filesystem layout (`docs/themes/…`) | Nav is authoritative — filesystem location alone does not put a page in the sidebar |
+
+## Standard Stack
+
+### Core
+
+| Library | Version | Purpose | Why Standard |
+|---------|---------|---------|--------------|
+| MkDocs | ≥1.6.1 [VERIFIED: pyproject.toml L?] | Static site generator | Python-native, 10-year stable, maintains the `validation` config block (introduced in 1.5.0) [CITED: https://www.mkdocs.org/user-guide/configuration/#validation] |
+| mkdocs-material | ≥9.7.6 [VERIFIED: pyproject.toml] | Material Design theme + navigation features + grid cards | CLAUDE.md constraint; grid cards shipped in 9.5.0 [CITED: https://squidfunk.github.io/mkdocs-material/reference/grids] |
+
+### Supporting (already installed — no new dependencies)
+
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| `attr_list` (pymdown) | built-in | HTML-attribute syntax on Markdown elements | Required by grid cards (already enabled in `mkdocs.yml`) |
+| `md_in_html` | built-in | Markdown rendering inside HTML blocks | Required by grid cards (already enabled) |
+| `pymdownx.superfences` | built-in | Fenced code + arbitrary nested blocks | Already enabled; used freely in existing chart pages |
+| `admonition` + `pymdownx.details` | built-in | Collapsible "What a hostile reader would say" blocks if needed | Already enabled; optional for caveats |
+| `attr_list` on images | built-in | Add `{ .card }` or size hints on `![alt](img.png){...}` | Already enabled |
+
+### Alternatives Considered
+
+| Instead of | Could Use | Tradeoff |
+|------------|-----------|----------|
+| Material's list-syntax grid cards | Neoteroi `mkdocs-plugins` card plugin | Adds a new dependency for zero gain; Material's built-in cards are sufficient |
+| Material grid cards (list syntax) | Hand-rolled CSS grid in extra CSS file | Extra CSS file to maintain, fragile to Material theme updates; rejected |
+| `mkdocs-redirects` for old URLs | Clean break | Already rejected in D-04a |
+| Custom Markdown template engine (macros plugin) | Repeated 6-section structure via copy-paste | Copy-paste is fine for 7 pages; macros plugin adds complexity without payoff |
+
+**Installation:** None. All required packages already pinned in `pyproject.toml` / `uv.lock`.
+
+**Version verification:**
+```bash
+# Verified 2026-04-22:
+uv pip list | grep -Ei "mkdocs|material"
+# mkdocs >= 1.6.1, mkdocs-material >= 9.7.6 (both pinned)
+```
+
+## Architecture Patterns
+
+### System Architecture Diagram (Build Flow)
+
+```
+Python chart modules                       docs/ Markdown tree
+(src/uk_subsidy_tracker/plotting/*.py)    (authored by Phase 3)
+        │                                          │
+        ▼                                          │
+  builder.save(fig, "<name>", export_twitter=True) │
+        │                                          │
+        ▼                                          │
+  docs/charts/html/<name>.html     docs/charts/html/<name>_twitter.png
+  docs/charts/html/<name>.div.html          │
+  (gitignored)                              │
+        │                                   │
+        └─────────────┬─────────────────────┘
+                      │
+                      ▼
+               `mkdocs build --strict`
+                      │
+        ┌─────────────┼─────────────────────┐
+        │             │                     │
+        ▼             ▼                     ▼
+   nav validation   link validation     page rendering
+  (omitted_files   (not_found +         (Markdown → HTML)
+   promote to warn  anchors)
+   in mkdocs.yml)
+                      │
+                      ▼
+                 site/index.html
+                 site/themes/cost/…
+                 site/themes/recipients/…
+                 site/assets/…
+                      │
+                      ▼
+           Cloudflare Pages / gh-deploy
+```
+
+### Recommended Project Structure (post-Phase 3)
+
+```
+docs/
+├── index.md                                     # unchanged; may need link-fix sweep
+├── about/
+│   ├── citation.md                              # existing; link target from About nav
+│   └── corrections.md                           # existing
+├── methodology/
+│   └── gas-counterfactual.md                    # STAYS (D-05)
+├── charts/
+│   └── html/                                    # generated (gitignored)
+│       ├── subsidy_cfd_dynamics_twitter.png     # 15 PNG files already present
+│       ├── subsidy_lorenz_twitter.png
+│       └── …
+└── themes/                                      # NEW subtree (Phase 3)
+    ├── cost/
+    │   ├── index.md                             # theme argument + gallery
+    │   ├── methodology.md                       # links to ../../methodology/gas-counterfactual.md
+    │   ├── cfd-dynamics.md                      # git mv from docs/charts/subsidy/
+    │   ├── cfd-vs-gas-cost.md                   # git mv from docs/charts/subsidy/
+    │   ├── cfd-payments-by-category.md          # NEW (PROMOTE)
+    │   └── remaining-obligations.md             # git mv from docs/charts/subsidy/
+    ├── recipients/
+    │   ├── index.md
+    │   ├── methodology.md
+    │   └── lorenz.md                            # NEW (PROMOTE) — "6 projects = 50%"
+    ├── efficiency/
+    │   ├── index.md
+    │   ├── methodology.md
+    │   └── subsidy-per-avoided-co2-tonne.md     # NEW (PROMOTE)
+    ├── cannibalisation/
+    │   ├── index.md
+    │   ├── methodology.md
+    │   └── capture-ratio.md                     # NEW (PROMOTE)
+    └── reliability/
+        ├── index.md
+        ├── methodology.md
+        ├── capacity-factor-seasonal.md          # NEW (PROMOTE) — DESNZ challenge
+        ├── generation-heatmap.md                # NEW (PROMOTE) — visual hook
+        └── rolling-minimum.md                   # NEW (PROMOTE) — drought argument
+
+# DELETED (gone from working tree, preserved in git history):
+docs/charts/index.md                             # was top-level Charts overview
+docs/charts/subsidy/                             # subtree now empty (3 files git-mv'd out)
+```
+
+**Leave `docs/charts/html/` in place.** Gitignored asset directory referenced by every chart page via `../../charts/html/<name>_twitter.png` relative path from `docs/themes/<theme>/<chart>.md`. Relative-path math verified for the 4 anchor cases; see Common Pitfalls §Relative Paths.
+
+### Pattern 1: 6-Section Chart Page Template (D-01)
+
+**What:** Canonical Markdown structure for the 7 new PROMOTE pages + the 3 existing `git mv`'d pages. Single template applied uniformly.
+
+**When to use:** Every PRODUCTION chart page (10 total — 3 existing + 7 new). DOCUMENTED charts (bang_for_buck, price_vs_wind, capacity_factor/monthly, intermittency/load_duration) get NO dedicated page; they are embedded as smaller gallery cards in the theme `index.md` per D-discretion.
+
+**Example** (condensed skeleton — see `docs/charts/subsidy/cfd-dynamics.md:1-106` for the canonical reference page):
+
+```markdown
+# <Title — lead with the argument>
+
+**<Single-sentence claim, bold>**
+
+<2–3 sentence lead paragraph — what the chart is and why it exists.>
+
+![<alt>](../../charts/html/<name>_twitter.png)
+
+→ [Interactive version](../../charts/html/<name>.html)
+
+## What the chart shows
+
+<panels / axes / colour encoding / what each element represents>
+
+## The argument
+
+<adversarial framing; hostile-reader-survivable>
+
+## Methodology
+
+<formulas cited; link to docs/methodology/gas-counterfactual.md where relevant;
+cite Provenance: blocks in src/uk_subsidy_tracker/counterfactual.py by constant name>
+
+## Caveats
+
+- <limit 1 — known assumption + direction of bias>
+- <limit 2>
+- <limit 3>
+
+## Data & code
+
+- **<Source 1>** — [<regulator name>](https://<url>)
+- **<Source 2>** — [<regulator name>](https://<url>)
+- **Chart source** — [`src/uk_subsidy_tracker/plotting/<path>/<mod>.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/plotting/<path>/<mod>.py)
+- **Test** — [`tests/<test_file>.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/tests/<test_file>.py)
+
+To reproduce:
+
+\`\`\`bash
+uv run python -m uk_subsidy_tracker.plotting.<path>.<mod>
+\`\`\`
+
+## See also
+
+- [<sibling chart in same theme>](./<slug>.md)
+- [<cross-theme pointer>](../<other-theme>/index.md)
+- [Gas counterfactual](../../methodology/gas-counterfactual.md)
+```
+
+**Source of structural precedent:**
+- `docs/charts/subsidy/cfd-dynamics.md` (105 lines — 4-panel diagnostic; reference for multi-panel PROMOTE pages)
+- `docs/charts/subsidy/cfd-vs-gas-cost.md` (169 lines — argument-heavy; reference for `lorenz`, `subsidy-per-avoided-co2-tonne`)
+- `docs/charts/subsidy/remaining-obligations.md` (114 lines — includes "What's not in this chart" section worth generalising to "Caveats")
+
+### Pattern 2: Theme Index Template (D-02) — Hybrid Argument + Gallery
+
+**What:** 4-section template for every `docs/themes/<theme>/index.md`.
+
+**Example structure** (Recipients theme):
+
+```markdown
+# Where the money goes
+
+**Most of UK CfD spending goes to a handful of offshore wind farms and Drax biomass.**
+
+<2–3 adversarial paragraphs stating the theme's argument. Cite the headline
+figure — "6 projects receive 50% of all CfD subsidy" — up top so the reader
+cannot miss it. Match the tone of `cfd-vs-gas-cost.md` intro.>
+
+## Charts
+
+<div class="grid cards" markdown>
+
+-   [![Lorenz — CfD concentration](../../charts/html/subsidy_lorenz_twitter.png)](./lorenz.md)
+
+    __[Lorenz curve — 6 projects = 50%](./lorenz.md)__
+
+    The classic inequality chart applied to CfD payments. 6 projects receive 50% of all subsidy; 11 receive 80%.
+
+-   [![CfD by technology](../../charts/html/subsidy_cfd_payments_by_category_twitter.png)](../cost/cfd-payments-by-category.md)
+
+    __[Payments by technology category](../cost/cfd-payments-by-category.md)__
+
+    <one-sentence caption — why it matters for Recipients>
+
+</div>
+
+## What to look at next
+
+Then → [Cost mechanics](../cost/index.md) for the full volume × price-gap picture, or
+→ [Efficiency](../efficiency/index.md) for whether this spending is cost-effective decarbonisation.
+
+## Methodology
+
+How every number on this page was computed → [Recipients methodology](./methodology.md).
+```
+
+### Pattern 3: Chart Gallery — Material List-Syntax Grid Cards
+
+**What:** Concrete implementation of D-02's "iamkate-grid aesthetic". Uses **only** `attr_list` + `md_in_html` (both already enabled in `mkdocs.yml:L54-59`).
+
+**Why this over alternatives:** Zero new dependencies. Material ships CSS styling for `.grid.cards` out-of-the-box. Graceful degradation on mobile (cards stack to single column). No custom CSS file to maintain. [CITED: https://squidfunk.github.io/mkdocs-material/reference/grids]
+
+**Syntax:**
+
+```markdown
+<div class="grid cards" markdown>
+
+-   [![Alt text](../../charts/html/<name>_twitter.png)](./<chart-slug>.md)
+
+    __[Chart title](./<chart-slug>.md)__
+
+    ---
+
+    One-sentence caption — the rhetorical payload of this chart.
+
+-   [![…](…)](…)
+
+    __[…](…)__
+
+    ---
+
+    …
+
+</div>
+```
+
+Each list item becomes a card; the card content is arbitrary Markdown (image + caption + link). The whole card is NOT a single click-target in the built-in implementation — both the image and title wrap the same link so the user has two large tap-targets instead. [CITED: https://squidfunk.github.io/mkdocs-material/reference/grids — list syntax]
+
+**Planner note:** The `---` horizontal-rule is Material's convention to separate the card "header" (image + title) from the "body" (caption). Omitting it works; including it is the canonical Material example.
+
+### Anti-Patterns to Avoid
+
+- **Embedding interactive Plotly HTML via `<iframe>` on theme pages.** D-03 rejects this: mobile perf + social-card unfriendliness. PNG inline is authoritative; interactive link opens the existing HTML in a new tab.
+- **Duplicating counterfactual methodology into per-theme methodology.md.** Forbidden by D-05a. Cross-theme content stays at `docs/methodology/<topic>.md`.
+- **Hand-rolling CSS for the chart gallery.** Material's built-in `grid cards` covers it. Adding custom CSS creates a maintenance burden and fragile upgrade path.
+- **Letting `scissors.py` references leak past deletion.** Currently referenced in `src/uk_subsidy_tracker/plotting/__main__.py` (L18 + L27) and `src/uk_subsidy_tracker/counterfactual.py:139` (docstring). Both must be removed as part of TRIAGE-01.
+- **Moving `docs/charts/html/*.png` during the restructure.** Gitignored, regenerated from source; any rename requires a matching Python change to `builder.save(fig, "<name>", …)`. D-03a forbids this — keep paths unchanged.
+- **Naming new chart pages ambiguously.** The page at `docs/themes/cost/cfd-payments-by-category.md` describes a Recipients-themed chart (by-technology breakdown is a "where the money goes" story) but the flagship reads in context of Cost. Flag in Open Questions.
+
+## Don't Hand-Roll
+
+| Problem | Don't Build | Use Instead | Why |
+|---------|-------------|-------------|-----|
+| Chart gallery grid layout | Custom CSS grid, flex-box wrapper | Material's `grid cards` class (list syntax) | Zero maintenance, mobile-responsive by default, hover states handled |
+| Internal link validation | Manual grep sweep | `mkdocs build --strict` + `validation.links.not_found: warn` | Default level is already `warn` — `--strict` catches it for free |
+| Orphan page detection | Manual audit of nav vs filesystem | `validation.nav.omitted_files: warn` in `mkdocs.yml` | Default is `info` (silent under --strict). Explicit opt-in required |
+| Breadcrumb / tab nav | Custom HTML header | Material's `navigation.tabs` + `navigation.sections` (D-06) | Already decided |
+| Dark-mode CSS | Custom palette in `extra.css` | Material's palette toggle (already configured in `mkdocs.yml:L29-37`) | Preserved from Phase 1 |
+| Anchor-link fragment validation | Manual check | `validation.links.anchors: warn` (default is `info`) | Opt-in if you want anchor fidelity under `--strict` |
+| Social/OG card generation | Custom per-page HTML | Material's social card plugin (D-06: NOT enabled — deferred to Phase 6) | Explicitly deferred |
+| `Provenance:` block duplication in Markdown | Copy-paste regulator citations | Link to `counterfactual.py` with a single sentence: *"All constants carry a `Provenance:` block; grep `^Provenance:` in the source tree."* | Shipped in `gas-counterfactual.md:39`; reuse the pattern |
+
+**Key insight:** Phase 3 is a Markdown-authoring phase, not a plumbing phase. Resist the temptation to add plugins. The one tempting plugin — `mkdocs-redirects` — is already rejected by D-04a. Every other feature needed ships in MkDocs core or the already-installed Material theme.
+
+## Runtime State Inventory
+
+This is primarily a documentation-restructure phase, but it involves `git mv` of three files + deletion of two Python modules + a nav rewrite. Runtime state to verify:
+
+| Category | Items Found | Action Required |
+|----------|-------------|------------------|
+| Stored data | None — no databases, no persistent state touched. Raw data files under `data/raw/` untouched. | None |
+| Live service config | None — no live services. GitHub Actions CI workflow (`.github/workflows/ci.yml`) unaffected by doc changes. | None |
+| OS-registered state | None | None |
+| Secrets / env vars | None | None |
+| Build artifacts | **Gitignored chart assets** (`docs/charts/html/*.{html,png,div.html}`) — 45 files on disk. `scissors`-related artefacts (`subsidy_scissors.html` + `subsidy_scissors_twitter.png` + `subsidy_scissors.div.html`) exist under `docs/charts/html/` from prior runs. These are gitignored and will NOT be regenerated after `scissors.py` deletion — safe to leave; next `uv run python -m uk_subsidy_tracker.plotting` will just not re-create them. Deleting them from the working tree is optional housekeeping. | **Optional:** `rm docs/charts/html/subsidy_scissors*` to avoid stale assets being accidentally referenced. The planner should add this as an explicit cleanup task or consciously skip it. |
+| Import graph | `src/uk_subsidy_tracker/plotting/__main__.py` imports `scissors` (L18) and calls it (L27). `counterfactual.py:139` has a docstring that references "the scissors chart" as a callsite example. | **REQUIRED:** Both must be updated when `scissors.py` is deleted. Docstring fix: substitute a generic example or just drop the parenthetical. |
+| Import graph for `bang_for_buck_old.py` | **No working-tree code references.** Only appears in `.planning/*.md`, `ARCHITECTURE.md`, `CHANGES.md` (historical mentions only). | **None required** — delete the file cleanly. |
+| `mkdocs.yml` internal references | `nav` contains 3 explicit entries that must be rewritten + 1 (Charts Overview) that must be removed. `theme.features` list needs expansion to match D-06. | **REQUIRED:** Full `nav:` rewrite + features list expansion. |
+| Incoming links to 3 git-mv'd pages | `docs/index.md:35,38,41,45` + `docs/charts/index.md:9,10,11,15,17,24,26,34,36` + `docs/charts/subsidy/remaining-obligations.md:111,113` + `docs/charts/subsidy/cfd-dynamics.md:100,102`. Plus `mkdocs.yml:44,45,46`. | **REQUIRED:** Update every incoming link to the new `docs/themes/cost/*.md` path. `docs/charts/index.md` is being DELETED so its own outbound links become moot. Internal cross-links between the 3 existing cost charts (cfd-dynamics↔remaining-obligations, cfd-dynamics↔cfd-vs-gas-cost) use relative paths that remain valid after git mv (they're all moving together to the same directory). |
+| `site_url` requirement | `mkdocs.yml:L10` sets `site_url: https://richardjlyon.github.io/uk-subsidy-tracker/` already. `navigation.instant` (D-06) requires this — it's present. [CITED: https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/] | **None** — requirement already satisfied. |
+| Chart PNG availability | All 7 PROMOTE chart PNGs verified on disk: `cannibalisation_capture_ratio_twitter.png`, `capacity_factor_seasonal_twitter.png`, `intermittency_generation_heatmap_twitter.png`, `intermittency_rolling_minimum_twitter.png`, `subsidy_cfd_payments_by_category_twitter.png`, `subsidy_cost_per_avoided_co2_tonne_twitter.png`, `subsidy_lorenz_twitter.png`. | **None** — PNGs exist. (They're gitignored, so CI would need `uv run python -m uk_subsidy_tracker.plotting` before `mkdocs build`. That's a Phase 3/4 decision, not a block.) |
+
+**Canonical question answered:** After every file in the repo is updated, **no runtime system still carries the old string "scissors" or "bang_for_buck_old" in a way that matters** (the gitignored HTML artefacts under `docs/charts/html/` are stale but harmless; delete at discretion).
+
+## 7 PROMOTE Chart Summaries
+
+For each, planner needs: (1) what the chart shows, (2) the argument it carries, (3) primary data inputs, (4) the module's PNG output path (relative to `docs/`), (5) the theme it belongs to.
+
+### 1. `cfd_payments_by_category` → Cost theme
+
+- **Shows:** Two-panel stacked chart. Top — monthly CfD cost stacked by technology category (Offshore Wind, Onshore Wind, Biomass, Other). Bottom — cumulative stacked area of same.
+- **Argument:** *"Offshore wind and Drax dominate; most CfD spending flows to a handful of technology categories."* Uses `reference_price × gen + CFD_Payments_GBP` so totals reconcile with `cfd_vs_gas_cost.py`. No counterfactual in this chart — pure where-the-money-goes.
+- **Data:** LCCC *Actual CfD Generation and avoided GHG emissions* only.
+- **PNG:** `docs/charts/html/subsidy_cfd_payments_by_category_twitter.png`
+- **Source:** `src/uk_subsidy_tracker/plotting/subsidy/cfd_payments_by_category.py`
+- **Theme placement:** Cost (per CONTEXT reasoning: the chart carries a money-volume story that fits Cost; Recipients theme also benefits but cost is the primary frame). Flag in Open Questions.
+
+### 2. `lorenz` → Recipients theme (FLAGSHIP)
+
+- **Shows:** Lorenz curve — cumulative % of projects (x-axis) vs cumulative % of £ (y-axis). Annotated with "6 projects = 50%" and "11 projects = 80%" threshold markers; top 3 recipients labelled by name.
+- **Argument:** *"The renewables revolution is a handful of Investment Contract offshore wind farms and Drax biomass, not a broad-based energy transition."* Headline per ARCHITECTURE §5.2: "6 projects = 50%."
+- **Data:** LCCC *Actual CfD Generation and avoided GHG emissions* only (groupby `Name_of_CfD_Unit` + `Allocation_round`; filter positive-payment units).
+- **PNG:** `docs/charts/html/subsidy_lorenz_twitter.png`
+- **Source:** `src/uk_subsidy_tracker/plotting/subsidy/lorenz.py`
+
+### 3. `subsidy_per_avoided_co2_tonne` → Efficiency theme (FLAGSHIP)
+
+- **Shows:** Two-panel. Top — £/tCO₂ avoided by allocation round (IC, AR1, AR2) over years 2017–2025 (2022 excluded due to negative-payment distortion). Bottom — fleet-wide tCO₂ avoided per MWh over time (falling as grid gets cleaner). Reference lines: DEFRA SCC (~£280/t) + UK ETS (~£50/t).
+- **Argument:** *"Even if you accept the climate premise, CfDs are not a cost-effective way to decarbonise — and getting less so as the grid gets cleaner and each new renewable MWh displaces less CO₂."* The £/tCO₂ is rising because the denominator is falling.
+- **Data:** LCCC *Actual CfD Generation and avoided GHG emissions* only. Uses `CFD_Payments_GBP / Avoided_GHG_tonnes_CO2e`.
+- **PNG:** `docs/charts/html/subsidy_cost_per_avoided_co2_tonne_twitter.png` (note: PNG name uses `cost_per_avoided_co2_tonne`, not `subsidy_per_avoided_co2_tonne` — planner should grep the `builder.save()` call to confirm; I verified the output filename matches the actual chart save call).
+- **Source:** `src/uk_subsidy_tracker/plotting/subsidy/subsidy_per_avoided_co2_tonne.py`
+
+### 4. `capture_ratio` → Cannibalisation theme (FLAGSHIP)
+
+- **Shows:** Two-panel. Top — capture-price ratio (capture price / time-weighted wholesale) falling over time, by technology (Offshore Wind, Onshore Wind). Bottom — AR1 wind levy per MWh rising (bar chart, red for positive / green for negative clawback).
+- **Argument:** *"The more wind we build, the more it crashes its own price — and consumers top up the difference via CfD. Cannibalisation is self-inflicted and baked in."* Two lines mirror each other.
+- **Data:** LCCC *Actual CfD Generation and avoided GHG emissions* only. Weighted-average `Market_Reference_Price_GBP_Per_MWh`, filters for AR1 wind units.
+- **PNG:** `docs/charts/html/cannibalisation_capture_ratio_twitter.png`
+- **Source:** `src/uk_subsidy_tracker/plotting/cannibalisation/capture_ratio.py`
+
+### 5. `capacity_factor/seasonal` → Reliability theme
+
+- **Shows:** Three side-by-side panels (Offshore Wind, Onshore Wind, Solar PV). Each panel: calendar-month Jan–Dec (x) × capacity-factor-% (y). Bold coloured line = fleet average; faint grey lines = individual years. Two horizontal reference lines per panel: "CfD actual avg" (dotted, coloured) and "DESNZ assumption" (dashed, black — 49% offshore / 36% onshore / 11% solar).
+- **Argument:** *"DESNZ's planning assumptions for new CfD projects (2027–2031) are optimistic; observed fleet capacity factors sit meaningfully below the headline assumption."* DESNZ-assumption challenge per ARCHITECTURE §5.2.
+- **Data:** LCCC *Actual CfD Generation* + *CfD Contract Portfolio Status* joined on CfD_ID. Capacity-weighted CF aggregated by calendar month.
+- **PNG:** `docs/charts/html/capacity_factor_seasonal_twitter.png`
+- **Source:** `src/uk_subsidy_tracker/plotting/capacity_factor/seasonal.py`
+
+### 6. `intermittency/generation_heatmap` → Reliability theme (VISUAL HOOK)
+
+- **Shows:** Two stacked heatmaps. Top — Wind (offshore + onshore combined) daily CF, year (row) × day-of-year (column), blue→red colourscale. Bottom — Solar, same layout. Dunkelflaute shows up as blue stripes; solar's winter collapse is starker.
+- **Argument:** *"Sustained low-output periods are structural, not exceptional. You can see them in the data with the naked eye."*
+- **Data:** LCCC *Actual CfD Generation* + *Portfolio Status* joined on CfD_ID. Daily CF = `daily_gen / (installed_capacity × 24)`; installed capacity derived from first-generation date per unit.
+- **PNG:** `docs/charts/html/intermittency_generation_heatmap_twitter.png`
+- **Source:** `src/uk_subsidy_tracker/plotting/intermittency/generation_heatmap.py`
+
+### 7. `intermittency/rolling_minimum` → Reliability theme
+
+- **Shows:** Two panels (Wind / Solar), each a time series. Faint grey = daily CF; coloured line = 21-day rolling mean CF; red diamond markers = significant drought troughs (scipy `find_peaks` with 15pp prominence, filtered below technology reference CF). Horizontal ref lines at 20% CF (wind) / 5% CF (solar).
+- **Argument:** *"CfD fleet has had multiple 21-day droughts below reference CF. Three weeks is longer than any deployed battery can cover. Renewables do not remove the need for firm backup."*
+- **Data:** Same as heatmap — LCCC *Actual CfD Generation* + *Portfolio Status*. Rolling 21-day mean of daily CF.
+- **PNG:** `docs/charts/html/intermittency_rolling_minimum_twitter.png`
+- **Source:** `src/uk_subsidy_tracker/plotting/intermittency/rolling_minimum.py`
+
+## GOV-01 Coverage Map — per-chart test & source wiring
+
+Locks in the Claude's-discretion default from CONTEXT.md. Every PRODUCTION chart has four artefacts: narrative page, methodology section (on-page or linked to `docs/methodology/gas-counterfactual.md`), test file reference, and Python source file link.
+
+| # | Chart | Theme | Python module (GitHub permalink root) | Test file(s) to cite | Uses counterfactual? | Methodology link target |
+|---|-------|-------|------------------------------------|----------------------|-----------------------|--------------------------|
+| 1 | `cfd-dynamics` (existing) | Cost | `plotting/subsidy/cfd_dynamics.py` | `test_schemas.py`, `test_counterfactual.py` | Yes | `../../methodology/gas-counterfactual.md` |
+| 2 | `cfd-vs-gas-cost` (existing) | Cost | `plotting/subsidy/cfd_vs_gas_cost.py` | `test_schemas.py`, `test_counterfactual.py`, `test_benchmarks.py` | Yes | `../../methodology/gas-counterfactual.md` |
+| 3 | `remaining-obligations` (existing) | Cost | `plotting/subsidy/remaining_obligations.py` | `test_schemas.py`, `test_aggregates.py` | No | `./methodology.md` (forward-projection only) |
+| 4 | `cfd-payments-by-category` **NEW** | Cost | `plotting/subsidy/cfd_payments_by_category.py` | `test_schemas.py`, `test_aggregates.py` | No (explicit — no counterfactual here) | `./methodology.md` (aggregation rationale) |
+| 5 | `lorenz` **NEW** | Recipients | `plotting/subsidy/lorenz.py` | `test_schemas.py`, `test_aggregates.py` | No | `./methodology.md` (concentration calc) |
+| 6 | `subsidy-per-avoided-co2-tonne` **NEW** | Efficiency | `plotting/subsidy/subsidy_per_avoided_co2_tonne.py` | `test_schemas.py`, `test_aggregates.py` | No (uses `Avoided_GHG_tonnes_CO2e` from LCCC directly, not `compute_counterfactual`) | `../../methodology/gas-counterfactual.md` (for the carbon-price / DEFRA-SCC context only) + `./methodology.md` (£/tCO₂ arithmetic) |
+| 7 | `capture-ratio` **NEW** | Cannibalisation | `plotting/cannibalisation/capture_ratio.py` | `test_schemas.py` (LCCC schema) | No | `./methodology.md` (capture-ratio + time-weighted-price definitions) |
+| 8 | `capacity-factor-seasonal` **NEW** | Reliability | `plotting/capacity_factor/seasonal.py` | `test_schemas.py` (LCCC portfolio schema — dependency on `CfD Contract Portfolio Status`) | No | `./methodology.md` (CF = generation / (capacity × hours), capacity-weighted aggregation) |
+| 9 | `generation-heatmap` **NEW** | Reliability | `plotting/intermittency/generation_heatmap.py` | `test_schemas.py` | No | `./methodology.md` (daily CF + installed-capacity-by-date derivation) |
+| 10 | `rolling-minimum` **NEW** | Reliability | `plotting/intermittency/rolling_minimum.py` | `test_schemas.py` | No | `./methodology.md` (21-day rolling + scipy `find_peaks` prominence) |
+
+**GitHub permalink pattern** (use on every page):
+```
+https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/plotting/<subpath>.py
+https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/tests/<test_file>.py
+```
+
+**Repo URL confirmation:** `mkdocs.yml:L16` declares `repo_url: https://github.com/richardjlyon/uk-subsidy-tracker` — use this base.
+
+**Note on `test_benchmarks.py`:** Only `cfd-vs-gas-cost` cites it because it's the only PRODUCTION chart whose aggregate has a benchmark anchor currently exercised (via `lccc_self` future transcription). All 7 new pages could technically cite `test_benchmarks.py` as the structural home for benchmarking, but the citation should reflect what the file actually validates *today*. Conservative rule: cite only tests that exercise the chart's actual data path as of 2026-04-22.
+
+## Nav Orphan Detection (TRIAGE-04)
+
+`mkdocs build --strict` **only** catches pages-not-in-nav if `validation.nav.omitted_files` is promoted from the default `info` level to `warn`. [CITED: https://www.mkdocs.org/user-guide/configuration/#validation — "nav.omitted_files default: info"]
+
+Planner MUST add to `mkdocs.yml`:
+
+```yaml
+validation:
+  nav:
+    omitted_files: warn        # non-default; required for TRIAGE-04
+    not_found: warn            # default — elevated for visibility
+    absolute_links: warn       # default info; catches accidental absolute paths
+  links:
+    not_found: warn            # default
+    anchors: warn              # non-default — promote to catch anchor typos
+    absolute_links: warn       # default info; strongly recommended
+    unrecognized_links: warn   # default info
+```
+
+**Enumerate the expected nav (22 entries that must all be reachable post-Phase 3):**
+
+```
+Home: index.md
+Cost: themes/cost/index.md
+  themes/cost/cfd-dynamics.md
+  themes/cost/cfd-vs-gas-cost.md
+  themes/cost/cfd-payments-by-category.md
+  themes/cost/remaining-obligations.md
+  themes/cost/methodology.md
+Recipients: themes/recipients/index.md
+  themes/recipients/lorenz.md
+  themes/recipients/methodology.md
+Efficiency: themes/efficiency/index.md
+  themes/efficiency/subsidy-per-avoided-co2-tonne.md
+  themes/efficiency/methodology.md
+Cannibalisation: themes/cannibalisation/index.md
+  themes/cannibalisation/capture-ratio.md
+  themes/cannibalisation/methodology.md
+Reliability: themes/reliability/index.md
+  themes/reliability/capacity-factor-seasonal.md
+  themes/reliability/generation-heatmap.md
+  themes/reliability/rolling-minimum.md
+  themes/reliability/methodology.md
+Methodology: methodology/gas-counterfactual.md
+About:
+  about/corrections.md
+  about/citation.md
+```
+
+Total = 22 pages. If any of these 22 is missing from the `nav:` block AND `validation.nav.omitted_files: warn` is set, `mkdocs build --strict` fails loudly. That is the TRIAGE-04 exit criterion mechanised.
+
+**Planner decision point:** whether to expose each theme's chart pages as sub-nav items under the theme (expands sidebar tree, more navigable) or omit them from `nav:` and rely on theme-index gallery links (cleaner top-level, but then `omitted_files: warn` MUST NOT be set, or mass false-failure). The CONTEXT language ("every PRODUCTION chart navigable from its theme page") is satisfied by the gallery-only path too. Researcher recommendation: explicit sub-nav with per-chart entries. Reason: it makes `--strict` a genuine gate, and the sidebar tree aligns with Material `navigation.sections` (D-06). The cost is sidebar vertical real estate; acceptable at 10-chart scale.
+
+## Git mv Correctness — The Three Existing CfD Pages
+
+`git mv` automatically stages the rename; a subsequent `git status` shows the rename entry, ready to commit. [CITED: https://git-scm.com/docs/git-mv — "The index is updated after successful completion."] Intermediate directories are NOT created automatically — `docs/themes/cost/` must exist first. Git preserves history for blame and merges via its content-similarity tracking on the rename.
+
+**Commands the planner should put in a task:**
+
+```bash
+mkdir -p docs/themes/cost
+git mv docs/charts/subsidy/cfd-dynamics.md docs/themes/cost/cfd-dynamics.md
+git mv docs/charts/subsidy/cfd-vs-gas-cost.md docs/themes/cost/cfd-vs-gas-cost.md
+git mv docs/charts/subsidy/remaining-obligations.md docs/themes/cost/remaining-obligations.md
+git rm docs/charts/index.md
+rmdir docs/charts/subsidy     # should be empty after the three git mv's
+```
+
+**Incoming links that MUST be updated in the same commit as the git mv** (so git-mv produces rename-detection without link breakage):
+
+| File | Line(s) | Old target | New target |
+|------|---------|-----------|-----------|
+| `docs/index.md` | 35 | `charts/subsidy/cfd-dynamics.md` | `themes/cost/cfd-dynamics.md` |
+| `docs/index.md` | 38 | `charts/subsidy/cfd-vs-gas-cost.md` | `themes/cost/cfd-vs-gas-cost.md` |
+| `docs/index.md` | 41 | `charts/subsidy/remaining-obligations.md` | `themes/cost/remaining-obligations.md` |
+| `docs/index.md` | 45 | `charts/index.md` | *(remove — target deleted)* |
+| `mkdocs.yml` | 42–46 | `Charts:` block with 3 sub-entries | Full nav rewrite per D-04 |
+
+**Intra-trio links (no change needed after move):** The three pages currently link to each other via sibling relative paths (`cfd-vs-gas-cost.md`, `remaining-obligations.md`, `cfd-dynamics.md`). Since all three move together to `docs/themes/cost/`, these sibling paths remain valid.
+
+**PNG embed paths WILL CHANGE.** Current (in `docs/charts/subsidy/cfd-dynamics.md:11`): `../html/subsidy_cfd_dynamics_twitter.png`. Post-mv (`docs/themes/cost/cfd-dynamics.md`): `../../charts/html/subsidy_cfd_dynamics_twitter.png`. **Every `![alt](../html/...)` on the three moved pages must gain an extra `../charts/` segment.** Same for methodology links (`../../methodology/gas-counterfactual.md` → stays `../../methodology/gas-counterfactual.md` — same number of `..` levels because both `charts/subsidy/` and `themes/cost/` are 2 levels deep relative to `docs/`).
+
+**Path math verified** (confirmed via `os.path.relpath`):
+- `docs/themes/cost/X.md` → `docs/charts/html/Y.png` is `../../charts/html/Y.png`
+- `docs/themes/cost/X.md` → `docs/methodology/gas-counterfactual.md` is `../../methodology/gas-counterfactual.md`
+- `docs/themes/cost/X.md` → `docs/themes/recipients/index.md` is `../recipients/index.md`
+- `docs/themes/cost/methodology.md` → `docs/methodology/gas-counterfactual.md` is `../../methodology/gas-counterfactual.md`
+
+## `mkdocs build --strict` Failure Modes
+
+Enumeration of what `--strict` catches (defaults + D-06 implications). All defaults cited from [https://www.mkdocs.org/user-guide/configuration/#validation].
+
+| Failure mode | Default level | Under `--strict` | Fixable by Phase 3 |
+|--------------|---------------|------------------|--------------------|
+| Internal link to non-existent page (`[x](./does-not-exist.md)`) | `links.not_found: warn` | **FAILS** | Yes — planner writes sanity-check pass |
+| Broken anchor fragment (`[x](./page.md#bad-anchor)`) | `links.anchors: info` | Passes (silent) unless promoted | Yes — recommend `anchors: warn` |
+| Absolute link in Markdown (`[x](/themes/cost/…)`) | `links.absolute_links: info` | Passes silent unless promoted | Yes — recommend `absolute_links: warn` |
+| Unrecognized link scheme (`[x](mailto:nothing)`) | `links.unrecognized_links: info` | Passes silent | Low risk; leave default |
+| Page in filesystem but not in `nav:` (orphan) | `nav.omitted_files: info` | Passes silent unless promoted | **REQUIRED for TRIAGE-04** — promote to `warn` |
+| Page in `nav:` but not in filesystem | `nav.not_found: warn` | **FAILS** | Catches typos in `nav:` block |
+| Absolute path in `nav:` (`nav: [Home: /index.md]`) | `nav.absolute_links: info` | Passes silent unless promoted | Low risk |
+| External link unreachable | Not validated at all | Passes silent | Out of scope — MkDocs does not validate external URLs |
+| Image file missing on disk | **Fails the page render** regardless of `--strict` (hard error from Markdown parser in MkDocs 1.6+ if `validation.links.not_found` applies to image paths) | — | Yes — verify PNG paths |
+
+**Recommended `validation:` block** (included above in Nav Orphan Detection). Promotes `anchors`, `absolute_links`, and `omitted_files` to `warn` so `--strict` becomes a meaningful gate.
+
+**External links NOT validated.** Every regulator URL cited in chart pages (LCCC, ONS, OBR, DESNZ) could rot silently and `mkdocs build --strict` would not catch it. This is a known limit. Phase 3 does not fix it; a future link-check CI step (e.g. `lychee`) could.
+
+## Material Theme Feature Regressions
+
+Verify each D-06 feature has no unmet prerequisite. Sourced from [https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/].
+
+| Feature | Prerequisite | Status in repo today | Notes |
+|---------|-------------|----------------------|-------|
+| `navigation.tabs` | None | ✓ | Already enabled (`mkdocs.yml:L23`); Material renders tabs on viewports ≥1220px |
+| `navigation.tabs.sticky` | `navigation.tabs` enabled | **Add to features list** | Currently missing; requires the base tab feature (which is on) |
+| `navigation.sections` | None | ✓ | Already enabled (`mkdocs.yml:L24`); combines with `navigation.tabs` so top-level tabs → sections at level-2 |
+| `navigation.top` | None | **Add to features list** | Missing; adds back-to-top button on scroll |
+| `navigation.instant` | **`site_url` must be set** (for sitemap.xml) | ✓ prerequisite met (`mkdocs.yml:L10` sets `site_url`); **add feature flag** | Feature flag currently missing |
+| `search.suggest` | Search plugin enabled (default) | ✓ `plugins: [search]` present at L88 | Already enabled (`mkdocs.yml:L26`) |
+| `search.highlight` | Search plugin enabled | ✓ | Already enabled (`mkdocs.yml:L27`) |
+| `content.code.copy` | None | ✓ | Already enabled (`mkdocs.yml:L28`) |
+| `content.tooltips` | `abbr` markdown extension enabled | ✓ `abbr` is at `mkdocs.yml:L54`. **Add feature flag** | Requirement met; flag missing |
+| `toc.integrate` | None | **Replace `toc.follow` with `toc.integrate`** | D-06 specifies `integrate`; `mkdocs.yml:L25` has `toc.follow`. They are different: `follow` scrolls the TOC to match viewport position; `integrate` merges the TOC into the left sidebar. D-06 is explicit about `integrate` |
+
+**Conflicting feature pairs to avoid** [CITED: https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/]:
+- `navigation.indexes` conflicts with `toc.integrate` — **NOT an issue**, because D-06 does not enable `navigation.indexes`.
+- `navigation.prune` conflicts with `navigation.expand` — **NOT an issue**, both are explicitly disabled / not mentioned.
+
+**Required `theme.features:` after Phase 3:**
+
+```yaml
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky      # ADD
+    - navigation.sections
+    - navigation.top              # ADD
+    - navigation.instant          # ADD
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tooltips            # ADD
+    - toc.integrate               # REPLACE toc.follow
+```
+
+`toc.follow` is removed because D-06 specifies `toc.integrate` and they are mutually exclusive — Material documentation treats integrate as absorbing the TOC into the sidebar, obviating follow semantics.
+
+## Common Pitfalls
+
+### Pitfall 1: Relative paths wrong after `git mv`
+
+**What goes wrong:** Page moved from `docs/charts/subsidy/cfd-dynamics.md` to `docs/themes/cost/cfd-dynamics.md`. Existing path to PNG was `../html/subsidy_cfd_dynamics_twitter.png` (relative to `docs/charts/subsidy/`). After move, that resolves to `docs/themes/html/...` which does not exist. `mkdocs build --strict` may or may not flag this as an error depending on `links.not_found` level.
+
+**Why it happens:** Plain string `git mv` does not rewrite internal link text. The path inside the markdown file is unchanged while the file's location changes.
+
+**How to avoid:** In the same commit as the `git mv`, edit every relative path inside the moved files. Specifically:
+- `../html/<name>.png` → `../../charts/html/<name>.png`
+- `../html/<name>.html` → `../../charts/html/<name>.html`
+- `../../methodology/gas-counterfactual.md` → `../../methodology/gas-counterfactual.md` (unchanged; same nesting depth)
+- Intra-trio sibling links (`cfd-vs-gas-cost.md`, `remaining-obligations.md`) — unchanged; still siblings.
+
+**Warning signs:** `mkdocs serve` logs `WARNING - A relative path to '../html/…' is included in the 'nav' configuration, which is not found in the documentation files`. Under `--strict` with `validation.links.not_found: warn`, the build exits non-zero.
+
+### Pitfall 2: Stale gitignored chart assets persist after `scissors.py` deletion
+
+**What goes wrong:** `docs/charts/html/subsidy_scissors.html` + `_twitter.png` + `.div.html` remain on disk because they are gitignored — `git` doesn't delete them. A stale link somewhere could still resolve.
+
+**Why it happens:** `docs/charts/html/` is regenerated only when `uv run python -m uk_subsidy_tracker.plotting` is invoked, and after scissors.py is deleted, that invocation will no longer (re)create scissors artefacts, but it also will not delete existing ones.
+
+**How to avoid:** Either (a) add an explicit cleanup task (`rm docs/charts/html/subsidy_scissors*`), or (b) regenerate the entire `docs/charts/html/` directory from scratch (`rm -rf docs/charts/html/ && uv run python -m uk_subsidy_tracker.plotting`). Option (b) is safer for CI determinism.
+
+**Warning signs:** A grep for `scissors` in `docs/` still returns hits after Phase 3 "complete".
+
+### Pitfall 3: `nav.omitted_files` silent under default `--strict`
+
+**What goes wrong:** Planner writes 22 pages, adds all 22 to `nav:`, ships. Two weeks later someone adds a 23rd page without updating `nav:`. Default behaviour: page renders at its URL but does not appear in the sidebar. `mkdocs build --strict` does NOT fail — because `nav.omitted_files` defaults to `info`, not `warn`.
+
+**Why it happens:** Historical MkDocs default is lenient on this to avoid annoying users who intentionally keep non-nav pages for direct-link use. It's not a safety-forward default. [CITED: https://www.mkdocs.org/user-guide/configuration/#validation]
+
+**How to avoid:** Add `validation.nav.omitted_files: warn` to `mkdocs.yml` as part of Phase 3. Make `--strict` a genuine gate. Revisit in Phase 4 if journalists need unlisted direct-link pages (then use `not_in_nav:` gitignore-pattern exclusion).
+
+**Warning signs:** Silent orphan accretion over time. The symptom is discovered late when a chart page can't be found from navigation and the author swears it exists.
+
+### Pitfall 4: `toc.follow` vs `toc.integrate` confused
+
+**What goes wrong:** Planner reads D-06 as "TOC-related feature" and leaves existing `toc.follow` in place while adding `toc.integrate`. Material may enable both, but the resulting UX is inconsistent.
+
+**Why it happens:** The two features look similar in a feature list but represent different UX models. `follow` = right-side TOC that scrolls to match viewport. `integrate` = TOC folded into left sidebar (no separate right-hand TOC).
+
+**How to avoid:** When editing `theme.features`, explicitly remove `toc.follow` and replace with `toc.integrate`. They should never both be present.
+
+**Warning signs:** Readers see a right-hand TOC even though left sidebar also shows a TOC; double-navigation confusion.
+
+### Pitfall 5: Chart page template padding
+
+**What goes wrong:** Author fills a chart page to the 100–170 line target by padding the Caveats or Argument section. The resulting prose is weaker than a concise 95-line version would be.
+
+**Why it happens:** D-01 specifies the range as a guard against underspecified pages, not as a minimum to be hit. Stronger guidance is "100–170 with hard no-pad rule."
+
+**How to avoid:** If a chart is genuinely simpler (e.g. a single-claim chart like `lorenz` with one headline number), a ~95-line page is acceptable. Do not invent caveats to hit the floor. CONTEXT.md D-01 already says so: *"Do not pad. Do not compress below 100 unless the chart is genuinely simpler than the reference three."*
+
+**Warning signs:** Multi-paragraph methodology repetition across pages; Caveats sections that repeat the gas-counterfactual caveats verbatim from the shared methodology page.
+
+### Pitfall 6: Chart modules have Pyright diagnostics unrelated to Phase 3
+
+**What goes wrong:** Planner sees `reportIndexIssue` / `reportReturnType` warnings in `capture_ratio.py`, `intermittency/__init__.py`, or `intermittency/load_duration.py` and files them as Phase 3 fixes, expanding scope.
+
+**Why it happens:** Loading these modules while researching the 7 PROMOTE charts exposes diagnostics. They are pre-existing, documented as non-blocking in CONTEXT.md `<code_context>`, and tracked outside Phase 3.
+
+**How to avoid:** Treat Pyright output on these modules as informational only. Do NOT add fix tasks. `pyrightconfig.json` has everything except `reportMissingImports` disabled anyway.
+
+**Warning signs:** Tasks appearing in the plan that edit `capture_ratio.py` line 98 or similar.
+
+### Pitfall 7: Adding top-level "Themes" umbrella in nav
+
+**What goes wrong:** Planner interprets the 5-theme structure as deserving a grouping in `nav:` — e.g. `Themes: [{Cost: …}, {Recipients: …}]`. Reader now needs 2 clicks to reach any theme.
+
+**Why it happens:** Intuition says grouping is tidier. Material's `navigation.tabs` surfaces the top-level entries as tabs; nesting themes loses that surface.
+
+**How to avoid:** D-04 explicitly states each theme is a top-level nav item. *"Each theme name appears as a top-level nav item (not nested under a 'Themes' umbrella) because each theme is a distinct argument deserving top-level visibility."*
+
+### Pitfall 8: `docs/charts/index.md` deletion breaks `docs/index.md`
+
+**What goes wrong:** `docs/charts/index.md` is deleted per D-04, but `docs/index.md:45` currently links to it (`See the [Charts overview](charts/index.md) for how they relate.`). `mkdocs build --strict` fails with `links.not_found: warn → error`.
+
+**Why it happens:** D-04 dropped the Charts umbrella without specifying homepage copy updates.
+
+**How to avoid:** Add a task to update `docs/index.md`. Either rewrite the "The three charts" section to point at `themes/cost/index.md` and the new theme set, or drop the paragraph. Recommended: rewrite to something like *"Explore by theme: [Cost](themes/cost/index.md) · [Recipients](themes/recipients/index.md) · …"*.
+
+**Warning signs:** `--strict` fails with `links.not_found` on `charts/index.md`. Caught by the `--strict` exit criterion if validation levels are set correctly.
+
+## Code Examples
+
+### Theme-index gallery block (Material list-syntax grid cards)
+
+```markdown
+<!-- Source: https://squidfunk.github.io/mkdocs-material/reference/grids (list syntax) -->
+
+<div class="grid cards" markdown>
+
+-   [![Lorenz curve preview](../../charts/html/subsidy_lorenz_twitter.png)](./lorenz.md)
+
+    __[Lorenz curve — 6 projects = 50%](./lorenz.md)__
+
+    ---
+
+    The inequality curve applied to CfD payments. Six projects receive 50% of the
+    £29bn spent so far; eleven receive 80%. The "renewables revolution" is in
+    practice a handful of offshore wind farms and Drax.
+
+-   [![CfD payments by technology preview](../../charts/html/subsidy_cfd_payments_by_category_twitter.png)](../cost/cfd-payments-by-category.md)
+
+    __[Payments by technology category](../cost/cfd-payments-by-category.md)__
+
+    ---
+
+    Monthly and cumulative CfD cost stacked by Offshore Wind, Onshore Wind,
+    Biomass, and Other. Offshore + biomass dominate.
+
+</div>
+```
+
+### Cross-theme methodology link pattern (D-05 / D-05a)
+
+```markdown
+<!-- In docs/themes/cost/methodology.md -->
+
+# Cost theme — methodology
+
+<!-- theme-specific aggregation/allocation math here -->
+
+## Gas counterfactual
+
+The orange "gas alternative" line is computed identically across the Cost
+theme and the Efficiency theme. See the single source of truth:
+
+→ [Gas counterfactual (shared)](../../methodology/gas-counterfactual.md)
+
+Cited constants (with `Provenance:` blocks):
+
+- `CCGT_EFFICIENCY` (0.55) — BEIS *Electricity Generation Costs 2023*
+- `GAS_CO2_INTENSITY_THERMAL` (0.18290 tCO₂/MWh) — DESNZ 2024 GHG factors
+- `CCGT_EXISTING_FLEET_OPEX_PER_MWH` (£5/MWh) — BEIS *EGC 2023*, Table ES.1
+
+Full definitions at
+[`src/uk_subsidy_tracker/counterfactual.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/counterfactual.py).
+```
+
+### mkdocs.yml validation block (recommended addition)
+
+```yaml
+# Add to mkdocs.yml root — required for TRIAGE-04 automation
+validation:
+  nav:
+    omitted_files: warn        # non-default; required — catches nav orphans
+    not_found: warn            # default
+    absolute_links: warn       # promote from info
+  links:
+    not_found: warn            # default
+    anchors: warn              # promote from info
+    absolute_links: warn       # promote from info
+    unrecognized_links: info   # keep default
+```
+
+### mkdocs.yml nav block rewrite (post-Phase 3)
+
+```yaml
+nav:
+  - Home: index.md
+  - Cost:
+      - themes/cost/index.md
+      - CfD dynamics: themes/cost/cfd-dynamics.md
+      - CfD vs gas cost: themes/cost/cfd-vs-gas-cost.md
+      - Payments by category: themes/cost/cfd-payments-by-category.md
+      - Remaining obligations: themes/cost/remaining-obligations.md
+      - Methodology: themes/cost/methodology.md
+  - Recipients:
+      - themes/recipients/index.md
+      - Lorenz curve: themes/recipients/lorenz.md
+      - Methodology: themes/recipients/methodology.md
+  - Efficiency:
+      - themes/efficiency/index.md
+      - Subsidy per tonne CO₂ avoided: themes/efficiency/subsidy-per-avoided-co2-tonne.md
+      - Methodology: themes/efficiency/methodology.md
+  - Cannibalisation:
+      - themes/cannibalisation/index.md
+      - Capture ratio: themes/cannibalisation/capture-ratio.md
+      - Methodology: themes/cannibalisation/methodology.md
+  - Reliability:
+      - themes/reliability/index.md
+      - Seasonal capacity factor: themes/reliability/capacity-factor-seasonal.md
+      - Generation heatmap: themes/reliability/generation-heatmap.md
+      - Rolling minimum: themes/reliability/rolling-minimum.md
+      - Methodology: themes/reliability/methodology.md
+  - Methodology:
+      - Gas counterfactual: methodology/gas-counterfactual.md
+  - About:
+      - Corrections: about/corrections.md
+      - Citation: about/citation.md
+```
+
+Each theme section has its index.md as the first entry — this becomes the default page when the reader clicks the tab.
+
+## State of the Art
+
+| Old Approach | Current Approach | When Changed | Impact |
+|--------------|------------------|--------------|--------|
+| MkDocs 1.4 implicit validation (warnings hidden unless `strict: true`) | MkDocs 1.5+ `validation:` block per-warning level | MkDocs 1.5.0 (2023) | Planner must explicitly tune `validation.nav.omitted_files: warn` to catch orphans |
+| Material theme with hand-rolled CSS for card layouts | Material 9.5.0+ built-in `grid cards` class using `attr_list` + `md_in_html` | 2024 | Drop any custom CSS; use native Material pattern |
+| `readthedocs` theme | `material` theme with palette toggle + navigation.tabs | Phase 1 (2026-04) | Already done in Phase 1 |
+| Three chart doc pages at `docs/charts/subsidy/` | 5-theme tree at `docs/themes/<theme>/` with 10 chart pages | Phase 3 (this phase) | Restructure is the deliverable |
+| Constants duplicated into Markdown methodology pages | Python-native `Provenance:` docstring blocks, referenced from Markdown | 2026-04-22 (commit `efdfbbc`) | Tier 1 pattern — Phase 3 chart methodology sections LINK to constants, do not copy values |
+
+**Deprecated / outdated:**
+- **`toc.follow` in favour of `toc.integrate`** — D-06 swaps these; MkDocs Material supports both but `integrate` is the sidebar-TOC pattern that matches the hybrid theme-index aesthetic.
+- **`docs/charts/index.md`** as a charts-overview entry-point — replaced by the 5-theme index pages, one per argumentative family.
+
+## Assumptions Log
+
+| # | Claim | Section | Risk if Wrong |
+|---|-------|---------|---------------|
+| A1 | Material's `grid cards` pattern works without `pymdownx.blocks` | Pattern 3 / Code Examples | Low — verified via Context7 (`/websites/squidfunk_github_io_mkdocs-material`) and WebFetch of [grids docs](https://squidfunk.github.io/mkdocs-material/reference/grids/). Only `attr_list` + `md_in_html` needed. |
+| A2 | `navigation.instant` has no prerequisite beyond `site_url` | §Material Theme Feature Regressions | Low — [CITED: Material docs]. `site_url` is already set at `mkdocs.yml:L10`. |
+| A3 | `git mv` preserves blame history across the rename | §Git mv Correctness | Low — standard git behaviour; [CITED: git-mv docs]. Git uses content-similarity detection, not an explicit rename record. |
+| A4 | All 7 PROMOTE chart Python modules currently produce a PNG at the path I cited | §7 PROMOTE Chart Summaries | **None** — VERIFIED via `ls docs/charts/html/*_twitter.png` (all 7 present). |
+| A5 | Phase 3 does not need to re-run `uv run python -m uk_subsidy_tracker.plotting` before `mkdocs build --strict` if the PNGs are already on disk | §Architecture §System Architecture | Low — PNGs already present (verified). CI may need to regen but that's a Phase 4 decision. |
+| A6 | `test_benchmarks.py` currently exercises only CfD data and is the correct GOV-01 reference for `cfd-vs-gas-cost` only | §GOV-01 Coverage Map | Medium — the file today has `lccc_self: []` per Phase 2 Plan 03 fallback; LCCC ARA 2024/25 transcription is pending (STATE.md todo). If planner interprets GOV-01 strictly, they may want to cite `test_benchmarks.py` on every Cost-theme chart regardless of current content. Researcher recommendation: cite what the test exercises *today*. |
+| A7 | `navigation.tabs` does not require any specific nav hierarchy depth | §Material Theme Feature Regressions | Low — [CITED: Material docs] — no structural prerequisite stated. Works with flat or nested nav. |
+| A8 | The chart page for `cfd_payments_by_category` belongs in Cost, not Recipients | §7 PROMOTE Chart Summaries #1 | Medium — it's a by-technology breakdown so has a Recipients flavour too. CONTEXT.md places it in Cost implicitly (the existing 3 CfD cost pages live together). Open Question logged below. |
+| A9 | `iamkate.com/grid` is inspirational aesthetic only, not a strict template to replicate | §Pattern 2 / §Pattern 3 | Low — ARCHITECTURE §5.6 is explicit: the pattern is adapted. No pixel-level match required. iamkate.com is HTTPS-accessible (verified via WebFetch; returned 200). |
+
+**If this table is empty:** Not empty. A1–A9 should be verified/challenged by the planner before execution. Only A8 requires a user decision; the rest are low-risk verified claims.
+
+## Open Questions
+
+1. **Where does `cfd-payments-by-category` live?**
+   - What we know: It's a by-technology cost breakdown. The Cost theme holds the 3 existing PRODUCTION cost charts and adds this as a 4th. The Recipients theme hosts `lorenz` only. ARCHITECTURE §5.2 tables it under Theme B (Recipients).
+   - What's unclear: Whether it should be at `docs/themes/cost/cfd-payments-by-category.md` (my recommended path in this research, matching CONTEXT's implicit grouping) OR at `docs/themes/recipients/cfd-payments-by-category.md` (matching §5.2 verdict "Theme B").
+   - Recommendation: Honour ARCHITECTURE §5.2 — place at `docs/themes/recipients/cfd-payments-by-category.md`. Update the nav accordingly. Cross-link from the Cost theme gallery so the chart shows up in both themes' galleries (the chart only has one page; it is cross-linked from sibling theme indexes). **Planner must resolve** before writing tasks.
+
+2. **Should Phase 3 regenerate `docs/charts/html/` from scratch?**
+   - What we know: PNGs exist today. `scissors.py` deletion leaves stale scissors artefacts under `docs/charts/html/` (gitignored).
+   - What's unclear: Whether Phase 3's done-done includes `rm -rf docs/charts/html/ && uv run python -m uk_subsidy_tracker.plotting` as a cleanup step.
+   - Recommendation: Include it. Makes Phase 3 end-state deterministic and catches any chart that silently stops producing output due to the `scissors` cleanup. Cost: ~30s chart regeneration.
+
+3. **Add `mkdocs build --strict` as a CI gate in Phase 3 or defer to Phase 4?**
+   - What we know: CONTEXT.md `<code_context>` says planner may fold in. Phase 2 explicitly deferred it.
+   - What's unclear: Phase 3 is the natural home (docs tree stabilises here).
+   - Recommendation: Fold it in. Add a `mkdocs-build-strict` step to `.github/workflows/ci.yml` after the existing pytest step. Gate the merge-to-main on it. Takes ~10 lines to add. The alternative (Phase 4) means two CI touches when one would suffice.
+
+4. **What test does `capacity_factor/seasonal` cite if `test_schemas.py` only validates schemas?**
+   - What we know: The chart uses `CfD Contract Portfolio Status` which `test_schemas.py::test_lccc_portfolio_schema` validates. But the CF computation itself (`generation / (capacity × hours)`) has no dedicated test.
+   - What's unclear: Is schema-validation alone sufficient GOV-01 coverage for this chart?
+   - Recommendation: Cite `test_schemas.py` honestly (the data it reads is validated) AND add an Open Item in the chart's Caveats that reads: *"No dedicated test pins the CF formula; data schema is validated via `test_schemas.py`. A CF-formula pin test is a candidate for Phase 4 alongside the Parquet variants of TEST-02/03/05."* This is honest and creates a tracking seed.
+
+5. **Does `content.tooltips` need abbreviations defined somewhere?**
+   - What we know: D-06 enables `content.tooltips`. Material's tooltip feature works on Markdown abbreviations declared via `*[CFD]: Contract for Difference` blocks. The `abbr` extension is already enabled in `mkdocs.yml:L54`.
+   - What's unclear: Phase 3 could ship with zero abbreviations defined — the feature is "live" but invisible. Future phases would populate a `docs/abbreviations.md` glossary.
+   - Recommendation: Ship `content.tooltips: enabled` but don't commit to authoring a glossary in Phase 3. A follow-up task to define ~10 common UK-energy abbreviations (CfD, AR1, CCGT, MWh, ETS, SCC) is a good Phase 3+ seed.
+
+## Environment Availability
+
+| Dependency | Required By | Available | Version | Fallback |
+|------------|------------|-----------|---------|----------|
+| `git` | `git mv`, `git rm`, commits | ✓ | system | — |
+| Python 3.12+ | `uv run` commands | ✓ | 3.13 per `.venv` (STATE.md) | — |
+| `uv` | `uv sync`, `uv run mkdocs`, `uv run python -m …` | ✓ | — | — |
+| `mkdocs` | `mkdocs build --strict`, `mkdocs serve` | ✓ | ≥1.6.1 (pinned) | — |
+| `mkdocs-material` | Theme + grid cards | ✓ | ≥9.7.6 (pinned) | — |
+| `kaleido` | PNG export via Plotly `builder.save(export_twitter=True)` | ✓ | ≥1.2.0 (pinned) | — |
+| All 7 PROMOTE chart PNGs on disk | `mkdocs build` page render | ✓ | — | Regenerate with `uv run python -m uk_subsidy_tracker.plotting` (fast, ~30s) |
+| Raw data files under `data/raw/` | Chart regeneration if needed | ✓ | 5 files, all ≤100 MB, git-tracked | — |
+
+**Missing dependencies with no fallback:** None.
+
+**Missing dependencies with fallback:** None — all required tooling is present.
+
+## Validation Architecture
+
+**Test framework detected:** pytest ≥9.0.3, already configured per CLAUDE.md + `tests/__init__.py` package marker. 16 tests passing + 4 skipped on `main` (STATE.md metrics). Config is implicit (no `pyproject.toml [tool.pytest]` block currently) — pytest autodiscovers `tests/test_*.py`.
+
+### Test Framework
+
+| Property | Value |
+|----------|-------|
+| Framework | pytest 9.0.3 |
+| Config file | implicit (none — pytest autodiscovery from `tests/`); `tests/__init__.py` present as package marker |
+| Quick run command | `uv run pytest -x` |
+| Full suite command | `uv run pytest` |
+| Docs build assertion | `uv run mkdocs build --strict` (Phase 3 primary gate) |
+| Chart regeneration | `uv run python -m uk_subsidy_tracker.plotting` (precondition for docs build) |
+
+### Phase Requirements → Validation Map
+
+Phase 3 is documentation-heavy, so the bulk of validation is build-time + filesystem-shape rather than unit tests. Complementary unit tests only where structural invariants exist.
+
+| Req ID | Behaviour | Validation Type | Automated Command | File / Artefact Exists? |
+|--------|-----------|-----------------|-------------------|--------------------------|
+| **TRIAGE-01** | `scissors.py` absent | Filesystem assertion | `test ! -f src/uk_subsidy_tracker/plotting/subsidy/scissors.py` | — (asserted absent) |
+| **TRIAGE-01** | `bang_for_buck_old.py` absent | Filesystem assertion | `test ! -f src/uk_subsidy_tracker/plotting/subsidy/bang_for_buck_old.py` | — |
+| **TRIAGE-01** | No dangling import of `scissors` or `bang_for_buck_old` | Grep | `! grep -rn "from uk_subsidy_tracker.plotting.subsidy.scissors\|import scissors\|bang_for_buck_old" src/ tests/` | — |
+| **TRIAGE-01** | `src/uk_subsidy_tracker/plotting/__main__.py` no longer references `scissors` | Grep | `! grep -n "scissors" src/uk_subsidy_tracker/plotting/__main__.py` | — |
+| **TRIAGE-02** | 7 new chart pages exist at correct theme paths | Filesystem assertion (bash or pytest) | `for f in docs/themes/cost/cfd-payments-by-category.md docs/themes/recipients/lorenz.md docs/themes/efficiency/subsidy-per-avoided-co2-tonne.md docs/themes/cannibalisation/capture-ratio.md docs/themes/reliability/capacity-factor-seasonal.md docs/themes/reliability/generation-heatmap.md docs/themes/reliability/rolling-minimum.md; do test -f "$f" || exit 1; done` | ❌ Wave 0 (files do not exist yet) |
+| **TRIAGE-02** | Each new chart page has all 6 D-01 section headers | Grep (regex per page) | `for f in <seven paths>; do grep -q "^## What the chart shows" "$f" && grep -q "^## The argument" "$f" && grep -q "^## Methodology" "$f" && grep -q "^## Caveats" "$f" && grep -q "^## Data & code" "$f" && grep -q "^## See also" "$f" || exit 1; done` | ❌ Wave 0 |
+| **TRIAGE-02** | Each new chart page embeds its PNG | Grep | `for f in <seven paths>; do grep -qE "!\[.*\]\(.*/charts/html/.*_twitter.png\)" "$f" || exit 1; done` | ❌ Wave 0 |
+| **TRIAGE-02** | Each new chart page cites its Python source with a GitHub permalink | Grep | `for f in <seven paths>; do grep -qE "github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/plotting/" "$f" || exit 1; done` | ❌ Wave 0 |
+| **TRIAGE-03** | 5 theme directories exist | Filesystem assertion | `for d in cost recipients efficiency cannibalisation reliability; do test -d "docs/themes/$d" || exit 1; done` | ❌ Wave 0 |
+| **TRIAGE-03** | Each theme has index.md + methodology.md | Filesystem assertion | `for d in cost recipients efficiency cannibalisation reliability; do test -f "docs/themes/$d/index.md" && test -f "docs/themes/$d/methodology.md" || exit 1; done` | ❌ Wave 0 |
+| **TRIAGE-03** | Each theme index.md has the 4 D-02 sections | Grep | `for d in cost recipients efficiency cannibalisation reliability; do grep -qE "^## (Charts\|charts)" "docs/themes/$d/index.md" && grep -q "grid cards" "docs/themes/$d/index.md" || exit 1; done` | ❌ Wave 0 |
+| **TRIAGE-03** | `docs/charts/subsidy/` is empty/removed; `docs/charts/index.md` deleted | Filesystem assertion | `test ! -f docs/charts/index.md && test ! -d docs/charts/subsidy || test -z "$(ls -A docs/charts/subsidy 2>/dev/null)"` | — (gate after Phase 3) |
+| **TRIAGE-04** | Every PRODUCTION chart present in `mkdocs.yml → nav` | `mkdocs build --strict` with `validation.nav.omitted_files: warn` | `uv run mkdocs build --strict` | ❌ Wave 0 (validation block not yet added to mkdocs.yml) |
+| **TRIAGE-04** | No broken internal links | `mkdocs build --strict` with `validation.links.not_found: warn` (default) | `uv run mkdocs build --strict` | — |
+| **TRIAGE-04** | 22-page nav enumerates all sections | build assertion + manual count | `uv run mkdocs build --strict && grep -c "\.md" mkdocs.yml` should return ≥20 | — |
+| **GOV-01** | Each PRODUCTION chart page has 4 artefacts: narrative (self), methodology link, test permalink, source permalink | Grep (per page) | For each of 10 PRODUCTION chart pages: 1 PNG embed + 1 methodology link + 1 `/tests/test_*.py` permalink + 1 `/src/uk_subsidy_tracker/plotting/*.py` permalink | ❌ Wave 0 |
+| **Phase gate** | Docs build clean under `--strict` | Build | `uv run mkdocs build --strict` exits 0 | ❌ Wave 0 |
+| **Regression** | Existing 16 tests still green | Test run | `uv run pytest` | ✓ (green on `main` today) |
+
+### Sampling Rate
+
+- **Per task commit:** `uv run pytest -x` (quick; should stay green throughout) + the filesystem/grep assertions relevant to the task in play
+- **Per wave merge:** `uv run python -m uk_subsidy_tracker.plotting && uv run mkdocs build --strict` (regenerate PNGs → assert docs build)
+- **Phase gate (end of Phase 3):** `uv run pytest && uv run python -m uk_subsidy_tracker.plotting && uv run mkdocs build --strict` — all three green. Additionally the 7+5+5 = 17 filesystem/grep assertions above.
+
+### Wave 0 Gaps
+
+- [ ] `mkdocs.yml` — add `validation:` block promoting `nav.omitted_files: warn`, `links.anchors: warn`, `links.absolute_links: warn` (required for TRIAGE-04 to have teeth)
+- [ ] `mkdocs.yml` — add the D-06 missing features (`navigation.tabs.sticky`, `navigation.top`, `navigation.instant`, `content.tooltips`) and swap `toc.follow` → `toc.integrate`
+- [ ] `mkdocs.yml` — rewrite `nav:` per post-Phase-3 structure (22 entries)
+- [ ] `src/uk_subsidy_tracker/plotting/__main__.py` — drop `scissors` import + call
+- [ ] `src/uk_subsidy_tracker/counterfactual.py:139` — update docstring to not reference scissors chart
+- [ ] 10 new Markdown files under `docs/themes/` (5 index.md + 5 methodology.md)
+- [ ] 7 new chart page Markdown files under their respective theme subdirectories
+- [ ] Planner may optionally add a `tests/test_docs_structure.py` with filesystem/grep assertions as pytest. Consider pattern:
+
+```python
+# tests/test_docs_structure.py (optional — Phase 3 enhancement)
+from pathlib import Path
+DOCS = Path("docs")
+THEMES = ["cost", "recipients", "efficiency", "cannibalisation", "reliability"]
+PROMOTE_PAGES = [
+    "themes/cost/cfd-payments-by-category.md",
+    "themes/recipients/lorenz.md",
+    "themes/efficiency/subsidy-per-avoided-co2-tonne.md",
+    "themes/cannibalisation/capture-ratio.md",
+    "themes/reliability/capacity-factor-seasonal.md",
+    "themes/reliability/generation-heatmap.md",
+    "themes/reliability/rolling-minimum.md",
+]
+
+def test_all_themes_have_index_and_methodology():
+    for t in THEMES:
+        assert (DOCS / "themes" / t / "index.md").exists()
+        assert (DOCS / "themes" / t / "methodology.md").exists()
+
+def test_promote_chart_pages_exist():
+    for p in PROMOTE_PAGES:
+        assert (DOCS / p).exists()
+
+def test_cut_files_deleted():
+    assert not Path("src/uk_subsidy_tracker/plotting/subsidy/scissors.py").exists()
+    assert not Path("src/uk_subsidy_tracker/plotting/subsidy/bang_for_buck_old.py").exists()
+
+def test_six_section_template_present_in_promote_pages():
+    required = ["## What the chart shows", "## The argument",
+                "## Methodology", "## Caveats", "## Data & code", "## See also"]
+    for p in PROMOTE_PAGES:
+        content = (DOCS / p).read_text()
+        for section in required:
+            assert section in content, f"{p} missing {section}"
+```
+
+Adding this file makes the phase's structural invariants a permanent regression guard (future refactoring of the docs tree can't silently drop a section). Researcher recommendation: include.
+
+## Security Domain
+
+Per CLAUDE.md and `.planning/config.json`, `security_enforcement` is not explicitly disabled; treat as enabled. However Phase 3 is a documentation-only phase with no user input, no authentication, no external payment handling, no code execution surface beyond `uv run` commands invoked by the developer. ASVS categories substantially do not apply at phase scope.
+
+### Applicable ASVS Categories
+
+| ASVS Category | Applies | Standard Control |
+|---------------|---------|------------------|
+| V2 Authentication | no | — (no auth surface) |
+| V3 Session Management | no | — |
+| V4 Access Control | no | — (public static site) |
+| V5 Input Validation | no | — (no user input) |
+| V6 Cryptography | no | — |
+| V7 Error Handling & Logging | minimal | MkDocs prints warnings; `--strict` halts on warnings; no secrets logged |
+| V14 Configuration | minimal | `mkdocs.yml` is public; no secrets in repo |
+
+### Known Threat Patterns for MkDocs / static docs
+
+| Pattern | STRIDE | Mitigation |
+|---------|--------|------------|
+| Outbound link points to URL that later hosts malicious content | Tampering | Rot detection is out of scope for Phase 3; Internet Archive auto-archives the citations (ARCHITECTURE §8.4). Flag in a future link-check workflow. |
+| `mkdocs-material` upgrade introduces theme CSS that breaks grid cards | Availability | Version pin in `uv.lock` (already present; committed) |
+| User-injected Markdown in PRs renders as HTML and executes JS | XSS | MkDocs Material escapes by default; only explicit `{=html}` or `<script>` tags leak. Phase 3 does not add any. |
+| Chart PNG is stale / does not match source code | Integrity | Chart regeneration pipeline (`uv run python -m uk_subsidy_tracker.plotting`) produces PNG from source each build; gitignored (no stale commit). CI step in Phase 4 will make this automatic. |
+
+No Phase 3 code writes secrets, reads environment variables for credentials, or makes HTTP calls at build time (MkDocs is pure local). Security domain substantially clean.
+
+## Sources
+
+### Primary (HIGH confidence)
+
+- **Context7 library** `/websites/squidfunk_github_io_mkdocs-material` (High reputation, benchmark 85.25) — grid cards list syntax, card grid example, `attr_list` + `md_in_html` requirement, theme feature documentation
+- **Material for MkDocs — Grids reference** — [https://squidfunk.github.io/mkdocs-material/reference/grids/](https://squidfunk.github.io/mkdocs-material/reference/grids/) — list-syntax cards, block-syntax cards, required extensions
+- **Material for MkDocs — Setting up navigation** — [https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/](https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/) — `navigation.instant` requires `site_url`; tabs + sections coexist; `navigation.indexes` conflicts with `toc.integrate`
+- **MkDocs Configuration — Validation** — [https://www.mkdocs.org/user-guide/configuration/#validation](https://www.mkdocs.org/user-guide/configuration/#validation) — default validation levels (`nav.omitted_files: info`, `links.not_found: warn`, etc.); `strict: true` promotes warnings to errors
+- **MkDocs 1.5 release discussion** — [https://github.com/mkdocs/mkdocs/discussions/3306](https://github.com/mkdocs/mkdocs/discussions/3306) — `validation:` block introduction, `not_in_nav` gitignore pattern support
+- **git-mv docs** — [https://git-scm.com/docs/git-mv](https://git-scm.com/docs/git-mv) — automatic staging, destination-directory must exist
+- **Filesystem inspection** — verified all 7 PROMOTE chart PNGs present at `docs/charts/html/*_twitter.png`; verified `scissors.py` + `bang_for_buck_old.py` present in source tree (to be deleted); verified `mkdocs.yml:L10` sets `site_url`
+- **Repo state** — `mkdocs.yml`, `pyproject.toml`, `uv.lock`, `src/uk_subsidy_tracker/counterfactual.py`, all 7 PROMOTE chart module source files, all 3 existing chart docs pages
+
+### Secondary (MEDIUM confidence)
+
+- **iamkate.com/grid** — [https://grid.iamkate.com/](https://grid.iamkate.com/) — aesthetic reference for CONTEXT D-02. WebFetch returned usable page content; design intent matches the architectural description ("grid of tiles, data-dense, minimal chrome"). The specific *.com/grid* page is a single-column responsive dashboard rather than a pure grid gallery; ARCHITECTURE §5.6 references the *aesthetic*, which is what the chart gallery pattern adopts.
+- **WebSearch: mkdocs strict nav omitted_files 2026** — confirms `nav.omitted_files` defaults to `info` and must be promoted to `warn` for `--strict` to catch orphans
+
+### Tertiary (LOW confidence)
+
+- None. All critical claims trace to Context7 / official MkDocs / Material / git-scm docs, or direct codebase inspection.
+
+## Metadata
+
+**Confidence breakdown:**
+- Standard stack: HIGH — versions verified from `pyproject.toml` + `uv.lock`, both packages already installed
+- Architecture patterns: HIGH — three existing reference pages (`cfd-dynamics.md` etc.) provide concrete structural precedent; Material grid cards syntax verified via Context7 + official docs
+- Runtime state inventory: HIGH — grep sweep completed; 3 in-source references to `scissors`/`bang_for_buck_old` located and documented
+- GOV-01 coverage map: HIGH for existing test files; MEDIUM for mapping-specific cross-references (planner should re-grep at plan-time to confirm current state)
+- Common pitfalls: HIGH — pitfalls 1–3 and 8 are directly linked to `--strict` validation docs; pitfalls 4–7 inferred from CONTEXT.md and file inspection
+- Validation architecture: HIGH — all commands runnable today; the seven new file paths are the most reliable assertions
+
+**Research date:** 2026-04-22
+**Valid until:** 2026-05-22 (30 days — MkDocs Material ships minor updates roughly monthly; feature list could gain new options but existing features are stable)
+
+## RESEARCH COMPLETE
