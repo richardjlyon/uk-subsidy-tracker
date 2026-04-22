@@ -42,4 +42,4 @@ corrections log.
 
 ## Licence
 
-<!-- Licence text finalised in Task 5 after user confirms OSI licence choice. -->
+Released under the [MIT License](LICENSE).

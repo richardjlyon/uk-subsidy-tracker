@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this data or analysis, please cite it as below."
+title: "UK Renewable Subsidy Tracker"
+authors:
+  - family-names: Lyon
+    given-names: Richard
+    email: richlyon@fastmail.com
+version: "0.1.0"
+date-released: 2026-04-21
+repository-code: "https://github.com/richardjlyon/uk-subsidy-tracker"
+url: "https://richardjlyon.github.io/uk-subsidy-tracker/"
+type: software
+abstract: "An independent, open, data-driven audit of UK renewable electricity subsidy costs."
+keywords:
+  - "UK renewable energy"
+  - "electricity subsidies"
+  - "Contracts for Difference"
+  - "CfD"
+  - "open data"
+license: MIT
