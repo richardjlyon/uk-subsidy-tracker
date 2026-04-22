@@ -15,7 +15,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 ### Test & Benchmark Scaffolding
 
-- [ ] **TEST-01**: `tests/test_counterfactual.py` pins the gas counterfactual formula (fuel + carbon + O&M) against known inputs
+- [x] **TEST-01**: `tests/test_counterfactual.py` pins the gas counterfactual formula (fuel + carbon + O&M) against known inputs
 - [ ] **TEST-02**: `tests/test_schemas.py` validates every derived Parquet file against Pydantic schemas
 - [ ] **TEST-03**: `tests/test_aggregates.py` proves `sum by year` = `sum by year × technology`; no row leakage
 - [ ] **TEST-04**: `tests/test_benchmarks.py` reconciles totals against Ben Pile (2021 + 2026), REF subset, Turver aggregate; documents divergences
@@ -103,7 +103,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 - [ ] **GOV-01**: Every PRODUCTION chart carries four artefacts — narrative page, methodology page, test (in test_benchmarks or scheme-specific), source-file link — all cross-referenced
 - [ ] **GOV-02**: `manifest.json` exposes full provenance per dataset (source URL, retrieval timestamp, source SHA-256, pipeline git SHA, methodology version)
 - [ ] **GOV-03**: Daily refresh CI workflow (06:00 UTC cron) with per-scheme dirty-check rebuilds only what changed upstream
-- [ ] **GOV-04**: Methodology versioning — `counterfactual.py` formula carries version number; changes bump `methodology_version` in manifest; `CHANGES.md` logs rationale
+- [x] **GOV-04**: Methodology versioning — `counterfactual.py` formula carries version number; changes bump `methodology_version` in manifest; `CHANGES.md` logs rationale
 - [ ] **GOV-05**: Public `docs/about/corrections.md` lists every correction with date, reason, affected charts; GitHub Issues `correction` label triages
 - [ ] **GOV-06**: `CITATION.cff` + versioned snapshot URLs enable academic citation; per-release tag publishes immutable `site/data/v<date>/`
 
@@ -164,13 +164,13 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | FND-03 | Phase 1 | Pending |
 | GOV-05 | Phase 1 | Pending |
 | GOV-06 | Phase 1 | Pending |
-| TEST-01 | Phase 2 | Pending |
+| TEST-01 | Phase 2 | Complete |
 | TEST-02 | Phase 2 | Pending |
 | TEST-03 | Phase 2 | Pending |
 | TEST-04 | Phase 2 | Pending |
 | TEST-05 | Phase 2 | Pending |
 | TEST-06 | Phase 2 | Pending |
-| GOV-04 | Phase 2 | Pending |
+| GOV-04 | Phase 2 | Complete |
 | TRIAGE-01 | Phase 3 | Pending |
 | TRIAGE-02 | Phase 3 | Pending |
 | TRIAGE-03 | Phase 3 | Pending |

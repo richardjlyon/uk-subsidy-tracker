@@ -52,7 +52,7 @@ Plans:
   5. `counterfactual.py` carries a `methodology_version` string; `CHANGES.md` logs the initial version
 **Plans:** 5 plans
 Plans:
-- [ ] 02-01-PLAN.md — Counterfactual pin test + METHODOLOGY_VERSION + CHANGES.md 1.0.0 entry (TEST-01, GOV-04)
+- [x] 02-01-PLAN.md — Counterfactual pin test + METHODOLOGY_VERSION + CHANGES.md 1.0.0 entry (TEST-01, GOV-04)
 - [ ] 02-02-PLAN.md — Pandera schemas on Elexon/ONS loaders + test_schemas.py + test_aggregates.py pre-Parquet scaffolding (TEST-02, TEST-03)
 - [ ] 02-03-PLAN.md — Benchmarks fixture (Pydantic + YAML) + test_benchmarks.py with LCCC floor + external anchors (TEST-04)
 - [ ] 02-04-PLAN.md — GitHub Actions CI workflow running uv + pytest on push/PR (TEST-06)
