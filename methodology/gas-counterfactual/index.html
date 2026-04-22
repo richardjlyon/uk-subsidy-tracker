@@ -1728,8 +1728,11 @@ capex + finance) would be appropriate for a different counterfactual — <em>"wh
 if we'd built new gas plants instead of wind and solar?"</em> — but that isn't the
 question the chart is answering.</p>
 <h2 id="sensitivity">Sensitivity<a class="headerlink" href="#sensitivity" title="Permanent link">&para;</a></h2>
-<p>All figures are cumulative totals over Jun 2016 – Apr 2026 against £29.2bn
-of actual CfD electricity cost (wholesale + levy).</p>
+<p>All figures are cumulative totals over <strong>Jan 2018 – Apr 2026</strong> (the window
+where both the LCCC CfD data and the gas counterfactual are available)
+against <strong>£28.5bn</strong> of actual CfD electricity cost (wholesale + levy) over
+the same window. Numbers are generated from the current code via
+<code>compute_counterfactual(...)</code> — see the snippet at the end of this page.</p>
 <table>
 <thead>
 <tr>
@@ -1745,44 +1748,46 @@ of actual CfD electricity cost (wholesale + levy).</p>
 <td><strong>Default (existing fleet)</strong></td>
 <td>5</td>
 <td>UK ETS</td>
-<td><strong>£14.3bn</strong></td>
-<td><strong>£14.9bn</strong></td>
+<td><strong>£14.4bn</strong></td>
+<td><strong>£14.1bn</strong></td>
 </tr>
 <tr>
 <td>Fuel + carbon, no O&amp;M</td>
 <td>0</td>
 <td>UK ETS</td>
-<td>£9.3bn</td>
-<td>£19.9bn</td>
+<td>£13.5bn</td>
+<td>£15.1bn</td>
 </tr>
 <tr>
 <td>Fuel only (no carbon, no O&amp;M)</td>
 <td>0</td>
 <td>—</td>
-<td>£10.9bn*</td>
-<td>£18.3bn</td>
+<td>£10.9bn</td>
+<td>£17.6bn</td>
 </tr>
 <tr>
 <td>New-build (capex + O&amp;M)</td>
 <td>20</td>
 <td>UK ETS</td>
-<td>£17.2bn</td>
-<td>£12.0bn</td>
+<td>£17.3bn</td>
+<td>£11.2bn</td>
 </tr>
 <tr>
 <td>No carbon tax, existing O&amp;M</td>
 <td>5</td>
 <td>—</td>
 <td>£11.9bn</td>
-<td>£17.3bn</td>
+<td>£16.6bn</td>
 </tr>
 </tbody>
 </table>
-<p><sup>*Fuel-only figure is higher than fuel+no-O&amp;M because the latter retains
-the carbon tax term. The "no carbon, no O&amp;M" scenario is the hypothetical
-minimum; all realistic variants sit between £12bn and £17bn.</sup></p>
+<p>Including the earlier 2016–17 CfD generation (no gas counterfactual
+available for that period) brings the full-window CfD total to <strong>£29.1bn</strong>
+— the headline "~£29bn over ten years" figure on the home page. The £0.7bn
+difference is real CfD spending but cannot be set against a like-for-like
+gas comparator.</p>
 <p>The choice of O&amp;M and carbon-price assumptions moves the cumulative gas
-alternative within a <strong>£12–17bn band</strong>. The actual CfD cost (£29bn) sits
+alternative within a <strong>£11–17bn band</strong>. The actual CfD cost (£28.5bn) sits
 comfortably above that band in every scenario: the premium is robust to
 plausible assumption changes.</p>
 <h2 id="caveats">Caveats<a class="headerlink" href="#caveats" title="Permanent link">&para;</a></h2>

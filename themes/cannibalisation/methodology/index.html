@@ -1628,7 +1628,7 @@
 </span></code></pre></div>
 <p>Time-weighted wholesale is the unweighted mean of <code>Market_Reference_Price_GBP_Per_MWh</code> across the same period. The ratio is <code>capture_price[T] / time_weighted_wholesale</code>. Values &lt; 1 indicate the technology's output correlates with low prices (cannibalisation); values &gt; 1 would indicate output correlates with high prices. Wind trends down from ~0.95 in 2016 to below 0.75 today.</p>
 <h2 id="cfd-levy-per-mwh">CfD levy per MWh<a class="headerlink" href="#cfd-levy-per-mwh" title="Permanent link">&para;</a></h2>
-<p>For the bottom-panel levy bar chart, aggregation is AR1 wind units only (the allocation round with the longest price-history). Levy <code>£/MWh = CFD_Payments_GBP / CFD_Generation_MWh</code>. Positive values (red in the chart) indicate consumer top-up; negative values (green) indicate producer clawback during high-gas periods like 2022.</p>
+<p>For the bottom-panel levy bar chart, aggregation is AR1 wind units only (the allocation round with the longest price-history). Levy <code>£/MWh = CFD_Payments_GBP / CFD_Generation_MWh</code>. Positive values (blue in the chart) indicate consumer top-up; negative values (green) indicate producer clawback during high-gas periods like 2022.</p>
 <h2 id="data-source">Data source<a class="headerlink" href="#data-source" title="Permanent link">&para;</a></h2>
 <p>All computation uses LCCC <em>Actual CfD Generation and avoided GHG emissions</em> as the single input. No gas counterfactual is needed for this theme — the cannibalisation argument is market-internal (capture price vs time-weighted price, both from the same LCCC reference price field).</p>
 
