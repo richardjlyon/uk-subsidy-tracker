@@ -155,17 +155,77 @@ Explicitly excluded from both v1 and v2. Documented to prevent scope creep.
 
 ## Traceability
 
-Populated during roadmap creation. Each requirement maps to exactly one phase.
+Each requirement maps to exactly one phase. GOV requirements are distributed to the phase where their mechanism is first built.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| _(filled by roadmapper)_ | | |
+| FND-01 | Phase 1 | Pending |
+| FND-02 | Phase 1 | Pending |
+| FND-03 | Phase 1 | Pending |
+| GOV-05 | Phase 1 | Pending |
+| GOV-06 | Phase 1 | Pending |
+| TEST-01 | Phase 2 | Pending |
+| TEST-02 | Phase 2 | Pending |
+| TEST-03 | Phase 2 | Pending |
+| TEST-04 | Phase 2 | Pending |
+| TEST-05 | Phase 2 | Pending |
+| TEST-06 | Phase 2 | Pending |
+| GOV-04 | Phase 2 | Pending |
+| TRIAGE-01 | Phase 3 | Pending |
+| TRIAGE-02 | Phase 3 | Pending |
+| TRIAGE-03 | Phase 3 | Pending |
+| TRIAGE-04 | Phase 3 | Pending |
+| GOV-01 | Phase 3 | Pending |
+| PUB-01 | Phase 4 | Pending |
+| PUB-02 | Phase 4 | Pending |
+| PUB-03 | Phase 4 | Pending |
+| PUB-04 | Phase 4 | Pending |
+| PUB-05 | Phase 4 | Pending |
+| PUB-06 | Phase 4 | Pending |
+| GOV-02 | Phase 4 | Pending |
+| GOV-03 | Phase 4 | Pending |
+| RO-01 | Phase 5 | Pending |
+| RO-02 | Phase 5 | Pending |
+| RO-03 | Phase 5 | Pending |
+| RO-04 | Phase 5 | Pending |
+| RO-05 | Phase 5 | Pending |
+| RO-06 | Phase 5 | Pending |
+| X-01 | Phase 6 | Pending |
+| X-02 | Phase 6 | Pending |
+| X-03 | Phase 6 | Pending |
+| X-04 | Phase 6 | Pending |
+| X-05 | Phase 6 | Pending |
+| PORTAL-01 | Phase 6 | Pending |
+| PORTAL-02 | Phase 6 | Pending |
+| FIT-01 | Phase 7 | Pending |
+| FIT-02 | Phase 7 | Pending |
+| FIT-03 | Phase 7 | Pending |
+| FIT-04 | Phase 7 | Pending |
+| CON-01 | Phase 8 | Pending |
+| CON-02 | Phase 8 | Pending |
+| CON-03 | Phase 8 | Pending |
+| CON-04 | Phase 8 | Pending |
+| CON-05 | Phase 8 | Pending |
+| CM-01 | Phase 9 | Pending |
+| CM-02 | Phase 9 | Pending |
+| CM-03 | Phase 9 | Pending |
+| CM-04 | Phase 9 | Pending |
+| CM-05 | Phase 9 | Pending |
+| BAL-01 | Phase 10 | Pending |
+| BAL-02 | Phase 10 | Pending |
+| BAL-03 | Phase 10 | Pending |
+| GRID-01 | Phase 11 | Pending |
+| GRID-02 | Phase 11 | Pending |
+| GRID-03 | Phase 11 | Pending |
+| SEG-01 | Phase 12 | Pending |
+| SEG-02 | Phase 12 | Pending |
+| SEG-03 | Phase 12 | Pending |
 
 **Coverage:**
-- v1 requirements: TBD
-- Mapped to phases: TBD
-- Unmapped: TBD
+- v1 requirements: 61
+- Mapped to phases: 61
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-21*
-*Last updated: 2026-04-21 after initialization*
+*Last updated: 2026-04-21 after roadmap creation*

@@ -1,0 +1,184 @@
+# Roadmap: UK Renewable Subsidy Tracker
+
+**Milestone:** v1 — Eight-scheme portal
+**Defined:** 2026-04-21
+**Granularity:** Fine (12 phases matching ARCHITECTURE.md §11 P0–P11)
+**Coverage:** 61/61 v1 requirements mapped
+
+## Phases
+
+- [ ] **Phase 1: Foundation Tidy** — Repo rename, theme switch, root docs committed; brownfield import paths updated
+- [ ] **Phase 2: Test & Benchmark Scaffolding** — Five test classes, CI green on main; counterfactual formula pinned
+- [ ] **Phase 3: Chart Triage Execution** — CUT files deleted, seven PROMOTE charts documented, five-theme docs structure built
+- [ ] **Phase 4: Publishing Layer** — manifest.json, CSV mirror, snapshot, data how-to; three-layer pipeline operational for CfD
+- [ ] **Phase 5: RO Module** — Full Renewables Obligation scheme module, S2–S5 charts, benchmarks within 3% of Turver
+- [ ] **Phase 6: Flagship Cross-Scheme Charts** — X1/X2/X3 portal charts, portal homepage with scheme grid
+- [ ] **Phase 7: FiT Module** — Feed-in Tariff scheme module, S2/S3/S5 charts, scheme grid tile
+- [ ] **Phase 8: Constraint Payments Module** — NESO BM scraper, all five diagnostic slots, switch-off headline
+- [ ] **Phase 9: Capacity Market Module** — EMR scraper, modified S2 (no gas counterfactual), S3/S4/S5, attribution caveat
+- [ ] **Phase 10: Balancing Services Module** — NESO balancing costs scraper, pre/post-renewables delta analysis
+- [ ] **Phase 11: Grid Socialisation Module** — Best-efforts TNUoS attribution with low/central/high sensitivity bounds
+- [ ] **Phase 12: SEG + REGOs Completion** — Aggregate-only scheme pages, all eight scheme grid tiles populated
+
+## Phase Details
+
+### Phase 1: Foundation Tidy
+**Goal**: The repository is correctly named, typed, and documented so all subsequent scheme work begins from a clean, publishable baseline
+**Depends on**: Nothing (first phase)
+**Requirements**: FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion)
+**Success Criteria** (what must be TRUE):
+  1. `uv run python -c 'import uk_subsidy_tracker'` succeeds — all existing imports updated to post-rename package path
+  2. `uv run mkdocs build --strict` passes with the Material theme (readthedocs theme removed)
+  3. `ARCHITECTURE.md`, `RO-MODULE-SPEC.md`, `CHANGES.md`, `CITATION.cff` are committed at repo root and visible in `git log`
+  4. `docs/about/corrections.md` page exists and is reachable from site navigation
+  5. `CITATION.cff` contains correct author, repository URL, and version metadata
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 2: Test & Benchmark Scaffolding
+**Goal**: The test suite is complete and CI is green, with the gas counterfactual formula pinned and all external benchmark deltas documented
+**Depends on**: Phase 1
+**Requirements**: TEST-01, TEST-02, TEST-03, TEST-04, TEST-05, TEST-06, GOV-04
+**Success Criteria** (what must be TRUE):
+  1. `uv run pytest` passes green on `main` — all five test classes present and passing
+  2. `tests/test_counterfactual.py` fails if the gas formula (fuel + carbon + O&M) constants are changed — formula is pinned
+  3. `tests/test_benchmarks.py` documents divergence from Ben Pile (2021 + 2026), REF subset, and Turver aggregate explicitly in output or docstring
+  4. GitHub Actions CI workflow triggers on every push to `main` and reports pass/fail
+  5. `counterfactual.py` carries a `methodology_version` string; `CHANGES.md` logs the initial version
+**Plans**: TBD
+
+### Phase 3: Chart Triage Execution
+**Goal**: The CfD chart set is tidy and fully documented, with every PRODUCTION chart reachable from a five-theme navigation structure
+**Depends on**: Phase 2
+**Requirements**: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01
+**Success Criteria** (what must be TRUE):
+  1. `scissors.py` and `bang_for_buck_old.py` are absent from the working tree (preserved only in git history)
+  2. All seven PROMOTE charts (`cfd_payments_by_category`, `lorenz`, `subsidy_per_avoided_co2_tonne`, `capture_ratio`, `capacity_factor/seasonal`, `intermittency/generation_heatmap`, `intermittency/rolling_minimum`) have a narrative docs page, a methodology section, a test reference, and a source-file link
+  3. `docs/themes/` contains five directories (`cost/`, `recipients/`, `efficiency/`, `cannibalisation/`, `reliability/`), each with an `index.md` and `methodology.md`
+  4. Every PRODUCTION chart is navigable from its theme page — no orphaned chart pages
+  5. `mkdocs build --strict` passes with the full theme structure
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 4: Publishing Layer
+**Goal**: External consumers can discover, fetch, and cite any dataset via a machine-readable manifest with full provenance, and the three-layer pipeline is operational end-to-end for CfD
+**Depends on**: Phase 3
+**Requirements**: PUB-01, PUB-02, PUB-03, PUB-04, PUB-05, PUB-06, GOV-02, GOV-03, GOV-06 (snapshot URL portion)
+**Success Criteria** (what must be TRUE):
+  1. `site/data/manifest.json` is present after build and contains source URL, retrieval timestamp, SHA-256, pipeline git SHA, and `methodology_version` per dataset
+  2. External consumer can follow a URL from `manifest.json` and retrieve a Parquet file and its CSV mirror
+  3. `publish/snapshot.py` creates an immutable `site/data/v<date>/` directory on tagged release
+  4. `docs/data/index.md` explains how journalists and academics use the datasets, including citation via versioned snapshot URL
+  5. GitHub Actions daily refresh workflow (06:00 UTC cron) with per-scheme dirty-check is committed and functional
+**Plans**: TBD
+
+### Phase 5: RO Module
+**Goal**: The Renewables Obligation scheme is fully tracked from raw Ofgem data through to published charts, benchmarked against Turver's totals, and integrated into the site as the second scheme module
+**Depends on**: Phase 4
+**Requirements**: RO-01, RO-02, RO-03, RO-04, RO-05, RO-06
+**Success Criteria** (what must be TRUE):
+  1. `schemes/ro/` module exposes all five §6.1 contract functions (`upstream_changed`, `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`)
+  2. RO S2 dynamics, S3 cost-by-technology, S4 concentration/Lorenz, and S5 forward-commitment charts are published and reachable from the site
+  3. `tests/test_benchmarks.py` passes with RO 2011–2022 aggregate within 3% of Turver's published totals; any divergence is documented
+  4. `docs/schemes/ro.md` scheme page exists with S2–S5 chart embeds and links to Cost and Recipients theme pages
+  5. RO derived Parquet tables (`station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`) are present in `data/derived/ro/` after a build
+**Plans**: TBD
+
+### Phase 6: Flagship Cross-Scheme Charts
+**Goal**: The portal homepage renders with three headline numbers and the X1 stacked chart, making the full-scheme cost argument visible for the first time
+**Depends on**: Phase 5
+**Requirements**: X-01, X-02, X-03, X-04, X-05, PORTAL-01, PORTAL-02
+**Success Criteria** (what must be TRUE):
+  1. Portal homepage (`docs/index.md`) renders three headline cards (total subsidy / premium over gas / per household), the X1 stacked-by-scheme chart with Latest-year / Last-5-years / All-time tabs, and a 2×4 scheme grid
+  2. X1 (stacked total), X2 (cumulative premium over gas), and X3 (cost per household by scheme) charts are published as PRODUCTION charts with narrative and methodology pages
+  3. X4 (cost per MWh by scheme) and X5 (2022 crisis comparison) charts are published
+  4. Scheme grid tiles show latest headline figure for CfD and RO; remaining tiles show placeholder figures
+  5. `PORTAL-02`: Each populated scheme tile links to its scheme detail page
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 7: FiT Module
+**Goal**: The Feed-in Tariff scheme is tracked with S2/S3/S5 diagnostics and integrated into the portal scheme grid as the third populated tile
+**Depends on**: Phase 6
+**Requirements**: FIT-01, FIT-02, FIT-03, FIT-04
+**Success Criteria** (what must be TRUE):
+  1. `schemes/fit/` module exposes all five §6.1 contract functions and populates `data/derived/fit/` after a build
+  2. FiT S2 dynamics, S3 cost-by-technology, and S5 forward-commitment charts are published (S4 concentration omitted — 800k domestic installs makes concentration trivial)
+  3. `docs/schemes/fit.md` scheme page exists with chart embeds and links to relevant theme pages
+  4. FiT scheme grid tile on portal homepage shows latest FiT headline figure and links to scheme page
+**Plans**: TBD
+
+### Phase 8: Constraint Payments Module
+**Goal**: Constraint payments — the growing cost of paying wind farms to switch off — are tracked, charted, and visible as a line item in the cross-scheme X1 chart
+**Depends on**: Phase 7
+**Requirements**: CON-01, CON-02, CON-03, CON-04, CON-05
+**Success Criteria** (what must be TRUE):
+  1. `schemes/constraints/` module exposes all five §6.1 contract functions, with NESO BM half-hourly data rolled up to station-month grain
+  2. Constraint S2 dynamics, S3 by-wind-farm, S4 top-N concentration, and S5 forward-trend charts are published
+  3. The "£X bn paid to switch off" headline figure appears prominently on the constraint payments scheme page
+  4. Constraint payments appear as a growing line item in the X1 stacked-by-scheme chart
+  5. Scheme grid has five populated tiles (CfD, RO, FiT, Constraints, and one more placeholder)
+**Plans**: TBD
+
+### Phase 9: Capacity Market Module
+**Goal**: The Capacity Market scheme is tracked with its specific methodological treatment (no gas counterfactual, attribution caveat) and published as the fifth scheme
+**Depends on**: Phase 8
+**Requirements**: CM-01, CM-02, CM-03, CM-04, CM-05
+**Success Criteria** (what must be TRUE):
+  1. `schemes/capacity_market/` module exposes all five §6.1 contract functions; EMR auction data populates `data/derived/capacity_market/`
+  2. CM modified S2 (no gas counterfactual), S3 cost breakdown, S4 concentration, and S5 forward-commitment-to-2040 charts are published
+  3. Attribution caveat — explaining which portion of CM cost is "caused by renewables" — is documented prominently on the CM scheme page with include/exclude views
+  4. Scheme grid has five populated tiles (CfD, RO, FiT, Constraints, CM)
+**Plans**: TBD
+
+### Phase 10: Balancing Services Module
+**Goal**: The incremental balancing services cost attributable to high renewable penetration is quantified, charted as a pre/post-renewables delta, and the running total approaches REF's £25.8bn within tolerance
+**Depends on**: Phase 9
+**Requirements**: BAL-01, BAL-02, BAL-03
+**Success Criteria** (what must be TRUE):
+  1. `schemes/balancing/` module exposes all five §6.1 contract functions; NESO monthly balancing costs populate `data/derived/balancing/` with delta-only rollups
+  2. Pre/post-renewables baseline delta chart is published — showing the difference in balancing costs before and after significant wind build-out
+  3. Combined total across CfD + RO + FiT + Constraints + CM + Balancing approaches REF's £25.8bn within ±15%
+**Plans**: TBD
+
+### Phase 11: Grid Socialisation Module
+**Goal**: TNUoS grid socialisation costs attributable to renewable siting are estimated with explicit uncertainty bounds, completing the cost picture with prominent confidence caveats
+**Depends on**: Phase 10
+**Requirements**: GRID-01, GRID-02, GRID-03
+**Success Criteria** (what must be TRUE):
+  1. `schemes/grid/` module produces best-efforts TNUoS attribution in `data/derived/grid/` with low/central/high sensitivity bounds
+  2. Grid costs are presented as a range (not a point estimate) on the grid scheme page, with a prominent confidence caveat explaining the attribution methodology
+  3. Combined total across all scheme modules approaches REF's £25.8bn within ±15% using the central estimate
+**Plans**: TBD
+
+### Phase 12: SEG + REGOs Completion
+**Goal**: All eight scheme tiles on the portal homepage are populated, completing the portal's coverage of UK renewable subsidy schemes
+**Depends on**: Phase 11
+**Requirements**: SEG-01, SEG-02, SEG-03
+**Success Criteria** (what must be TRUE):
+  1. `docs/schemes/seg.md` aggregate-only scheme page exists with headline cost figure and caveat that no station-level data is available
+  2. `docs/schemes/regos.md` aggregate page exists for completeness
+  3. All eight scheme grid tiles on the portal homepage are populated with a headline figure and link to their scheme detail page
+**Plans**: TBD
+**UI hint**: yes
+
+## Progress Table
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 1. Foundation Tidy | 0/0 | Not started | - |
+| 2. Test & Benchmark Scaffolding | 0/0 | Not started | - |
+| 3. Chart Triage Execution | 0/0 | Not started | - |
+| 4. Publishing Layer | 0/0 | Not started | - |
+| 5. RO Module | 0/0 | Not started | - |
+| 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
+| 7. FiT Module | 0/0 | Not started | - |
+| 8. Constraint Payments Module | 0/0 | Not started | - |
+| 9. Capacity Market Module | 0/0 | Not started | - |
+| 10. Balancing Services Module | 0/0 | Not started | - |
+| 11. Grid Socialisation Module | 0/0 | Not started | - |
+| 12. SEG + REGOs Completion | 0/0 | Not started | - |
+
+---
+*Roadmap defined: 2026-04-21*
+*Maps 1:1 to ARCHITECTURE.md §11 phases P0–P11*
