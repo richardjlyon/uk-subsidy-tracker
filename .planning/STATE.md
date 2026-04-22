@@ -2,20 +2,20 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-last_updated: "2026-04-22T01:55:44.239Z"
+status: phase-complete
+last_updated: "2026-04-22T02:30:00.000Z"
 progress:
   total_phases: 12
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 0
-  percent: 0
+  completed_plans: 4
+  percent: 8
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-21
-**Session:** Roadmap initialization
+**Session:** Phase 01 Foundation Tidy — complete
 
 ---
 
@@ -37,23 +37,22 @@ progress:
 
 ## Current Position
 
-Phase: 01 (foundation-tidy) — EXECUTING
-Plan: 1 of 4
-**Phase:** 1 — Foundation Tidy
+Phase: 01 (foundation-tidy) — COMPLETE (4/4 plans, 5/5 ROADMAP success criteria green)
+**Phase:** 2 — Test & Benchmark Scaffolding
 **Plan:** TBD (not yet planned)
-**Status:** Executing Phase 01
-**Focus:** Repo rename (`cfd-payment` → `uk-subsidy-tracker`), MkDocs Material theme switch, root docs committed
+**Status:** Ready to plan Phase 2
+**Focus:** Formula pinning tests, schema conformance, row conservation, external benchmarks, determinism
 
 ```
-Progress: [░░░░░░░░░░░░░░░░░░░░░░░░] 0/12 phases complete
+Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete
 ```
 
 ---
 
 ## Performance Metrics
 
-**Phases complete:** 0/12
-**Requirements delivered:** 0/61
+**Phases complete:** 1/12
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion)
 **Test coverage:** Minimal (2 test files; none of the 5 required classes exist)
 
 ---
@@ -77,11 +76,17 @@ None currently.
 
 ### Todos
 
-- [ ] Plan Phase 1 (`/gsd-plan-phase 1`)
+- [x] Plan Phase 1 (`/gsd-plan-phase 1`)
+- [x] Execute Phase 1 (`/gsd-execute-phase 1`) — 4/4 plans, 5/5 success criteria, MIT licence
+- [ ] Rename GitHub repo `cfd-payment` → `uk-subsidy-tracker` (manual UI step; `correction` label already created and will travel on rename)
+- [ ] Plan Phase 2 (`/gsd-plan-phase 2`)
 
 ### Notes
 
-- Brownfield: `src/cfd_payment/` exists; Phase 1 renames to `src/uk_subsidy_tracker/`
+- Brownfield rename COMPLETE: `src/cfd_payment/` → `src/uk_subsidy_tracker/` via `git mv` (commits 7b5538b, 596594c)
+- Python floor bumped 3.11 → 3.12 in pyproject.toml + CLAUDE.md (B-3 resolved)
+- MkDocs theme swapped `readthedocs` → `material` with palette toggle; `docs/methodology/gas-counterfactual.md` now canonical (was `docs/technical-details/`)
+- Root docs committed: ARCHITECTURE.md, RO-MODULE-SPEC.md, CHANGES.md, CITATION.cff, LICENSE (MIT), README.md
 - `scissors.py` and `bang_for_buck_old.py` still present in working tree (removed in Phase 3)
 - No CI/CD yet; GitHub Actions workflows created in Phase 2
 - Derived layer (`data/derived/`) does not exist yet; created in Phase 4
@@ -93,7 +98,7 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-plan-phase 1`
+**Next command:** `/gsd-plan-phase 2`
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
