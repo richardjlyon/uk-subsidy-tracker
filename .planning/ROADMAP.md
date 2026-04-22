@@ -63,7 +63,7 @@ Plans:
 **Depends on**: Phase 2
 **Requirements**: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01
 **Success Criteria** (what must be TRUE):
-  1. `scissors.py` and `bang_for_buck_old.py` are absent from the working tree (preserved only in git history)
+  1. `scissors.py` and `bang_for_buck_old.py` are absent from the working tree (preserved only in git history); the sole in-tree references are inside `tests/test_docs_structure.py`, which asserts their absence as the permanent TRIAGE-01 regression guard
   2. All seven PROMOTE charts (`cfd_payments_by_category`, `lorenz`, `subsidy_per_avoided_co2_tonne`, `capture_ratio`, `capacity_factor/seasonal`, `intermittency/generation_heatmap`, `intermittency/rolling_minimum`) have a narrative docs page, a methodology section, a test reference, and a source-file link
   3. `docs/themes/` contains five directories (`cost/`, `recipients/`, `efficiency/`, `cannibalisation/`, `reliability/`), each with an `index.md` and `methodology.md`
   4. Every PRODUCTION chart is navigable from its theme page — no orphaned chart pages
