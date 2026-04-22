@@ -3,6 +3,8 @@
 # IMPORTANT: Before building/serving docs, generate charts:
 #   uv run python -m cfd_payment.plotting
 # This populates docs/charts/html/ with chart files (ignored by git)
+#   uv run mkdocs gh-deploy
+# This updates the GitHub Pages site
 
 site_name: CfD Payment Analysis
 site_url: https://richardjlyon.github.io/cfd-payment/
@@ -23,30 +25,10 @@ nav:
   - Home: index.md
   - Charts:
       - Overview: charts/index.md
-      - Subsidy Economics:
-          - CfD vs Gas Cost: charts/subsidy/cfd-vs-gas-cost.md
-          - CfD vs Gas by Category: charts/subsidy/cfd-vs-gas-by-category.md
-      #     - Scissors Chart: charts/subsidy/scissors.md
-      #     - Subsidy per tCO₂: charts/subsidy/subsidy-per-co2.md
-      #     - Bang for Buck: charts/subsidy/bang-for-buck.md
-      #     - Lorenz Curve: charts/subsidy/lorenz.md
-      #     - Remaining Obligations: charts/subsidy/remaining-obligations.md
-      # - Capacity Factor:
-      #     - Monthly Trends: charts/capacity-factor/monthly.md
-      #     - Seasonal Patterns: charts/capacity-factor/seasonal.md
-      # - Intermittency:
-      #     - Generation Heatmap: charts/intermittency/heatmap.md
-      #     - Load Duration: charts/intermittency/load-duration.md
-      #     - Rolling Minimum: charts/intermittency/rolling-minimum.md
-      # - Cannibalisation:
-      #     - Capture Ratio: charts/cannibalisation/capture-ratio.md
-      #     - Price vs Wind: charts/cannibalisation/price-vs-wind.md
-  - Technical Details:
-      - Overview: technical-details/index.md
-      - Data Sources: technical-details/data-sources.md
-      - Methodology: technical-details/methodology.md
-      - Gas Counterfactual: technical-details/gas-counterfactual.md
-      - About: about.md
+      - CfD Dynamics (4-panel): charts/subsidy/cfd-dynamics.md
+      - CfD vs Gas Cost: charts/subsidy/cfd-vs-gas-cost.md
+      - Remaining Obligations: charts/subsidy/remaining-obligations.md
+  - Gas Counterfactual: technical-details/gas-counterfactual.md
 
 # Markdown extensions
 markdown_extensions:
@@ -91,10 +73,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/yourusername/cfd-payment
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX # Replace with your GA4 ID
+      link: https://github.com/richardjlyon/cfd-payment
 
 # Copyright
-copyright: Copyright &copy; 2024 CfD Payment Analysis
+copyright: Copyright &copy; 2026 Richard Lyon

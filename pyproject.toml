@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Analysis of UK Contracts for Difference (CfD) renewable energy subsidy payments"
 requires-python = ">=3.11"
 dependencies = [
+    "kaleido>=1.2.0",
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.7.6",
     "numpy",

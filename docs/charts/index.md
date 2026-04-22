@@ -1,97 +1,68 @@
-# Charts Overview
+# Charts
 
-This section contains interactive visualizations analyzing UK CfD renewable energy subsidies, generation patterns, and market impacts. All charts feature interactive controls, and Twitter-ready exports.
+This section presents the three production charts analysing the UK
+Contracts for Difference (CfD) scheme. They are designed to be read
+in order — each answers a different question about the same data.
 
-## Chart Categories
+| Chart | Question it answers |
+|---|---|
+| [CfD dynamics](subsidy/cfd-dynamics.md) | *How* does the cost arise — volume × price gap? |
+| [CfD vs Gas Cost](subsidy/cfd-vs-gas-cost.md) | *Who* paid, and through which cash-flow channel? |
+| [Remaining Obligations](subsidy/remaining-obligations.md) | *How much* more is already locked in? |
 
-### Subsidy Economics (7 charts)
+## Start here: the 4-panel diagnostic
 
-Analyze the costs and value proposition of CfD subsidies:
+[![CfD dynamics preview](html/subsidy_cfd_dynamics_twitter.png)](subsidy/cfd-dynamics.md)
 
-| Chart                                                     | Description                                            | Key Metric               |
-| --------------------------------------------------------- | ------------------------------------------------------ | ------------------------ |
-| [CfD vs Gas Cost](subsidy/cfd-vs-gas-cost.md)             | Total CfD cost compared to gas counterfactual          | Monthly & cumulative £bn |
-| [Bang for Buck](subsidy/bang-for-buck.md)                 | Cost-effectiveness per project: subsidy vs CO₂ avoided | £/tCO₂ vs UK ETS price   |
-| [Scissors Chart](subsidy/scissors.md)                     | Strike prices vs market prices over time               | £/MWh gap                |
-| [Subsidy per tCO₂](subsidy/subsidy-per-co2.md)            | Cost per tonne of CO₂ avoided over time                | £/tCO₂ trend             |
-| [Lorenz Curve](subsidy/lorenz.md)                         | Concentration of subsidies across projects             | Gini coefficient         |
-| [Remaining Obligations](subsidy/remaining-obligations.md) | Future payment commitments by year                     | £bn/year forward         |
+[CfD dynamics](subsidy/cfd-dynamics.md) exposes the full cost mechanism
+in four stacked panels: generation volume, unit prices (strike vs gas
+counterfactual), per-MWh premium, and cumulative bill. Read top to
+bottom; each panel is a consequence of the one above.
 
-### Capacity Factor (2 charts)
+## Then: decompose the cash flows
 
-Understand how efficiently renewables generate electricity:
+[![CfD vs Gas Cost preview](html/subsidy_cfd_vs_gas_total_twitter.png)](subsidy/cfd-vs-gas-cost.md)
 
-| Chart                                            | Description                              | Key Insight       |
-| ------------------------------------------------ | ---------------------------------------- | ----------------- |
-| [Monthly Trends](capacity-factor/monthly.md)     | Capacity factor by technology over time  | Seasonal patterns |
-| [Seasonal Patterns](capacity-factor/seasonal.md) | Wind and solar performance across months | Winter vs summer  |
+[CfD vs Gas Cost](subsidy/cfd-vs-gas-cost.md) splits the total cost of
+CfD electricity into the two channels consumers pay through: the
+wholesale price on the electricity bill, and the CfD levy on the
+Supplier Obligation line. The gas counterfactual is drawn as a
+reference line — real money flows distinguished from hypothetical ones.
 
-### Intermittency (3 charts)
+## Finally: the forward bill
 
-Explore the challenges of variable renewable generation:
+[![Remaining Obligations preview](html/subsidy_remaining_obligations_twitter.png)](subsidy/remaining-obligations.md)
 
-| Chart                                               | Description                                         | Key Insight              |
-| --------------------------------------------------- | --------------------------------------------------- | ------------------------ |
-| [Generation Heatmap](intermittency/heatmap.md)      | Daily capacity factors visualized as "wind stripes" | Dunkelflaute events      |
-| [Load Duration](intermittency/load-duration.md)     | Distribution of generation levels                   | How often at each output |
-| [Rolling Minimum](intermittency/rolling-minimum.md) | Worst-case generation windows                       | Backup capacity needs    |
+[Remaining Obligations](subsidy/remaining-obligations.md) shows the
+minimum forward commitment from contracts already signed — at least
+£33bn more, running to 2041. Excludes AR7 (auctioning 2026) and AR3–AR6
+projects not yet generating.
 
-### Cannibalisation (2 charts)
+## Conventions
 
-Examine how renewables affect their own market value:
+All charts:
 
-| Chart                                             | Description                                       | Key Insight             |
-| ------------------------------------------------- | ------------------------------------------------- | ----------------------- |
-| [Capture Ratio](cannibalisation/capture-ratio.md) | Wind selling into cheaper hours as capacity grows | Declining capture price |
-| [Price vs Wind](cannibalisation/price-vs-wind.md) | Market price correlation with wind output         | Price suppression       |
+- use publicly available data (LCCC, ONS, UK ETS, NESO);
+- aggregate daily → monthly to preserve gas-price spikes while keeping
+  the chart legible;
+- are built with [Plotly](https://plotly.com/python/) and exported as
+  both interactive HTML (`docs/charts/html/*.html`) and
+  Twitter-optimised PNG (1200×675, `docs/charts/html/*_twitter.png`);
+- compute the gas counterfactual identically — see
+  [Gas counterfactual](../technical-details/gas-counterfactual.md).
 
-## Chart Features
+## Reproducing
 
-All charts include:
+All charts are regenerated from public data by a single command:
 
-- **Info icons (ⓘ)** linking to detailed methodology
-- **Interactive controls**: hover, zoom, pan, legend toggle
-- **Dual exports**:
-  - HTML (interactive, 4-5MB)
-  - PNG (Twitter-ready, 1200×675, 150-450KB)
+```bash
+uv run python -m cfd_payment.plotting
+```
 
-## How to Use These Charts
+Or an individual chart:
 
-### Understanding the Visualizations
+```bash
+uv run python -m cfd_payment.plotting.subsidy.cfd_dynamics
+```
 
-1. **Hover** over data points for detailed values
-2. **Click** legend items to show/hide specific series
-3. **Drag** to zoom, double-click to reset
-4. **Click info icon (ⓘ)** for methodology (coming soon)
-
-### Interpreting the Data
-
-Each chart page includes:
-
-- **Overview** — What the chart shows
-- **Key Insights** — Main takeaways
-- **Methodology** — Data sources and calculations
-- **Interpretation Guide** — How to read the visualization
-- **Limitations** — Caveats and assumptions
-- **Related Charts** — Cross-references
-
-## Quick Navigation
-
-**Start here if you want to understand:**
-
-- **Total costs**: [CfD vs Gas Cost](subsidy/cfd-vs-gas-cost.md)
-- **Value for money**: [Bang for Buck](subsidy/bang-for-buck.md)
-- **Future obligations**: [Remaining Obligations](subsidy/remaining-obligations.md)
-- **Generation reliability**: [Generation Heatmap](intermittency/heatmap.md)
-- **Price impacts**: [Capture Ratio](cannibalisation/capture-ratio.md)
-
-## Bulk Downloads
-
-All chart outputs are available in the `output/` directory:
-
-- **HTML files**: `output/*.html` (interactive)
-- **Twitter PNGs**: `output/*_twitter.png` (1200×675)
-
----
-
-**Ready to explore?** Choose a category above or browse individual charts using the navigation menu.
+Source: [github.com/richardjlyon/cfd-payment](https://github.com/richardjlyon/cfd-payment).

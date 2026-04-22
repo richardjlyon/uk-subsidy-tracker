@@ -7,6 +7,7 @@ from cfd_payment.plotting.intermittency.load_duration import main as load_durati
 from cfd_payment.plotting.intermittency.rolling_minimum import main as rolling_minimum
 from cfd_payment.plotting.subsidy.bang_for_buck import main as bang_for_buck
 from cfd_payment.plotting.subsidy.lorenz import main as lorenz
+from cfd_payment.plotting.subsidy.cfd_dynamics import main as cfd_dynamics
 from cfd_payment.plotting.subsidy.cfd_vs_gas_cost import main as cfd_vs_gas_total
 from cfd_payment.plotting.subsidy.cfd_payments_by_category import (
     main as cfd_payments_by_category,
@@ -21,6 +22,7 @@ from cfd_payment.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
 
 # Subsidy economics
 cfd_vs_gas_total()
+cfd_dynamics()
 cfd_payments_by_category()
 scissors()
 subsidy_per_avoided_co2_tonne()

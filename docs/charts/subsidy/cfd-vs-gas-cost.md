@@ -13,15 +13,22 @@ had.
 
 ## Headline numbers
 
-Cumulative, June 2016 – April 2026:
+Cumulative, January 2018 – April 2026 (the period where both LCCC CfD data
+and the gas counterfactual are available; early 2016–17 generation of
+~5.6 TWh is excluded for like-for-like comparison):
 
 | | Cumulative | What it is |
 |---|---|---|
-| **Wholesale (red)** | **£16.2bn** | Market reference price × CfD generation. Paid by consumers via the per-kWh price on their electricity bill. |
-| **CfD levy (blue)** | **£13.0bn** | `CFD_Payments_GBP` from LCCC. Paid by consumers via the Supplier Obligation levy line. Goes negative in 2022 when wholesale > strike. |
-| **Total CfD cost** | **£29.2bn** | Wholesale + levy = strike price × generation. The full cost of CfD electricity to consumers. |
+| **Wholesale (red)** | **£15.9bn** | Market reference price × CfD generation. Paid by consumers via the per-kWh price on their electricity bill. |
+| **CfD levy (blue)** | **£12.6bn** | `CFD_Payments_GBP` from LCCC. Paid by consumers via the Supplier Obligation levy line. Goes negative in 2022 when wholesale > strike. |
+| **Total CfD cost** | **£28.5bn** | Wholesale + levy = strike price × generation. The full cost of CfD electricity to consumers over this window. |
 | **Gas alternative (orange line)** | **£14.3bn** | What the same MWh would have cost from the existing UK gas fleet: fuel + carbon + £5/MWh O&M. |
-| **Premium** | **£14.9bn** | Total CfD cost − gas alternative. The policy cost of choosing CfDs over the existing gas fleet. |
+| **Premium** | **£14.2bn** | Total CfD cost − gas alternative. The policy cost of choosing CfDs over the existing gas fleet. |
+
+Including the early 2016–17 period (which has no gas comparator), the
+full LCCC cumulative CfD cost to date is **£29.2bn** — the headline
+figure commonly cited. The £0.7bn difference is real CfD spending but
+cannot be set against a like-for-like gas counterfactual.
 
 ## How to read the chart
 
@@ -63,7 +70,7 @@ Annual £/MWh paid for CfD electricity vs the gas alternative:
 | 2019 | 139 | 34 | +£105 (4.1×) |
 | 2020 | 142 | 29 | +£114 (5.0×) |
 | 2021 | 145 | 93 | +£52 (1.6×) |
-| **2022 (gas crisis)** | **155** | **146** | **+£9 (1.06×)** |
+| **2022 (gas crisis)** | **155** | **146** | **+£10 (1.07×)** |
 | 2023 | 163 | 84 | +£79 (1.9×) |
 | 2024 | 149 | 70 | +£79 (2.1×) |
 | 2025 | 151 | 74 | +£77 (2.0×) |

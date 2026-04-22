@@ -70,6 +70,14 @@ def _prepare_monthly():
     cf_daily = compute_counterfactual()
     gas_price = cf_daily.set_index("date")["counterfactual_total"]
 
+    # Restrict to days where the gas counterfactual is available. Early CfD
+    # generation (mid-2016 through 2017) pre-dates the ONS/UK ETS coverage
+    # used to build the counterfactual. Including those days would inflate
+    # the CfD total while leaving the gas total at zero — producing a
+    # spurious ~£0.7bn premium against a column that doesn't exist.
+    valid_dates = gas_price.dropna().index
+    df = df[df["Settlement_Date"].isin(valid_dates)].copy()
+
     df["month"] = df["Settlement_Date"].dt.to_period("M").dt.to_timestamp()
     df["wholesale"] = (
         df["Market_Reference_Price_GBP_Per_MWh"] * df["CFD_Generation_MWh"]
