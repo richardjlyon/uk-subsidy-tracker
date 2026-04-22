@@ -64,7 +64,8 @@ def build_annual_summary(output_dir: Path) -> pd.DataFrame:
     has already collapsed to monthly.
     """
     sm = _read_station_month(output_dir)
-    sm["year"] = sm["month_end"].dt.year
+    # Cast to int64 to match AnnualSummaryRow.year declared dtype (D-10).
+    sm["year"] = sm["month_end"].dt.year.astype("int64")
 
     annual_cfd = (
         sm.groupby("year", sort=True)
@@ -89,7 +90,7 @@ def build_annual_summary(output_dir: Path) -> pd.DataFrame:
     daily = daily.dropna(subset=["counterfactual_total"])
     daily["cf_gbp"] = daily["counterfactual_total"] * daily["gen_mwh"]
     # daily_gen was grouped on Settlement_Date; the index name survives concat.
-    daily["year"] = daily.index.year
+    daily["year"] = daily.index.year.astype("int64")
     annual_cf = (
         daily.groupby("year", sort=True)["cf_gbp"]
         .sum()
@@ -120,7 +121,8 @@ def build_annual_summary(output_dir: Path) -> pd.DataFrame:
 def build_by_technology(output_dir: Path) -> pd.DataFrame:
     """Build and persist `by_technology.parquet` (year × technology grain)."""
     sm = _read_station_month(output_dir)
-    sm["year"] = sm["month_end"].dt.year
+    # Cast to int64 to match ByTechnologyRow.year declared dtype (D-10).
+    sm["year"] = sm["month_end"].dt.year.astype("int64")
 
     df = (
         sm.groupby(["year", "technology"], sort=True, dropna=False)
@@ -152,7 +154,8 @@ def build_by_allocation_round(output_dir: Path) -> pd.DataFrame:
     not carry it. Determinism preserved: identical raw → identical sum.
     """
     sm = _read_station_month(output_dir)
-    sm["year"] = sm["month_end"].dt.year
+    # Cast to int64 to match ByAllocationRoundRow.year declared dtype (D-10).
+    sm["year"] = sm["month_end"].dt.year.astype("int64")
 
     cfd_roll = (
         sm.groupby(["year", "allocation_round"], sort=True, dropna=False)
@@ -169,7 +172,7 @@ def build_by_allocation_round(output_dir: Path) -> pd.DataFrame:
     gen = load_lccc_dataset("Actual CfD Generation and avoided GHG emissions")
     gen = gen.dropna(subset=["CFD_Generation_MWh", "Strike_Price_GBP_Per_MWh"])
     gen = gen[gen["CFD_Generation_MWh"] > 0]
-    gen["year"] = gen["Settlement_Date"].dt.year
+    gen["year"] = gen["Settlement_Date"].dt.year.astype("int64")
     co2 = (
         gen.groupby(["year", "Allocation_round"], sort=True, dropna=False)[
             "Avoided_GHG_tonnes_CO2e"
