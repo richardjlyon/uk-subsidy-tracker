@@ -3,20 +3,22 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 02-03-PLAN.md (2 tasks, 2 commits: 396fed2, 09e6621; Pydantic benchmarks loader + test_benchmarks.py LCCC floor + external anchors, shipped D-11 fallback)"
-last_updated: "2026-04-22T11:00:42.798Z"
+stopped_at: Completed 02-04-PLAN.md (Task 1 c959d4d CI workflow; Task 2 human-verify closed by runs 24775720044 + 24775750701 both green; 3 retrospective Phase-1 shortfalls documented)
+last_updated: "2026-04-22T11:31:33.605Z"
 progress:
   total_phases: 12
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
-  percent: 89
+  completed_plans: 9
+  percent: 100
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 02 Plan 03 — complete (Pydantic benchmarks loader + test_benchmarks.py LCCC floor + external anchors; D-11 fallback posture shipped)
+**Session:** Phase 02 Plan 04 — complete (GitHub Actions CI workflow green on push + pull_request; Phase 2 all 5 plans complete; 3 retrospective Phase-1 shortfalls surfaced and resolved)
+
+
 
 ---
 
@@ -38,24 +40,24 @@ progress:
 
 ## Current Position
 
-Phase: 02 (test-benchmark-scaffolding) — EXECUTING
-Plan: 5 of 5 (Plans 02-01, 02-02, 02-03, 02-05 complete; 02-04 remaining)
-**Phase:** 2 — Test & Benchmark Scaffolding
-**Plan:** 02-04 (next — GitHub Actions CI workflow running uv + pytest on push/PR, TEST-06)
-**Status:** Executing Phase 02
-**Focus:** Formula pinning tests, schema conformance, row conservation, external benchmarks, determinism
+Phase: 02 (test-benchmark-scaffolding) — COMPLETE (5/5 plans)
+Plan: all 5 complete (Plans 02-01, 02-02, 02-03, 02-04, 02-05)
+**Phase:** 3 — Chart Triage Execution (next)
+**Plan:** 03-01 (next — TBD; Phase 3 not yet planned)
+**Status:** Phase 02 complete; ready to plan Phase 03
+**Focus:** CUT file deletion, seven PROMOTE chart documentation, five-theme docs structure
 
 ```
-Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 4/5 plans)
+Progress: [████░░░░░░░░░░░░░░░░░░░░] 2/12 phases complete (Phase 2: 5/5 plans)
 ```
 
 ---
 
 ## Performance Metrics
 
-**Phases complete:** 1/12
-**Plans complete:** 8/9 (Phase 1 closed 4/4; Phase 2 now 4/5)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
+**Phases complete:** 2/12
+**Plans complete:** 9/9 (Phase 1 closed 4/4; Phase 2 closed 5/5)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
 **Test coverage:** 16 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
 
 | Plan | Duration | Tasks | Files |
@@ -64,6 +66,7 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 | 02-05 Scope-correction bookkeeping | 5 min | 4 (incl. Task 0 user-approved) | 4 |
 | 02-02 Pandera schemas + test_schemas.py + test_aggregates.py scaffolding | 2 min | 3 | 5 |
 | Phase 02 P03 | 8min | 2 tasks | 5 files |
+| Phase 02 P04 | 30min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -102,7 +105,10 @@ None currently.
 - [x] Execute Phase 2 Plan 05 — scope-correction bookkeeping (ROADMAP + REQUIREMENTS + CHANGES + ARCHITECTURE §11 P1 amendment)
 - [x] Execute Phase 2 Plan 02 — pandera schemas on elexon/ons_gas + `tests/test_schemas.py` + `tests/test_aggregates.py` pre-Parquet scaffolding
 - [x] Execute Phase 2 Plan 03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml` (D-11 fallback shipped)
-- [ ] Execute Phase 2 Plan 04 — GitHub Actions CI workflow (uv + pytest on push/PR)
+- [x] Execute Phase 2 Plan 04 — GitHub Actions CI workflow green on push + pull_request (TEST-06; runs 24775720044 + 24775750701)
+- [x] Rename GitHub repo (resolved via fresh `richardjlyon/uk-subsidy-tracker` + archive of `cfd-payment`; retrospective Phase-1 shortfall surfaced and closed in Plan 02-04)
+- [ ] Plan Phase 3 (`/gsd-plan-phase 3`) — Chart Triage Execution (CUT files, seven PROMOTE charts, five-theme docs)
+- [ ] Execute Phase 3
 - [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check
 - [ ] Phase 3/4: populate external benchmark anchors (OBR EFO calendar-year translation, DESNZ, HoC, NAO) as transcribable figures surface
 
@@ -113,7 +119,9 @@ None currently.
 - MkDocs theme swapped `readthedocs` → `material` with palette toggle; `docs/methodology/gas-counterfactual.md` now canonical (was `docs/technical-details/`)
 - Root docs committed: ARCHITECTURE.md, RO-MODULE-SPEC.md, CHANGES.md, CITATION.cff, LICENSE (MIT), README.md
 - `scissors.py` and `bang_for_buck_old.py` still present in working tree (removed in Phase 3)
-- No CI/CD yet; GitHub Actions workflows created in Phase 2
+- CI is now live: `.github/workflows/ci.yml` single-job pytest on push/PR, pinned `astral-sh/setup-uv@v8.1.0` + `actions/checkout@v5`, green on both trigger paths
+- GitHub repo lives at `github.com/richardjlyon/uk-subsidy-tracker` (old `cfd-payment` repo archived; origin URL updated locally)
+- Raw data files (5 files, each ≤100MB) now committed under `data/` per CLAUDE.md reproducibility policy (retrospective Phase-1 shortfall fixed in commit 75774b8)
 - Derived layer (`data/derived/`) does not exist yet; created in Phase 4
 - Publishing layer (`site/data/`) does not exist yet; created in Phase 4
 
@@ -123,9 +131,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** Execute next plan in Phase 2 (Plan 02-04 — GitHub Actions CI workflow running uv + pytest on push/PR, TEST-06). The full test suite is now 16 passing + 4 skipped (the two new skips are the D-11 fallback of the benchmarks tests — LCCC floor skips cleanly until an lccc_self entry is transcribed, external test has zero parametrisations until anchors land). All four Phase-2 test classes (counterfactual + schemas + aggregates + benchmarks) are present and green ahead of CI wiring.
+**Next command:** `/gsd-plan-phase 3` — begin planning Phase 3 (Chart Triage Execution). Phase 2 is formally closed: all 5 plans complete, TEST-01 / TEST-04 / TEST-06 / GOV-04 delivered, `.github/workflows/ci.yml` is live and green on both push + pull_request triggers (runs 24775720044, 24775750701). Full suite: 16 passing + 4 skipped on CI, enforced on every PR. Phase 2 CI validation also surfaced and closed three retrospective Phase-1 shortfalls (GitHub repo rename, ARCHITECTURE.md §11 P1 sync, `.gitignore` vs CLAUDE.md data-files policy); see `02-04-SUMMARY.md` for the canonical record.
 
-**Stopped at:** Completed 02-03-PLAN.md (2 tasks, 2 commits: 396fed2, 09e6621; Pydantic benchmarks loader + test_benchmarks.py LCCC floor + external anchors, shipped D-11 fallback)
+**Stopped at:** Completed 02-04-PLAN.md (Task 1 c959d4d CI workflow; Task 2 human-verify closed by runs 24775720044 + 24775750701 both green; 3 retrospective Phase-1 shortfalls documented)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*

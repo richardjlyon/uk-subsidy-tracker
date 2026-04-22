@@ -7,8 +7,8 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation Tidy** — Repo rename, theme switch, root docs committed; brownfield import paths updated
-- [ ] **Phase 2: Test & Benchmark Scaffolding** — Four test classes, CI green on main; counterfactual formula pinned
+- [x] **Phase 1: Foundation Tidy** — Repo rename, theme switch, root docs committed; brownfield import paths updated
+- [x] **Phase 2: Test & Benchmark Scaffolding** — Four test classes, CI green on main; counterfactual formula pinned
 - [ ] **Phase 3: Chart Triage Execution** — CUT files deleted, seven PROMOTE charts documented, five-theme docs structure built
 - [ ] **Phase 4: Publishing Layer** — manifest.json, CSV mirror, snapshot, data how-to; three-layer pipeline operational for CfD
 - [ ] **Phase 5: RO Module** — Full Renewables Obligation scheme module, S2–S5 charts, benchmarks within 3% of Turver
@@ -50,12 +50,12 @@ Plans:
   3. `tests/test_benchmarks.py` documents divergence from LCCC self-reconciliation and any regulator-native external sources the researcher located (OBR, Ofgem, DESNZ, HoC Library, NAO) explicitly in the fixture notes or test docstring
   4. GitHub Actions CI workflow triggers on every push to `main` and reports pass/fail
   5. `counterfactual.py` carries a `methodology_version` string; `CHANGES.md` logs the initial version
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans executed
 Plans:
 - [x] 02-01-PLAN.md — Counterfactual pin test + METHODOLOGY_VERSION + CHANGES.md 1.0.0 entry (TEST-01, GOV-04)
 - [x] 02-02-PLAN.md — Pandera schemas on Elexon/ONS loaders + test_schemas.py + test_aggregates.py pre-Parquet scaffolding (TEST-02, TEST-03)
 - [x] 02-03-PLAN.md — Benchmarks fixture (Pydantic + YAML) + test_benchmarks.py with LCCC floor + external anchors (TEST-04)
-- [ ] 02-04-PLAN.md — GitHub Actions CI workflow running uv + pytest on push/PR (TEST-06)
+- [x] 02-04-PLAN.md — GitHub Actions CI workflow running uv + pytest on push/PR (TEST-06)
 - [x] 02-05-PLAN.md — REQ-ID bookkeeping: reassign TEST-02/03/05 to Phase 4 in ROADMAP + REQUIREMENTS + CHANGES
 
 ### Phase 3: Chart Triage Execution
@@ -178,7 +178,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Tidy | 0/4 | Not started | - |
-| 2. Test & Benchmark Scaffolding | 3/5 | In Progress|  |
+| 2. Test & Benchmark Scaffolding | 5/5 | Complete | 2026-04-22 |
 | 3. Chart Triage Execution | 0/0 | Not started | - |
 | 4. Publishing Layer | 0/0 | Not started | - |
 | 5. RO Module | 0/0 | Not started | - |

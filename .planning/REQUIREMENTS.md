@@ -20,7 +20,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 - [ ] **TEST-03**: `tests/test_aggregates.py` proves `sum by year` = `sum by year × technology`; no row leakage
 - [x] **TEST-04**: `tests/test_benchmarks.py` reconciles totals against Ben Pile (2021 + 2026), REF subset, Turver aggregate; documents divergences
 - [ ] **TEST-05**: `tests/test_determinism.py` proves rebuilds produce byte-identical Parquet output on unchanged sources
-- [ ] **TEST-06**: GitHub Actions CI workflow runs pytest on every push to `main`
+- [x] **TEST-06**: GitHub Actions CI workflow runs pytest on every push to `main`
 
 ### Chart Triage & Theme Pages
 
@@ -169,7 +169,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | TEST-03 | Phase 4 | Pending |
 | TEST-04 | Phase 2 | Complete |
 | TEST-05 | Phase 4 | Pending |
-| TEST-06 | Phase 2 | Pending |
+| TEST-06 | Phase 2 | Complete |
 | GOV-04 | Phase 2 | Complete |
 | TRIAGE-01 | Phase 3 | Pending |
 | TRIAGE-02 | Phase 3 | Pending |
