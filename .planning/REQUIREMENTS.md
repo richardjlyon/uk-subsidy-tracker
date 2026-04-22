@@ -31,12 +31,12 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 ### Publishing Layer
 
-- [ ] **PUB-01**: `src/uk_subsidy_tracker/publish/manifest.py` builds `site/data/manifest.json` with provenance (retrieval timestamp, SHA-256, upstream URL, pipeline version) per dataset
-- [ ] **PUB-02**: `publish/csv_mirror.py` writes CSV alongside every published Parquet (journalist convenience)
-- [ ] **PUB-03**: `publish/snapshot.py` creates versioned snapshot (`site/data/v<date>/`) on tagged release; immutable
+- [x] **PUB-01**: `src/uk_subsidy_tracker/publish/manifest.py` builds `site/data/manifest.json` with provenance (retrieval timestamp, SHA-256, upstream URL, pipeline version) per dataset
+- [x] **PUB-02**: `publish/csv_mirror.py` writes CSV alongside every published Parquet (journalist convenience)
+- [x] **PUB-03**: `publish/snapshot.py` creates versioned snapshot (`site/data/v<date>/`) on tagged release; immutable
 - [ ] **PUB-04**: `docs/data/index.md` documents how journalists and academics use the published datasets
-- [ ] **PUB-05**: Three-layer data pipeline (`data/raw/` → `data/derived/` → `site/data/`) operational end-to-end for CfD scheme
-- [ ] **PUB-06**: External consumer can fetch `manifest.json`, follow a URL, and retrieve Parquet/CSV with provenance metadata
+- [x] **PUB-05**: Three-layer data pipeline (`data/raw/` → `data/derived/` → `site/data/`) operational end-to-end for CfD scheme
+- [x] **PUB-06**: External consumer can fetch `manifest.json`, follow a URL, and retrieve Parquet/CSV with provenance metadata
 
 ### Renewables Obligation (RO) Module
 
@@ -101,11 +101,11 @@ Requirements for the portal's first public release: expansion from single-scheme
 ### Governance & Adversarial-Proofing
 
 - [x] **GOV-01**: Every PRODUCTION chart carries four artefacts — narrative page, methodology page, test (in test_benchmarks or scheme-specific), source-file link — all cross-referenced
-- [ ] **GOV-02**: `manifest.json` exposes full provenance per dataset (source URL, retrieval timestamp, source SHA-256, pipeline git SHA, methodology version)
+- [x] **GOV-02**: `manifest.json` exposes full provenance per dataset (source URL, retrieval timestamp, source SHA-256, pipeline git SHA, methodology version)
 - [ ] **GOV-03**: Daily refresh CI workflow (06:00 UTC cron) with per-scheme dirty-check rebuilds only what changed upstream
 - [x] **GOV-04**: Methodology versioning — `counterfactual.py` formula carries version number; changes bump `methodology_version` in manifest; `CHANGES.md` logs rationale
 - [ ] **GOV-05**: Public `docs/about/corrections.md` lists every correction with date, reason, affected charts; GitHub Issues `correction` label triages
-- [ ] **GOV-06**: `CITATION.cff` + versioned snapshot URLs enable academic citation; per-release tag publishes immutable `site/data/v<date>/`
+- [x] **GOV-06**: `CITATION.cff` + versioned snapshot URLs enable academic citation; per-release tag publishes immutable `site/data/v<date>/`
 
 ## v2 Requirements
 
@@ -163,7 +163,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | FND-02 | Phase 1 | Pending |
 | FND-03 | Phase 1 | Pending |
 | GOV-05 | Phase 1 | Pending |
-| GOV-06 | Phase 1 | Pending |
+| GOV-06 | Phase 1 | Complete |
 | TEST-01 | Phase 2 | Complete |
 | TEST-02 | Phase 4 | Complete |
 | TEST-03 | Phase 4 | Complete |
@@ -176,13 +176,13 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | TRIAGE-03 | Phase 3 | Complete |
 | TRIAGE-04 | Phase 3 | Complete |
 | GOV-01 | Phase 3 | Complete |
-| PUB-01 | Phase 4 | Pending |
-| PUB-02 | Phase 4 | Pending |
-| PUB-03 | Phase 4 | Pending |
+| PUB-01 | Phase 4 | Complete |
+| PUB-02 | Phase 4 | Complete |
+| PUB-03 | Phase 4 | Complete |
 | PUB-04 | Phase 4 | Pending |
-| PUB-05 | Phase 4 | Pending |
-| PUB-06 | Phase 4 | Pending |
-| GOV-02 | Phase 4 | Pending |
+| PUB-05 | Phase 4 | Complete |
+| PUB-06 | Phase 4 | Complete |
+| GOV-02 | Phase 4 | Complete |
 | GOV-03 | Phase 4 | Pending |
 | RO-01 | Phase 5 | Pending |
 | RO-02 | Phase 5 | Pending |

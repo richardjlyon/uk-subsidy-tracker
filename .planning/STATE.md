@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-03-PLAN.md (derived layer + schemes/cfd + TEST-02/03/05 formal)
-last_updated: "2026-04-22T23:35:20.829Z"
+stopped_at: Completed 04-04-publishing-layer-manifest-PLAN.md (publish/ package + refresh_all + test_manifest + test_csv_mirror)
+last_updated: "2026-04-22T23:55:35.604Z"
 progress:
   total_phases: 12
   completed_phases: 3
   total_plans: 19
-  completed_plans: 16
-  percent: 84
+  completed_plans: 17
+  percent: 89
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 04 Plan 03 complete: derived-layer + CfD scheme module — `src/uk_subsidy_tracker/{schemas,schemes}/` packages shipped with five Pydantic row models (dtype+unit JSON-Schema metadata, field-order = column order D-10), a runtime-checkable `SchemeModule` `typing.Protocol` declaring ARCHITECTURE §6.1, and the first real §6.1 implementation (`schemes/cfd/`) emitting five Parquet grains (3,624 rows total; 0.74s full rebuild) via the pinned pyarrow writer (D-22). TEST-02/03/05 formally closed on Parquet output: `test_determinism.py` passes 10/10 via `pyarrow.Table.equals()`; Parquet variants in `test_schemas.py` (5 parametrised) + `test_aggregates.py` (3 row-conservation) green. `isinstance(cfd, SchemeModule)` conformance confirmed — Phase 5+ scheme modules have an isinstance gate. GOV-02 substrate shipped: `methodology_version` column on every derived row. Four atomic commits: 6b695cd (test RED), e00a4f6 (feat GREEN), 1a0575f (test Parquet variants + int64 year auto-fix), 79ccb2b (docs CHANGES). Test count 36+4 → 54+4 (+18; zero regressions); charts 14/14 OK; mkdocs --strict green. Two Rule-1 auto-fixes documented: KeyError 'date' in concat.reset_index() (trivial index-name preservation), int32-vs-int64 year dtype mismatch in rollups (cast to int64 at producer to match schema declaration).
+**Session:** Phase 04 Plan 04 complete: publishing layer shipped — `src/uk_subsidy_tracker/publish/` package with manifest.py (Pydantic Manifest/Dataset/Source models, D-07 verbatim; per-grain GRAIN_SOURCES provenance table B-02 mitigation; content-addressed generated_at Pitfall-3 mitigation; upstream_url:str not HttpUrl Pitfall-6 mitigation; raw-file sha256 re-computed on build W-05 mitigation; json.dumps sort_keys+indent=2+LF D-08), csv_mirror.py (pinned pandas args D-10), snapshot.py CLI (--version/--output/--dry-run D-13/D-14). `src/uk_subsidy_tracker/refresh_all.py` per-scheme dirty-check orchestrator (D-16, D-18). .gitignore Rule-1 fix: blanket `site/` replaced with explicit per-mkdocs-subtree patterns because Git does not support re-including files under an ignored directory (!site/data/ silently ineffective); verified via mkdocs build --strict + git check-ignore probe. 15 new tests (8 manifest + 7 csv_mirror); full suite 54+4 → 69+4 (+15, zero regressions); mkdocs --strict green. Five atomic commits: 2e90d11 (feat manifest RED→GREEN), f6afd73 (feat csv_mirror), a024c99 (feat snapshot CLI), 14125f4 (feat refresh_all + gitignore), 3e94bf4 (docs CHANGES). PUB-01/02/03/05/06 + GOV-02 + GOV-06 now closed — external consumer can fetch manifest.json → follow absolute URL → retrieve Parquet+CSV+schema.json with full provenance. D-12 chain closed end-to-end: counterfactual.METHODOLOGY_VERSION → DataFrame column → Parquet column → validate() check → manifest top-level field. Two Rule-1 auto-fixes: yaml.safe_load crashes on mkdocs.yml Python-tag constructors (line-scan fix); !site/data/ ineffective (explicit per-subtree gitignore fix).
 
 ---
 
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 04 (publishing-layer) — EXECUTING
-Plan: 4 of 6 (Plans 01 + 02 + 03 complete)
+Plan: 5 of 6 (Plans 01 + 02 + 03 + 04 complete)
 **Phase:** 4
-**Plan:** 03 complete — Derived layer: schemas/ + schemes/cfd/; 5 Parquet grains emitted deterministically; TEST-02/03/05 formally satisfied on Parquet
+**Plan:** 04 complete — Publishing layer: publish/{manifest,csv_mirror,snapshot}.py + refresh_all.py; manifest.json contract shipped with per-grain provenance, content-addressed generated_at, absolute URLs; snapshot CLI produces versioned release-asset tree; refresh orchestrator short-circuits on clean state.
 **Status:** Executing Phase 04
-**Focus:** Publishing-layer manifest (Plan 04 next); then workflows → docs + benchmark floor.
+**Focus:** Workflows (Plan 05 next: refresh.yml + deploy.yml); then docs + benchmark floor (Plan 06).
 
 ```
-Progress: [████████░░░░░░░░░░░░░░░░] 3/12 phases complete (16/19 plans = 84%)
+Progress: [█████████░] 89% (17/19 plans)
 ```
 
 ---
@@ -54,9 +54,9 @@ Progress: [████████░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 3/12
-**Plans complete:** 16/19 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4; Phase 4 in progress 3/6)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04 (reinforced in 04-01 via SEED-001 Tier 2 tripwire), TEST-02, TEST-03, TEST-05 (all three formally closed in 04-03 on derived Parquet) + (Phase 3: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01). GOV-02 substrate shipped (methodology_version column on every derived row); GOV-02 closes when Plan 04-04 exposes it on manifest.json.
-**Test coverage:** 54 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (10 = 5 raw-CSV + 5 Parquet-parametrised grains — formal TEST-02), `test_aggregates.py` (5 = 2 raw + 3 Parquet row-conservation — formal TEST-03), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), `test_docs_structure.py` (7, Phase-3 invariants: CUT files absent, 5 themes present, 7 PROMOTE pages exist, D-01 sections present, GOV-01 four-way coverage, mkdocs validation block intact), `test_constants_provenance.py` (13, Phase-4 SEED-001 Tier 2 drift tripwire: 6 name-in-yaml + 6 value-matches-live + 1 non-failing audits-overdue), `test_determinism.py` (10 = 5 content-equality + 5 writer-identity across CfD derived grains — formal TEST-05), plus legacy `tests/data/*` (3 passing + 2 skipped). All five §9.6 test classes now present and green for Phase 4.
+**Plans complete:** 17/19 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4; Phase 4 in progress 4/6)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion Phase 1; snapshot URL portion closed in 04-04 via `versioned_url` field on every manifest Dataset), TEST-01, TEST-04, TEST-06, GOV-04 (reinforced in 04-01 via SEED-001 Tier 2 tripwire), TEST-02, TEST-03, TEST-05 (all three formally closed in 04-03 on derived Parquet), PUB-01/02/03/05/06 + GOV-02 (all closed in 04-04) + (Phase 3: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01). GOV-02 closed: provenance per dataset (upstream_url, retrieved_at, source_sha256, pipeline_git_sha, methodology_version) surfaced on every manifest.json Dataset entry. GOV-03 remains open until Plan 04-05 wires refresh.yml to CI.
+**Test coverage:** 69 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (10 = 5 raw-CSV + 5 Parquet-parametrised grains — formal TEST-02), `test_aggregates.py` (5 = 2 raw + 3 Parquet row-conservation — formal TEST-03), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), `test_docs_structure.py` (7, Phase-3 invariants), `test_constants_provenance.py` (13, Phase-4 SEED-001 Tier 2 drift tripwire), `test_determinism.py` (10 = 5 content-equality + 5 writer-identity across CfD derived grains — formal TEST-05), `test_manifest.py` (8 new in 04-04: round-trip byte-identity, provenance fields, absolute URLs, URL-type-is-str Pitfall 6, sha256-matches-parquet, methodology-version-matches-constant D-12, generated_at stability Pitfall 3), `test_csv_mirror.py` (7 new in 04-04: sibling presence, column order, LF line endings, no UTF-8 BOM, no pandas index leak, ISO-8601 dates, float precision at 1e-9 rel_tol), plus legacy `tests/data/*` (3 passing + 2 skipped).
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
@@ -72,6 +72,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | Phase 04 P01 | 5 min | 3 tasks | 6 files |
 | Phase 04 P02 | 5min | 3 tasks | 14 files |
 | Phase 04-publishing-layer P03 | 11min | 4 tasks | 14 files |
+| Phase 04 P04 | 12min | 5 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -140,7 +141,7 @@ None currently.
 - [x] Execute Phase 4 Plan 01 — Wave 0: pyarrow + duckdb deps; SEED-001 Tier 2 constants drift tripwire
 - [x] Execute Phase 4 Plan 02 — Raw-layer migration (`data/*` → `data/raw/<publisher>/<file>` + .meta.json sidecars; loader path updates; 100% rename similarity; 3 atomic commits 3f0d037 / 5859b15 / ed4c258)
 - [x] Execute Phase 4 Plan 03 — Derived layer: `src/uk_subsidy_tracker/schemas/` Pydantic + `schemes/cfd/*` derivation shipped; 5 Parquet + 5 schema.json siblings emitted in 0.74s; TEST-02/03/05 formally closed on Parquet output (`test_determinism.py` 10/10 via `pyarrow.Table.equals()`); `isinstance(cfd, SchemeModule)` smoke green; GOV-02 substrate (methodology_version column) shipped. Four commits 6b695cd / e00a4f6 / 1a0575f / 79ccb2b.
-- [ ] Execute Phase 4 Plan 04 — Publishing layer: `src/uk_subsidy_tracker/publish/` (manifest.py + csv_mirror.py + snapshot.py); `site/data/manifest.json`
+- [x] Execute Phase 4 Plan 04 — Publishing layer: `src/uk_subsidy_tracker/publish/{manifest,csv_mirror,snapshot}.py` + `refresh_all.py` shipped. manifest.py: Pydantic Manifest/Dataset/Source models (D-07 verbatim), per-grain GRAIN_SOURCES provenance (B-02 mitigation), content-addressed generated_at (Pitfall 3), upstream_url:str not HttpUrl (Pitfall 6), raw-file sha256 re-computed on build (W-05). csv_mirror.py: pinned pandas args (D-10). snapshot.py CLI: --version/--output/--dry-run (D-13/D-14). refresh_all.py per-scheme dirty-check + short-circuit (D-16/D-18). 15 new tests (8 manifest + 7 csv_mirror); 69 passed + 4 skipped. Five commits 2e90d11 / f6afd73 / a024c99 / 14125f4 / 3e94bf4. PUB-01/02/03/05/06 + GOV-02 + GOV-06 closed.
 - [ ] Execute Phase 4 Plan 05 — Workflows: `.github/workflows/refresh.yml` (daily cron + PR-based commit-back) + `deploy.yml` (tag-push release asset upload)
 - [ ] Execute Phase 4 Plan 06 — Docs + benchmark floor: `docs/data/index.md` + LCCC ARA 2024/25 self-reconciliation floor activation
 - [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check (folded into Phase 4 Plan 06)
@@ -162,7 +163,7 @@ None currently.
 - GitHub repo lives at `github.com/richardjlyon/uk-subsidy-tracker` (old `cfd-payment` repo archived; origin URL updated locally)
 - Raw data files (5 files, each ≤100MB) migrated from flat `data/*.{csv,xlsx}` to canonical `data/raw/<publisher>/<file>` layout per ARCHITECTURE §4.1 in Plan 04-02 (commit 5859b15; 100% rename similarity; `git log --follow` chases back through the pre-rename 75774b8 → 5859b15 history end-to-end). Sibling `.meta.json` sidecars carry SHA-256 + upstream URL + retrieved_at + `backfilled_at: "2026-04-22"` for each file. `scripts/backfill_sidecars.py` retained for future re-runs (commit 3f0d037). Pre-rename flat `data/*.{csv,xlsx}` paths no longer exist.
 - **Derived layer lives.** `data/derived/cfd/` populated by `cfd.rebuild_derived()` with 5 Parquet + 5 schema.json siblings (3,624 total rows; 0.74s end-to-end) per Plan 04-03 (commits 6b695cd / e00a4f6 / 1a0575f / 79ccb2b). Gitignored per D-22 (generated artefact, not committed). Every row carries `methodology_version` column (GOV-02 substrate). `src/uk_subsidy_tracker/{schemas,schemes}/` are the new packages; `schemes/cfd/` is the first real §6.1 implementation template for Phase 5+ scheme modules.
-- Publishing layer (`site/data/`) does not exist yet; created in Phase 4 Plan 04.
+- **Publishing layer lives.** `src/uk_subsidy_tracker/publish/` package (Plan 04-04, commits 2e90d11 / f6afd73 / a024c99 / 14125f4 / 3e94bf4) emits `site/data/manifest.json` + `site/data/latest/cfd/<grain>.{parquet,csv,schema.json}` (15 artefacts per scheme). manifest.py is the D-07 verbatim public contract; snapshot.py CLI assembles a versioned release-asset tree for deploy.yml tag-push upload. refresh_all.py per-scheme dirty-check orchestrator short-circuits when upstream unchanged (Pitfall 3 — non-noisy daily PR). `.gitignore` restructured to carve out `site/data/` from the blanket `site/` mkdocs-build ignore (Git does not support re-including paths under an ignored directory, so explicit per-subtree ignores replace the blanket rule). D-12 chain closed end-to-end: counterfactual.METHODOLOGY_VERSION → DataFrame column → Parquet column → validate() check → manifest top-level field. PUB-01/02/03/05/06 + GOV-02 + GOV-06 (snapshot URL portion) now closed.
 - Wave 0 deps live: `pyarrow==24.0.0` + `duckdb==1.5.2` in `uv.lock` (commit b9c8233). Both wheel-resolved for Python 3.13 on macOS-arm64; linux-x86_64 standard.
 - SEED-001 Tier 2 drift tripwire live: `tests/test_constants_provenance.py` 13 cases (6 name-in-yaml + 6 value-matches-live + 1 audits-not-overdue warn) wired against `tests/fixtures/constants.yaml` through `tests/fixtures/__init__.py::load_constants` (commit f2548df). SEED-001 Tier 3 (auto-rendered provenance doc page) deferred per CONTEXT D-25.
 - `_TRACKED` allowlist in `tests/test_constants_provenance.py` = 6 constants (CCGT_EFFICIENCY, GAS_CO2_INTENSITY_THERMAL, DEFAULT_NON_FUEL_OPEX, DEFAULT_CARBON_PRICES_{2021,2022,2023}). Adding a new regulator-sourced constant to `counterfactual.py` requires adding to both `_TRACKED` AND `constants.yaml` for the tripwire to fire on it.
@@ -173,9 +174,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-04 publishing-layer manifest). Phase 4 Plan 03 closed: derived-layer shipped end-to-end — `src/uk_subsidy_tracker/{schemas,schemes}/` packages with five Pydantic row models (D-10 field-order-as-column-order, dtype+unit JSON-Schema metadata), runtime-checkable `SchemeModule` Protocol (ARCHITECTURE §6.1), and first real §6.1 implementation `schemes/cfd/`. `cfd.rebuild_derived()` emits 5 Parquet + 5 schema.json siblings in 0.74s; TEST-02/03/05 formally closed on Parquet (determinism via `pyarrow.Table.equals()` 10/10; schemas 5 parametrised; aggregates 3 row-conservation); 54 passed + 4 skipped (+18 vs 04-02 baseline, zero regressions); charts 14/14 OK; mkdocs --strict green. GOV-02 substrate in place — methodology_version column on every derived row propagates to Plan 04-04's manifest.json. Four atomic commits: 6b695cd (test RED), e00a4f6 (feat GREEN), 1a0575f (test Parquet variants + int64 year auto-fix), 79ccb2b (docs CHANGES). Remaining Phase 4 plans: 04-publishing-layer-manifest → 05-workflows → 06-docs-and-benchmark-floor.
+**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-05 workflows refresh+deploy). Phase 4 Plan 04 closed: publishing layer shipped end-to-end — `src/uk_subsidy_tracker/publish/` package (manifest.py with Pydantic D-07 verbatim shape, csv_mirror.py with pinned pandas args D-10, snapshot.py CLI for release-asset assembly D-13/D-14) plus `refresh_all.py` per-scheme dirty-check orchestrator (D-16/D-18). PUB-01/02/03/05/06 + GOV-02 + GOV-06 closed. 15 new tests (8 manifest + 7 csv_mirror); 69 passed + 4 skipped (+15 vs 04-03 baseline, zero regressions); mkdocs --strict green. Five atomic commits 2e90d11 / f6afd73 / a024c99 / 14125f4 / 3e94bf4. Two Rule-1 auto-fixes: yaml.safe_load crashes on mkdocs.yml Python-tag constructors (line-scan site_url loader); !site/data/ silently ineffective (explicit per-mkdocs-subtree gitignore patterns replace the blanket site/ rule). D-12 chain now closed end-to-end: counterfactual.METHODOLOGY_VERSION → DataFrame column → Parquet column → validate() check → manifest top-level field. snapshot --dry-run produces a 16-file artefact tree (1 manifest.json + 5 parquet + 5 csv + 5 schema.json). Remaining Phase 4 plans: 04-05-workflows → 04-06-docs-and-benchmark-floor.
 
-**Stopped at:** Completed 04-03-PLAN.md (derived layer + schemes/cfd + TEST-02/03/05 formal)
+**Stopped at:** Completed 04-04-publishing-layer-manifest-PLAN.md (publish/ package + refresh_all + test_manifest + test_csv_mirror)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
