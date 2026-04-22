@@ -14,7 +14,7 @@ Time-weighted wholesale is the unweighted mean of `Market_Reference_Price_GBP_Pe
 
 ## CfD levy per MWh
 
-For the bottom-panel levy bar chart, aggregation is AR1 wind units only (the allocation round with the longest price-history). Levy `£/MWh = CFD_Payments_GBP / CFD_Generation_MWh`. Positive values (red in the chart) indicate consumer top-up; negative values (green) indicate producer clawback during high-gas periods like 2022.
+For the bottom-panel levy bar chart, aggregation is AR1 wind units only (the allocation round with the longest price-history). Levy `£/MWh = CFD_Payments_GBP / CFD_Generation_MWh`. Positive values (blue in the chart) indicate consumer top-up; negative values (green) indicate producer clawback during high-gas periods like 2022.
 
 ## Data source
 
