@@ -8,6 +8,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `src/uk_subsidy_tracker/schemas/` package — Pydantic row schemas for
+  the five CfD derived grains (`StationMonthRow`, `AnnualSummaryRow`,
+  `ByTechnologyRow`, `ByAllocationRoundRow`, `ForwardProjectionRow`).
+  Field declaration order is the canonical Parquet column order (D-10).
+  Every `Field` carries `description=` + `json_schema_extra={"dtype",
+  "unit"}` so per-table `<grain>.schema.json` siblings carry dtype + unit
+  metadata for Plan 04's `manifest.py`. `emit_schema_json(model, path)`
+  helper writes byte-stable JSON (sort_keys + LF newlines) next to each
+  Parquet file (D-11).
+- `src/uk_subsidy_tracker/schemes/__init__.py` — `SchemeModule`
+  `typing.Protocol` (runtime-checkable) declaring the ARCHITECTURE §6.1
+  contract: `DERIVED_DIR` + five callables (`upstream_changed`,
+  `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`). Phase
+  5 (Renewables Obligation) and every subsequent scheme module copy
+  this pattern; `isinstance(scheme_module, SchemeModule)` is the runtime
+  conformance check.
+- `src/uk_subsidy_tracker/schemes/cfd/` — first real implementation of
+  §6.1 (D-01: load-bearing, not stubbed). `rebuild_derived()` emits the
+  five CfD Parquet grains under `data/derived/cfd/` (or a caller-supplied
+  `output_dir`) via the pinned pyarrow writer (`compression="snappy"`,
+  `version="2.6"`, `use_dictionary=True`, `data_page_size=1 MiB` per
+  D-22). Aggregation logic hoisted out of the chart files:
+  `cost_model.py` from `plotting/subsidy/cfd_dynamics.py::_prepare`;
+  `aggregation.py` from `cfd_payments_by_category.py` +
+  `subsidy_per_avoided_co2_tonne.py`; `forward_projection.py` from
+  `remaining_obligations.py:80-124`. Charts still work unchanged
+  (D-02: chart files not rewritten in this plan).
+- `tests/test_determinism.py` — TEST-05 satisfied. Parametrised
+  content-equality via `pyarrow.Table.equals()` across all five grains;
+  second parametrised test pins writer identity
+  (`created_by.startswith("parquet-cpp-arrow")`). 10/10 green.
+- Parquet-variant tests in `tests/test_schemas.py` (D-19) + `tests/test_aggregates.py`
+  (D-20) — formalises TEST-02 and TEST-03 on derived Parquet output
+  alongside the Phase-2 raw-CSV scaffolding. Full test suite: 54 passed
+  + 4 skipped (+18 from Phase-4 Plan 03; zero regression).
+- `.gitignore` — `data/derived/` excluded (regenerated on every rebuild).
 - `.meta.json` sidecars for all five raw files (D-05):
   `{retrieved_at, upstream_url, sha256, http_status, publisher_last_modified, backfilled_at}`.
   `retrieved_at` best-effort from git log (falls back to the backfill
@@ -63,6 +99,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Pydantic-validated loader at `tests/fixtures/__init__.py`.
 
 ### Changed
+- `methodology_version` column added to every derived Parquet row
+  (GOV-02 provenance-per-row). Propagates from
+  `src/uk_subsidy_tracker/counterfactual.py::METHODOLOGY_VERSION = "0.1.0"`
+  (unchanged; bump is Phase 6+ at first public release). Plan 04-04's
+  `manifest.json` reads it from the derived schema sidecars; a disputed
+  figure can be traced to the methodology revision that produced it
+  (TEST-02/03/05 formally satisfied on derived output).
 - **Raw data layout migrated** from flat `data/*.csv` / `data/*.xlsx`
   to the canonical `data/raw/<publisher>/<file>` nested structure per
   ARCHITECTURE §4.1 (D-04). Filenames hyphenated (underscores → hyphens).
