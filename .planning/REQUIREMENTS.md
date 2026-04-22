@@ -16,10 +16,10 @@ Requirements for the portal's first public release: expansion from single-scheme
 ### Test & Benchmark Scaffolding
 
 - [x] **TEST-01**: `tests/test_counterfactual.py` pins the gas counterfactual formula (fuel + carbon + O&M) against known inputs
-- [ ] **TEST-02**: `tests/test_schemas.py` validates every derived Parquet file against Pydantic schemas
-- [ ] **TEST-03**: `tests/test_aggregates.py` proves `sum by year` = `sum by year × technology`; no row leakage
+- [x] **TEST-02**: `tests/test_schemas.py` validates every derived Parquet file against Pydantic schemas
+- [x] **TEST-03**: `tests/test_aggregates.py` proves `sum by year` = `sum by year × technology`; no row leakage
 - [x] **TEST-04**: `tests/test_benchmarks.py` reconciles totals against Ben Pile (2021 + 2026), REF subset, Turver aggregate; documents divergences
-- [ ] **TEST-05**: `tests/test_determinism.py` proves rebuilds produce byte-identical Parquet output on unchanged sources
+- [x] **TEST-05**: `tests/test_determinism.py` proves rebuilds produce byte-identical Parquet output on unchanged sources
 - [x] **TEST-06**: GitHub Actions CI workflow runs pytest on every push to `main`
 
 ### Chart Triage & Theme Pages
@@ -165,10 +165,10 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | GOV-05 | Phase 1 | Pending |
 | GOV-06 | Phase 1 | Pending |
 | TEST-01 | Phase 2 | Complete |
-| TEST-02 | Phase 4 | Pending |
-| TEST-03 | Phase 4 | Pending |
+| TEST-02 | Phase 4 | Complete |
+| TEST-03 | Phase 4 | Complete |
 | TEST-04 | Phase 2 | Complete |
-| TEST-05 | Phase 4 | Pending |
+| TEST-05 | Phase 4 | Complete |
 | TEST-06 | Phase 2 | Complete |
 | GOV-04 | Phase 2 | Complete |
 | TRIAGE-01 | Phase 3 | Complete |
