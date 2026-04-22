@@ -24,8 +24,8 @@ Methodology:
 
 import plotly.graph_objects as go
 
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 CATEGORIES = {
     "Offshore Wind": "#1f77b4",

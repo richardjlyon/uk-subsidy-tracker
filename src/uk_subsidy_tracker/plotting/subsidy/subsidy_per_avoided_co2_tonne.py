@@ -28,8 +28,8 @@ Methodology:
 import pandas as pd
 import plotly.graph_objects as go
 
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 ROUNDS_TO_SHOW = ["Investment Contract", "Allocation Round 1", "Allocation Round 2"]
 ROUND_COLORS = {

@@ -11,8 +11,8 @@ join and weighting details.
 
 import plotly.express as px
 
-from cfd_payment.plotting import ChartBuilder
-from cfd_payment.plotting.capacity_factor import (
+from uk_subsidy_tracker.plotting import ChartBuilder
+from uk_subsidy_tracker.plotting.capacity_factor import (
     WIND_AND_SOLAR,
     aggregate_by_technology,
     prepare_capacity_data,

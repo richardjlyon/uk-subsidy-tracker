@@ -22,9 +22,9 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-from cfd_payment.counterfactual import compute_counterfactual_monthly
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.counterfactual import compute_counterfactual_monthly
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 
 def _weighted_monthly(df: pd.DataFrame, col: str) -> pd.Series:

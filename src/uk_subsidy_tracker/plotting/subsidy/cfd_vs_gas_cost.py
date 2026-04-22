@@ -56,13 +56,13 @@ Modelling caveats (gas counterfactual only):
 
 import plotly.graph_objects as go
 
-from cfd_payment.counterfactual import (
+from uk_subsidy_tracker.counterfactual import (
     CCGT_EFFICIENCY,
     CCGT_EXISTING_FLEET_OPEX_PER_MWH,
     compute_counterfactual,
 )
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 
 def _prepare_monthly():

@@ -6,7 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from cfd_payment import OUTPUT_DIR
+from uk_subsidy_tracker import OUTPUT_DIR
 
 TECHNOLOGY_COLORS = {
     "Offshore Wind": "#1f77b4",

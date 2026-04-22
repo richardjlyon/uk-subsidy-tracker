@@ -24,9 +24,9 @@ prices, BEIS Electricity Generation Costs 2023 for CCGT opex.
 import pandas as pd
 import plotly.graph_objects as go
 
-from cfd_payment.counterfactual import compute_counterfactual
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.counterfactual import compute_counterfactual
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 
 def _prepare() -> pd.DataFrame:

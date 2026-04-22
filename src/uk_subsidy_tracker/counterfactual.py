@@ -7,7 +7,7 @@ broken down into fuel cost and carbon cost components.
 
 import pandas as pd
 
-from cfd_payment.data import load_gas_price
+from uk_subsidy_tracker.data import load_gas_price
 
 CCGT_EFFICIENCY = 0.55
 GAS_CO2_INTENSITY_THERMAL = 0.184  # tCO2 per MWh thermal (natural gas)

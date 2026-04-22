@@ -2,7 +2,7 @@
 
 import pytest
 
-from cfd_payment.data.ons_gas import download_dataset, load_gas_price
+from uk_subsidy_tracker.data.ons_gas import download_dataset, load_gas_price
 
 
 @pytest.mark.skip(reason="hits live website")

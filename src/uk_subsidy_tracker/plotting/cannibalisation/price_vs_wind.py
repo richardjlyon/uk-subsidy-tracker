@@ -40,8 +40,8 @@ Caveats:
 import numpy as np
 import plotly.graph_objects as go
 
-from cfd_payment.data.elexon import load_elexon_prices_daily, load_elexon_wind_daily
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.data.elexon import load_elexon_prices_daily, load_elexon_wind_daily
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 
 def main() -> None:

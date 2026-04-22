@@ -17,8 +17,8 @@ months are roughly equal length.
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from cfd_payment.plotting import ChartBuilder
-from cfd_payment.plotting.capacity_factor import (
+from uk_subsidy_tracker.plotting import ChartBuilder
+from uk_subsidy_tracker.plotting.capacity_factor import (
     WIND_AND_SOLAR,
     aggregate_by_technology,
     prepare_capacity_data,

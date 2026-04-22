@@ -18,14 +18,14 @@ from typing import Any, Literal
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from cfd_payment import OUTPUT_DIR
-from cfd_payment.plotting.colors import (
+from uk_subsidy_tracker import OUTPUT_DIR
+from uk_subsidy_tracker.plotting.colors import (
     ALLOCATION_ROUND_COLORS,
     GENERATION_COLORS,
     SEMANTIC_COLORS,
     TECHNOLOGY_COLORS,
 )
-from cfd_payment.plotting.theme import register_cfd_dark_theme
+from uk_subsidy_tracker.plotting.theme import register_cfd_dark_theme
 
 
 class ChartBuilder:

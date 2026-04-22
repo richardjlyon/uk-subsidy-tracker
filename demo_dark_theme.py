@@ -5,9 +5,9 @@ from pathlib import Path
 import pandas as pd
 import plotly.graph_objects as go
 
-from cfd_payment.plotting import ChartBuilder
-from cfd_payment.plotting.colors import GENERATION_COLORS
-from cfd_payment.plotting.theme import register_cfd_dark_theme
+from uk_subsidy_tracker.plotting import ChartBuilder
+from uk_subsidy_tracker.plotting.colors import GENERATION_COLORS
+from uk_subsidy_tracker.plotting.theme import register_cfd_dark_theme
 
 # Register theme
 register_cfd_dark_theme()

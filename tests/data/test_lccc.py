@@ -2,7 +2,7 @@
 
 import pytest
 
-from cfd_payment.data.lccc import (
+from uk_subsidy_tracker.data.lccc import (
     download_lccc_datasets,
     load_lccc_config,
     load_lccc_dataset,

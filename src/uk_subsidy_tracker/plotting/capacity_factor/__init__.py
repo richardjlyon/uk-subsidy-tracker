@@ -14,7 +14,7 @@ Methodology:
 
 import pandas as pd
 
-from cfd_payment.data import load_lccc_dataset
+from uk_subsidy_tracker.data import load_lccc_dataset
 
 WIND_AND_SOLAR = ["Solar PV", "Onshore Wind", "Offshore Wind"]
 

@@ -25,8 +25,8 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import save_chart
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import save_chart
 
 MIN_GEN_MWH = 100_000
 

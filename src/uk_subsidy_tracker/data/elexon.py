@@ -19,7 +19,7 @@ from datetime import date, timedelta
 import pandas as pd
 import requests
 
-from cfd_payment import DATA_DIR
+from uk_subsidy_tracker import DATA_DIR
 
 AGWS_URL = "https://data.elexon.co.uk/bmrs/api/v1/datasets/AGWS"
 SYSTEM_PRICE_URL = (

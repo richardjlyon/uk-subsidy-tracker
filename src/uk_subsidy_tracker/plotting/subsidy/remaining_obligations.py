@@ -43,8 +43,8 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-from cfd_payment.data import load_lccc_dataset
-from cfd_payment.plotting import ChartBuilder
+from uk_subsidy_tracker.data import load_lccc_dataset
+from uk_subsidy_tracker.plotting import ChartBuilder
 
 ROUND_COLORS = {
     "Investment Contract": "#d62728",

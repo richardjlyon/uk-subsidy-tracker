@@ -8,8 +8,8 @@ import requests
 import yaml
 from pydantic import BaseModel
 
-from cfd_payment import DATA_DIR
-from cfd_payment.data.utils import HEADERS
+from uk_subsidy_tracker import DATA_DIR
+from uk_subsidy_tracker.data.utils import HEADERS
 
 
 # Schema for a single dataset entry
