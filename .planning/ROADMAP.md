@@ -72,7 +72,7 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — Triage cleanup: delete scissors.py + bang_for_buck_old.py; mkdocs.yml feature + validation deltas (Wave 1 prep)
 - [x] 03-02-PLAN.md — 5-theme scaffolding: git mv 3 CfD pages, create theme index/methodology + PROMOTE stubs, rewrite nav, fix homepage link-rot
-- [ ] 03-03-PLAN.md — 7 PROMOTE chart pages filled (D-01 template, GOV-01 four-way coverage; parallelisable per chart)
+- [x] 03-03-PLAN.md — 7 PROMOTE chart pages filled (D-01 template, GOV-01 four-way coverage; parallelisable per chart)
 - [ ] 03-04-PLAN.md — Chart regen + mkdocs --strict CI gate + test_docs_structure.py + phase-exit checkpoint
 **UI hint**: yes
 

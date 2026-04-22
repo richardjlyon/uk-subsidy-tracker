@@ -25,7 +25,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 ### Chart Triage & Theme Pages
 
 - [x] **TRIAGE-01**: `bang_for_buck_old.py` deleted and `scissors.py` removed (CUT verdict from §5.2) — preserved in git history only
-- [ ] **TRIAGE-02**: Docs pages written for seven PROMOTE charts: `cfd_payments_by_category`, `lorenz`, `subsidy_per_avoided_co2_tonne`, `capture_ratio`, `capacity_factor/seasonal`, `intermittency/generation_heatmap`, `intermittency/rolling_minimum`
+- [x] **TRIAGE-02**: Docs pages written for seven PROMOTE charts: `cfd_payments_by_category`, `lorenz`, `subsidy_per_avoided_co2_tonne`, `capture_ratio`, `capacity_factor/seasonal`, `intermittency/generation_heatmap`, `intermittency/rolling_minimum`
 - [x] **TRIAGE-03**: `docs/` restructured into five theme directories (`cost/`, `recipients/`, `efficiency/`, `cannibalisation/`, `reliability/`) with narrative index, methodology, and per-chart pages
 - [x] **TRIAGE-04**: Every PRODUCTION chart on the site is reachable from its theme page navigation
 
@@ -100,7 +100,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 ### Governance & Adversarial-Proofing
 
-- [ ] **GOV-01**: Every PRODUCTION chart carries four artefacts — narrative page, methodology page, test (in test_benchmarks or scheme-specific), source-file link — all cross-referenced
+- [x] **GOV-01**: Every PRODUCTION chart carries four artefacts — narrative page, methodology page, test (in test_benchmarks or scheme-specific), source-file link — all cross-referenced
 - [ ] **GOV-02**: `manifest.json` exposes full provenance per dataset (source URL, retrieval timestamp, source SHA-256, pipeline git SHA, methodology version)
 - [ ] **GOV-03**: Daily refresh CI workflow (06:00 UTC cron) with per-scheme dirty-check rebuilds only what changed upstream
 - [x] **GOV-04**: Methodology versioning — `counterfactual.py` formula carries version number; changes bump `methodology_version` in manifest; `CHANGES.md` logs rationale
@@ -172,10 +172,10 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | TEST-06 | Phase 2 | Complete |
 | GOV-04 | Phase 2 | Complete |
 | TRIAGE-01 | Phase 3 | Complete |
-| TRIAGE-02 | Phase 3 | Pending |
+| TRIAGE-02 | Phase 3 | Complete |
 | TRIAGE-03 | Phase 3 | Complete |
 | TRIAGE-04 | Phase 3 | Complete |
-| GOV-01 | Phase 3 | Pending |
+| GOV-01 | Phase 3 | Complete |
 | PUB-01 | Phase 4 | Pending |
 | PUB-02 | Phase 4 | Pending |
 | PUB-03 | Phase 4 | Pending |

@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-02-PLAN.md (TRIAGE-03 shipped; first clean mkdocs --strict)
-last_updated: "2026-04-22T16:23:43.936Z"
+stopped_at: Completed 03-03-PLAN.md (TRIAGE-02 + GOV-01 closed; 7 PROMOTE charts authored to full D-01)
+last_updated: "2026-04-22T16:37:09.579Z"
 progress:
   total_phases: 12
   completed_phases: 2
   total_plans: 13
-  completed_plans: 11
-  percent: 85
+  completed_plans: 12
+  percent: 92
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 03 Plan 02 — complete (TRIAGE-03 shipped: 5-theme docs tree built under docs/themes/; 3 CfD pages git-mv'd to themes/cost/ at 97-98% rename similarity; 7 PROMOTE chart-page stubs materialised at final theme locations; mkdocs.yml nav rewritten to 22-entry D-04 structure; docs/index.md link-rot fixed; first clean `mkdocs build --strict` in Phase 3)
+**Session:** Phase 03 Plan 03 — complete (TRIAGE-02 + GOV-01 closed: 7 PROMOTE chart pages filled with full D-01 content (127-172 lines each); adversarial rhetorical payloads locked; GOV-01 four-way coverage demonstrated on every page; mkdocs --strict remains clean; pytest baseline 16 passed + 4 skipped preserved)
 
 ---
 
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 03 (chart-triage-execution) — EXECUTING
-Plan: 3 of 4 (Plans 01-02 complete)
+Plan: 4 of 4 (Plans 01-03 complete)
 **Phase:** 3
-**Plan:** 01-02 complete; 03 next (Wave 3 — PROMOTE chart pages, TRIAGE-02)
+**Plan:** 01-03 complete; 04 next (Wave 4 — full chart regen + CI strict-build gate, TRIAGE-04)
 **Status:** Executing Phase 03
-**Focus:** CUT file deletion [DONE, P01], docs tree + nav [DONE, P02], seven PROMOTE chart-page content fill [NEXT, P03]
+**Focus:** CUT file deletion [DONE, P01], docs tree + nav [DONE, P02], seven PROMOTE chart-page content fill [DONE, P03], full regen + CI strict gate [NEXT, P04]
 
 ```
-Progress: [████████░░░░░░░░░░░░░░░░] 2/12 phases complete (Phase 3: 2/4 plans)
+Progress: [█████████░] 12/13 plans complete (Phase 3: 3/4 plans)
 ```
 
 ---
@@ -54,8 +54,8 @@ Progress: [████████░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 2/12
-**Plans complete:** 11/13 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3: 2/4)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04, TRIAGE-01, TRIAGE-03 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
+**Plans complete:** 12/13 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3: 3/4)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04, TRIAGE-01, TRIAGE-03, TRIAGE-02, GOV-01 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
 **Test coverage:** 16 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
 
 | Plan | Duration | Tasks | Files |
@@ -67,6 +67,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | Phase 02 P04 | 30min | 2 tasks | 2 files |
 | Phase 03 P01 | 2min | 2 tasks | 3 files |
 | Phase 03 P02 | 6min | 5 tasks | 22 files (17 created, 5 modified, 2 deleted) |
+| Phase 03 P03 | 9min | 7 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Progress: [████████░░░░░░░░░░░░░░░
 | PNG stem corrected for cfd-vs-gas-cost Cost-gallery card (03-02) | Plan interface suggested `subsidy_cfd_vs_gas_cost_twitter.png`; actual builder-emitted file (verified against pre-existing chart page L12 reference and deleted docs/charts/index.md L24) is `subsidy_cfd_vs_gas_total_twitter.png`. Using the correct stem prevents broken thumbnails on the Cost theme index after Wave 4 regenerates charts. |
 | git mv rename+content-rewrite atomic in a single commit (03-02 Task 1) | Splitting the rename and path-rewrite into two commits drops git's default 50% rename-similarity threshold and loses the `R` status, breaking `git log --follow` for relocated chart pages. Atomic commits preserved 97-98% similarity. |
 | D-05a asymmetric methodology linking (03-02 Task 3) | Cost + Efficiency theme methodology pages link OUT to `../../methodology/gas-counterfactual.md` (single shared source of truth for displaced-gas assumption); Recipients, Cannibalisation, Reliability stand alone. Avoids the standard methodology-duplication drift pattern where the same counterfactual gets restated five times. |
+| D-01 6-section + GOV-01 four-way coverage manifest locked (03-03) | All 7 PROMOTE chart pages authored to the D-01 6-section structure (What / Argument / Methodology / Caveats / Data & code / See also) with `## Data & code` formatted as a GOV-01 compliance manifest: primary regulator URL + chart source permalink + ≥1 test permalink + reproduce bash block. Grep-verifiable four-way coverage per page; closes GOV-01 structurally for every future chart added to the site. |
+| Adversarial-payload-first pattern (03-03) | Each chart's locked rhetorical claim (from RESEARCH §7) appears in the **bold lead** AND as the opening sentence of The Argument AND is restated in paragraph 3 to prevent rhetorical drift when the page gets edited in future passes. Argument paragraphs are numbered (1/2/3) to make structural edits explicit. |
 
 ### Blockers
 
@@ -116,7 +119,7 @@ None currently.
 - [x] Plan Phase 3 (`/gsd-plan-phase 3`) — Chart Triage Execution (4 plans planned)
 - [x] Execute Phase 3 Plan 01 — Wave 1 cleanup: TRIAGE-01 (scissors + bang_for_buck_old deleted) + mkdocs.yml D-06 theme features + validation: block
 - [x] Execute Phase 3 Plan 02 — Wave 2: five-theme docs tree + nav: rewrite (TRIAGE-03 shipped; mkdocs --strict clean)
-- [ ] Execute Phase 3 Plan 03 — Wave 3: PROMOTE chart pages (TRIAGE-02)
+- [x] Execute Phase 3 Plan 03 — Wave 3: PROMOTE chart pages filled with D-01 content (TRIAGE-02 + GOV-01 shipped; mkdocs --strict clean; 7 pages 127-172 lines)
 - [ ] Execute Phase 3 Plan 04 — Wave 4: full regen + CI strict-build gate (TRIAGE-04)
 - [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check
 - [ ] Phase 3/4: populate external benchmark anchors (OBR EFO calendar-year translation, DESNZ, HoC, NAO) as transcribable figures surface
@@ -129,7 +132,8 @@ None currently.
 - Root docs committed: ARCHITECTURE.md, RO-MODULE-SPEC.md, CHANGES.md, CITATION.cff, LICENSE (MIT), README.md
 - `scissors.py` and `bang_for_buck_old.py` deleted via `git rm` in Plan 03-01 (history preserved; commit c5cc229). Orchestrator now imports 14 chart modules (was 15). Stale PNG/HTML at `docs/charts/html/subsidy_scissors*` remain gitignored and will be purged via Plan 03-04's full regen.
 - `mkdocs.yml` primed with D-06 theme features (10 entries) + root-level `validation:` block (nav.omitted_files: warn + anchor + absolute_links warnings) in Plan 03-01 (commit 575b57d). `nav:` block rewritten to 22-entry 5-theme D-04 tree in Plan 03-02 (commit f17f215); first clean `mkdocs build --strict` of Phase 3 (0 warnings, 0.39s build).
-- 5 theme directories created under `docs/themes/` (cost/recipients/efficiency/cannibalisation/reliability) via Plan 03-02 — each carries `index.md` (D-02 hybrid: adversarial claim + grid-cards gallery + cross-theme pointers + methodology link) + `methodology.md` (D-05a theme-specific; Cost + Efficiency link OUT to shared `../../methodology/gas-counterfactual.md`). 3 existing CfD chart pages relocated to `docs/themes/cost/` via `git mv` at 97-98% similarity. 7 PROMOTE chart-page stubs materialised at final theme locations (Plan 03-03 fills content). `docs/charts/index.md` deleted; `docs/charts/subsidy/` directory removed. `docs/index.md` link-rot fixed with 5-theme "Explore by theme" section.
+- 5 theme directories created under `docs/themes/` (cost/recipients/efficiency/cannibalisation/reliability) via Plan 03-02 — each carries `index.md` (D-02 hybrid: adversarial claim + grid-cards gallery + cross-theme pointers + methodology link) + `methodology.md` (D-05a theme-specific; Cost + Efficiency link OUT to shared `../../methodology/gas-counterfactual.md`). 3 existing CfD chart pages relocated to `docs/themes/cost/` via `git mv` at 97-98% similarity. `docs/charts/index.md` deleted; `docs/charts/subsidy/` directory removed. `docs/index.md` link-rot fixed with 5-theme "Explore by theme" section.
+- 7 PROMOTE chart pages filled with full D-01 content in Plan 03-03 (commits 7f38d46, 3e55b22, 4d57874, 30638bf, 3656da3, b75d36d, f527479): lorenz, cfd-payments-by-category, subsidy-per-avoided-co2-tonne, capture-ratio, capacity-factor-seasonal, generation-heatmap, rolling-minimum — each 127-172 lines, all 6 D-01 H2 sections in canonical order, GOV-01 four-way coverage (PNG + methodology link + ≥1 test permalink + Python source permalink) grep-verifiable per page. D-05 shared gas-counterfactual link present on Efficiency flagship alongside pre-existing Cost-theme pages. OQ4 Phase-4 CF-formula pin-test seed recorded in `capacity-factor-seasonal.md` Caveats. Adversarial rhetorical payloads locked per RESEARCH §7.
 - CI is now live: `.github/workflows/ci.yml` single-job pytest on push/PR, pinned `astral-sh/setup-uv@v8.1.0` + `actions/checkout@v5`, green on both trigger paths
 - GitHub repo lives at `github.com/richardjlyon/uk-subsidy-tracker` (old `cfd-payment` repo archived; origin URL updated locally)
 - Raw data files (5 files, each ≤100MB) now committed under `data/` per CLAUDE.md reproducibility policy (retrospective Phase-1 shortfall fixed in commit 75774b8)
@@ -142,9 +146,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-execute-phase 03` will resume Plan 03-03 (Wave 3: PROMOTE chart-page content fill, TRIAGE-02). Plan 03-02 shipped TRIAGE-03 cleanly — 5-theme docs tree built, 3 CfD pages relocated at 97-98% rename similarity, 7 PROMOTE stubs at final locations, mkdocs.yml nav rewritten to 22-entry D-04 structure, docs/index.md link-rot fixed, first clean `mkdocs build --strict` of Phase 3 (commits 672b331 / 8ad096c / 3accdff / a1bc781 / f17f215). Pytest baseline holds at 16 passed + 4 skipped.
+**Next command:** `/gsd-execute-phase 03` will resume Plan 03-04 (Wave 4: full chart regeneration + CI strict-build gate, TRIAGE-04). Plan 03-03 shipped TRIAGE-02 + GOV-01 cleanly — 7 PROMOTE chart pages filled with full D-01 content (127-172 lines each), GOV-01 four-way coverage grep-verifiable per page, adversarial rhetorical payloads locked, mkdocs --strict clean, pytest 16 passed + 4 skipped preserved (commits 7f38d46 / 3e55b22 / 4d57874 / 30638bf / 3656da3 / b75d36d / f527479).
 
-**Stopped at:** Completed 03-02-PLAN.md (TRIAGE-03 shipped; first clean mkdocs --strict)
+**Stopped at:** Completed 03-03-PLAN.md (TRIAGE-02 + GOV-01 closed; 7 PROMOTE charts authored to full D-01)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
