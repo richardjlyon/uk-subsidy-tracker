@@ -1,8 +1,25 @@
-# CfD Payment Analysis
+# UK Renewable Subsidy Tracker
 
-An independent, data-driven audit of the UK Contracts for Difference
-renewable-energy subsidy scheme, built from public LCCC, ONS, and UK
-ETS data.
+An independent, open, data-driven audit of UK renewable electricity
+subsidy costs — every scheme, every pound, every counterfactual, every
+methodology exposed.
+
+The UK runs eight distinct subsidy and levy schemes that together add
+tens of billions of pounds to consumer bills each year. This site
+tracks each of them — Contracts for Difference, the Renewables
+Obligation, Feed-in Tariffs, the Smart Export Guarantee, Constraint
+Payments, the Capacity Market, Balancing Services, and Grid
+Socialisation — to one standard: every chart reproducible from a
+single `git clone`, every number traceable to a regulator source,
+every methodology documented.
+
+**Current coverage:** the Contracts for Difference module is shipped
+below. The remaining seven modules are under active development; the
+site expands as each is published.
+
+---
+
+## Module in focus: Contracts for Difference
 
 ![CfD dynamics — the full mechanism in four panels](charts/html/subsidy_cfd_dynamics_twitter.png)
 
@@ -13,8 +30,9 @@ paid every month. In only one year — 2022, the worst gas crisis in
 living memory — did CfD electricity come close to matching the gas
 alternative, and even then it still cost 7% more.
 
-This site documents the methodology, data sources, and code behind
-that conclusion, and presents the charts that substantiate it.
+The five theme pages below document the methodology, data sources,
+and code behind that conclusion, and present the charts that
+substantiate it.
 
 ## What are CfDs?
 
@@ -70,8 +88,12 @@ Source: [github.com/richardjlyon/uk-subsidy-tracker](https://github.com/richardj
 
 ## Status
 
-Version 0.x prototype. All five theme pages (Cost, Recipients,
-Efficiency, Cannibalisation, Reliability) are published with their
-flagship charts; methodology pages carry the formulas and provenance.
-Corrections and contributions welcome via
+Version 0.x prototype. The Contracts for Difference module is the
+first of eight planned scheme modules; all five CfD theme pages (Cost,
+Recipients, Efficiency, Cannibalisation, Reliability) are published
+with their flagship charts, and methodology pages carry the formulas
+and provenance. The remaining seven scheme modules are sequenced in
+the project [roadmap](https://github.com/richardjlyon/uk-subsidy-tracker)
+and will appear here as they ship. Corrections and contributions
+welcome via
 [GitHub Issues](https://github.com/richardjlyon/uk-subsidy-tracker/issues).
