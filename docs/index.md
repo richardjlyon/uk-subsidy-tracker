@@ -70,7 +70,8 @@ Source: [github.com/richardjlyon/uk-subsidy-tracker](https://github.com/richardj
 
 ## Status
 
-A work in progress. The three charts above are production; supporting
-analyses (capacity factor, intermittency, cannibalisation) are in the
-source repo but not yet documented here. Corrections and contributions
-welcome via [GitHub Issues](https://github.com/richardjlyon/uk-subsidy-tracker/issues).
+Version 0.x prototype. All five theme pages (Cost, Recipients,
+Efficiency, Cannibalisation, Reliability) are published with their
+flagship charts; methodology pages carry the formulas and provenance.
+Corrections and contributions welcome via
+[GitHub Issues](https://github.com/richardjlyon/uk-subsidy-tracker/issues).
