@@ -32,3 +32,12 @@ site/
 
 # Claude workflow state
 .claude/
+
+# Confidential project management — outreach logs, strategic judgements,
+# off-record notes. Distinct from .planning/ (GSD workspace, tracked).
+# Everything inside .private/ stays out of the public repo.
+.private/
+
+# Phase 4: derived Parquet tables are regenerated from data/raw/ on every
+# refresh. Only raw data + workflows + source + tests live in git.
+data/derived/
