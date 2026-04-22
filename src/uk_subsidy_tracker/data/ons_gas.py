@@ -9,7 +9,7 @@ import requests
 from uk_subsidy_tracker import DATA_DIR
 from uk_subsidy_tracker.data.utils import HEADERS
 
-GAS_SAP_DATA_FILENAME = "ons_gas_sap.xlsx"
+GAS_SAP_DATA_FILENAME = "raw/ons/gas-sap.xlsx"
 
 
 # Pandera schema for the output of load_gas_price() (Phase 2 pre-Parquet scaffolding for TEST-02).

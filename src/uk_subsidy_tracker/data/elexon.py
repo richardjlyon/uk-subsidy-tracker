@@ -27,8 +27,8 @@ SYSTEM_PRICE_URL = (
     "https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices"
 )
 
-AGWS_FILE = DATA_DIR / "elexon_agws.csv"
-SYSTEM_PRICE_FILE = DATA_DIR / "elexon_system_prices.csv"
+AGWS_FILE = DATA_DIR / "raw" / "elexon" / "agws.csv"
+SYSTEM_PRICE_FILE = DATA_DIR / "raw" / "elexon" / "system-prices.csv"
 
 MAX_WORKERS = 10
 
