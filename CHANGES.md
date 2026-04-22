@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Phase 2 scope correction (CONTEXT D-04): formal `TEST-02`, `TEST-03`,
+  `TEST-05` requirement IDs reassigned from Phase 2 to Phase 4.
+  Phase 2 still ships pre-Parquet scaffolding variants of
+  `tests/test_schemas.py` and `tests/test_aggregates.py` (today), plus
+  CI, pin test, and methodology versioning (TEST-01, TEST-04, TEST-06,
+  GOV-04). Phase 4 will add the Parquet-schema + Parquet-aggregate
+  variants + `tests/test_determinism.py` to satisfy the three formal
+  requirements. `.planning/ROADMAP.md` and `.planning/REQUIREMENTS.md`
+  updated.
+- Phase 2 ROADMAP success criterion 1 reworded from "all five test classes" to "four test classes present and passing: `test_counterfactual.py`, `test_schemas.py`, `test_aggregates.py`, `test_benchmarks.py`" to reflect D-03 deferring `test_determinism.py` to Phase 4 (per Phase 2 CONTEXT D-04).
+- Phase 2 ROADMAP success criterion 3 re-anchored from "Ben Pile (2021 + 2026), REF subset, and Turver aggregate" to "LCCC self-reconciliation and any regulator-native external sources the researcher located (OBR, Ofgem, DESNZ, HoC Library, NAO)" (per Phase 2 CONTEXT D-11).
+- `ARCHITECTURE.md` §11 P1 deliverables block updated to match the
+  above (per user memory: when ARCHITECTURE.md and ROADMAP disagree,
+  the spec wins; the spec was amended first, ROADMAP + REQUIREMENTS
+  then aligned to it).
+
 ## [0.1.0] — 2026-04-21
 
 First tagged pre-release of the UK Renewable Subsidy Tracker, renamed
