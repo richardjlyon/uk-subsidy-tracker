@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 context gathered
-last_updated: "2026-04-22T21:23:52.202Z"
+stopped_at: Completed 04-01-PLAN.md (Wave 0 deps + SEED-001 Tier 2 drift test)
+last_updated: "2026-04-22T23:06:14.323Z"
 progress:
   total_phases: 12
   completed_phases: 3
   total_plans: 19
-  completed_plans: 13
-  percent: 68
+  completed_plans: 14
+  percent: 74
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 03 complete (all 4 plans executed: CUT files deleted; 5-theme docs tree built; 7 PROMOTE chart pages filled with full D-01 content; chart output regenerated clean; mkdocs --strict promoted to CI gate; tests/test_docs_structure.py added as regression guard; pytest 23 passed + 4 skipped; TRIAGE-01..04 + GOV-01 delivered)
+**Session:** Phase 04 Plan 01 complete: Wave 0 deps (pyarrow==24.0.0 + duckdb==1.5.2) added; SEED-001 Tier 2 drift tripwire shipped (tests/fixtures/constants.yaml + tests/fixtures/__init__.py ConstantProvenance/Constants/load_constants extension + tests/test_constants_provenance.py 13-case parametrised test); CHANGES.md [Unreleased] entry recorded; 23 passed + 4 skipped → 36 passed + 4 skipped (zero regressions). METHODOLOGY_VERSION unchanged at "0.1.0". Drift-proof manually verified: edit CCGT_EFFICIENCY 0.55→0.56 fires remediation-hook failure citing METHODOLOGY_VERSION + constants.yaml + CHANGES.md.
 
 ---
 
@@ -38,14 +38,15 @@ progress:
 
 ## Current Position
 
-Phase: 03 (chart-triage-execution) — COMPLETE
+Phase: 04 (publishing-layer) — EXECUTING
+Plan: 2 of 6 (Plan 01 complete)
 **Phase:** 4
-**Plan:** Not started
-**Status:** Ready to execute
-**Focus:** Manifest.json, CSV mirror, snapshot, Parquet migration for CfD scheme
+**Plan:** 01 complete — Wave 0 deps + SEED-001 Tier 2 drift test shipped
+**Status:** Executing Phase 04
+**Focus:** Raw-layer migration (Plan 02 next); then derived layer → publishing layer → workflows → docs + benchmark floor.
 
 ```
-Progress: [██████░░░░░░░░░░░░░░░░░░] 3/12 phases complete
+Progress: [███████░░░░░░░░░░░░░░░░░] 3/12 phases complete (14/19 plans = 74%)
 ```
 
 ---
@@ -53,9 +54,9 @@ Progress: [██████░░░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 3/12
-**Plans complete:** 13/13 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04 + (Phase 3: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01) (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
-**Test coverage:** 23 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), `test_docs_structure.py` (7, Phase-3 invariants: CUT files absent, 5 themes present, 7 PROMOTE pages exist, D-01 sections present, GOV-01 four-way coverage, mkdocs validation block intact), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
+**Plans complete:** 14/19 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4; Phase 4 in progress 1/6)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04 (reinforced in 04-01 via SEED-001 Tier 2 tripwire) + (Phase 3: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01) (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
+**Test coverage:** 36 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), `test_docs_structure.py` (7, Phase-3 invariants: CUT files absent, 5 themes present, 7 PROMOTE pages exist, D-01 sections present, GOV-01 four-way coverage, mkdocs validation block intact), `test_constants_provenance.py` (13, Phase-4 SEED-001 Tier 2 drift tripwire: 6 name-in-yaml + 6 value-matches-live + 1 non-failing audits-overdue), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 Plan 04-03+ per 02-CONTEXT D-03.
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
@@ -68,6 +69,7 @@ Progress: [██████░░░░░░░░░░░░░░░░░
 | Phase 03 P02 | 6min | 5 tasks | 22 files (17 created, 5 modified, 2 deleted) |
 | Phase 03 P03 | 9min | 7 tasks | 7 files |
 | Phase 03 P04 | 5min | 5 tasks | 3 files (charts regen, ci.yml, test_docs_structure.py, STATE.md) |
+| Phase 04 P01 | 5 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -99,6 +101,10 @@ Progress: [██████░░░░░░░░░░░░░░░░░
 | D-05a asymmetric methodology linking (03-02 Task 3) | Cost + Efficiency theme methodology pages link OUT to `../../methodology/gas-counterfactual.md` (single shared source of truth for displaced-gas assumption); Recipients, Cannibalisation, Reliability stand alone. Avoids the standard methodology-duplication drift pattern where the same counterfactual gets restated five times. |
 | D-01 6-section + GOV-01 four-way coverage manifest locked (03-03) | All 7 PROMOTE chart pages authored to the D-01 6-section structure (What / Argument / Methodology / Caveats / Data & code / See also) with `## Data & code` formatted as a GOV-01 compliance manifest: primary regulator URL + chart source permalink + ≥1 test permalink + reproduce bash block. Grep-verifiable four-way coverage per page; closes GOV-01 structurally for every future chart added to the site. |
 | Adversarial-payload-first pattern (03-03) | Each chart's locked rhetorical claim (from RESEARCH §7) appears in the **bold lead** AND as the opening sentence of The Argument AND is restated in paragraph 3 to prevent rhetorical drift when the page gets edited in future passes. Argument paragraphs are numbered (1/2/3) to make structural edits explicit. |
+| 04-01 Wave 0: pyarrow>=24.0.0 + duckdb>=1.5.2 added before any Parquet/DuckDB work | Every Phase-4 plan downstream (02-06) depends on at least one. Making the first-plan commit a trivial `chore()` keeps dep churn out of later feature commits. |
+| SEED-001 Tier 2: DEFAULT_NON_FUEL_OPEX tracked, not CCGT_EXISTING_FLEET_OPEX_PER_MWH (04-01) | Both live on the module at 5.0 via Python-level alias. Chose the alias because its docstring is the policy-answering one (existing-fleet counterfactual) and it is the default kwarg on `compute_counterfactual()`. Explicit bool exclusion in `_live_constants()` prevents future `FLAG_FOO = True` boolean flags (`bool` is an `int` subclass) from silently entering the tracked-numeric set. |
+| METHODOLOGY_VERSION stays "0.1.0" through Phase 4 (04-01 + downstream) | Per CONTEXT D-12 + pre-existing condition: "1.0.0" is reserved for first portal launch (Phase 6+). Phase 4 ensures the value propagates into new Parquet + manifest surfaces; bumping is a later milestone event. |
+| TDD RED→GREEN shipped as single task commit, not three (04-01 Task 2) | Plan Task 2 explicitly authorised "three sub-steps in a single task — TDD". RED (test-first) was verified via pytest collection error (`ImportError: cannot import name 'load_constants'`) before loader extension landed in-memory, but ship as one atomic commit so the test + loader + YAML triumvirate travels together in git history — mirrors the `tests/__init__.py` Rule-3 fix pattern from 02-03. |
 
 ### Blockers
 
@@ -121,7 +127,14 @@ None currently.
 - [x] Execute Phase 3 Plan 02 — Wave 2: five-theme docs tree + nav: rewrite (TRIAGE-03 shipped; mkdocs --strict clean)
 - [x] Execute Phase 3 Plan 03 — Wave 3: PROMOTE chart pages filled with D-01 content (TRIAGE-02 + GOV-01 shipped; mkdocs --strict clean; 7 pages 127-172 lines)
 - [x] Execute Phase 3 Plan 04 — Wave 4: full regen + CI strict-build gate (TRIAGE-04)
-- [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check
+- [x] Plan Phase 4 (`/gsd-plan-phase 4`) — Publishing Layer (6 plans planned)
+- [x] Execute Phase 4 Plan 01 — Wave 0: pyarrow + duckdb deps; SEED-001 Tier 2 constants drift tripwire
+- [ ] Execute Phase 4 Plan 02 — Raw-layer migration (`data/*` → `data/raw/<publisher>/<file>` + .meta.json sidecars; loader path updates)
+- [ ] Execute Phase 4 Plan 03 — Derived layer: `src/uk_subsidy_tracker/schemas/` Pydantic + `schemes/cfd/*` derivation (cost_model + aggregation + forward_projection writes to `data/derived/cfd/*.parquet`)
+- [ ] Execute Phase 4 Plan 04 — Publishing layer: `src/uk_subsidy_tracker/publish/` (manifest.py + csv_mirror.py + snapshot.py); `site/data/manifest.json`
+- [ ] Execute Phase 4 Plan 05 — Workflows: `.github/workflows/refresh.yml` (daily cron + PR-based commit-back) + `deploy.yml` (tag-push release asset upload)
+- [ ] Execute Phase 4 Plan 06 — Docs + benchmark floor: `docs/data/index.md` + LCCC ARA 2024/25 self-reconciliation floor activation
+- [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check (folded into Phase 4 Plan 06)
 - [ ] Phase 3/4: populate external benchmark anchors (OBR EFO calendar-year translation, DESNZ, HoC, NAO) as transcribable figures surface
 - [ ] Phase 4+: Author `docs/abbreviations.md` glossary (CfD, AR1, CCGT, MWh, ETS, SCC, LCCC) to populate `content.tooltips` Material feature (OQ5 seed from Phase 3 Plan 03-04 — feature enabled, glossary empty)
 - [ ] Phase 4+: Add CF-formula pin test — `tests/test_capacity_factor.py` freezing `CF = generation / (capacity × hours)` per Reliability theme methodology (OQ4 seed from Phase 3 Plan 03-04 — capacity-factor-seasonal chart caveat tracks this)
@@ -141,6 +154,9 @@ None currently.
 - Raw data files (5 files, each ≤100MB) now committed under `data/` per CLAUDE.md reproducibility policy (retrospective Phase-1 shortfall fixed in commit 75774b8)
 - Derived layer (`data/derived/`) does not exist yet; created in Phase 4
 - Publishing layer (`site/data/`) does not exist yet; created in Phase 4
+- Wave 0 deps live: `pyarrow==24.0.0` + `duckdb==1.5.2` in `uv.lock` (commit b9c8233). Both wheel-resolved for Python 3.13 on macOS-arm64; linux-x86_64 standard.
+- SEED-001 Tier 2 drift tripwire live: `tests/test_constants_provenance.py` 13 cases (6 name-in-yaml + 6 value-matches-live + 1 audits-not-overdue warn) wired against `tests/fixtures/constants.yaml` through `tests/fixtures/__init__.py::load_constants` (commit f2548df). SEED-001 Tier 3 (auto-rendered provenance doc page) deferred per CONTEXT D-25.
+- `_TRACKED` allowlist in `tests/test_constants_provenance.py` = 6 constants (CCGT_EFFICIENCY, GAS_CO2_INTENSITY_THERMAL, DEFAULT_NON_FUEL_OPEX, DEFAULT_CARBON_PRICES_{2021,2022,2023}). Adding a new regulator-sourced constant to `counterfactual.py` requires adding to both `_TRACKED` AND `constants.yaml` for the tripwire to fire on it.
 
 ---
 
@@ -148,9 +164,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-plan-phase 4` — begin planning Phase 4 (Publishing Layer). Phase 3 closed with 5 success criteria green: scissors + bang_for_buck_old deleted (TRIAGE-01); 7 PROMOTE chart pages authored with GOV-01 four-way coverage (TRIAGE-02, GOV-01); 5-theme docs tree complete (TRIAGE-03); every PRODUCTION chart reachable from its theme index via the rewritten 22-entry mkdocs.yml nav under `validation.nav.omitted_files: warn` (TRIAGE-04); `mkdocs build --strict` green locally + as the new `docs` CI job.
+**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-02 raw-layer migration). Phase 4 Plan 01 (Wave 0) closed: pyarrow==24.0.0 + duckdb==1.5.2 in uv.lock; SEED-001 Tier 2 drift tripwire shipped (tests/test_constants_provenance.py: 13 cases across 6 tracked constants + 1 non-failing audit warning); 36 passed + 4 skipped (was 23 + 4). Remaining Phase 4 plans: 02-raw-layer-migration → 03-derived-layer → 04-publishing-layer-manifest → 05-workflows → 06-docs-and-benchmark-floor.
 
-**Stopped at:** Phase 4 context gathered
+**Stopped at:** Completed 04-01-PLAN.md (Wave 0 deps + SEED-001 Tier 2 drift test)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
