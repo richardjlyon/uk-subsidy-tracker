@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Independent, open, data-driven audit of UK renewable electricity subsidy costs"
 requires-python = ">=3.12"
 dependencies = [
+    "duckdb>=1.5.2",
     "kaleido>=1.2.0",
     "mkdocs>=1.6.1",
     "mkdocs-material>=9.7.6",
@@ -12,6 +13,7 @@ dependencies = [
     "pandas",
     "pandera>=0.31.1",
     "plotly",
+    "pyarrow>=24.0.0",
     "pydantic>=2.13.1",
     "pydantic-settings>=2.13.1",
     "pytest>=9.0.3",
