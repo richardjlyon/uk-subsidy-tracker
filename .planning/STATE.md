@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 02-05-PLAN.md (4 tasks incl. user-approved Task 0 amending ARCHITECTURE.md §11 P1; 4 commits: `ea7db6a`, `0cef764`, `b83272d`, `8b82467`)."
-last_updated: "2026-04-22T10:44:52.511Z"
+stopped_at: "Completed 02-02-PLAN.md (3 tasks, 3 commits: be34caf, 6f8a2bb, af68831; pandera schemas + test_schemas.py + test_aggregates.py scaffolding)."
+last_updated: "2026-04-22T10:53:27.909Z"
 progress:
   total_phases: 12
   completed_phases: 1
   total_plans: 9
-  completed_plans: 6
-  percent: 67
+  completed_plans: 7
+  percent: 78
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 02 Plan 05 — complete (scope-correction bookkeeping + user-approved ARCHITECTURE.md §11 P1 amendment)
+**Session:** Phase 02 Plan 02 — complete (pandera schemas on elexon/ons_gas + test_schemas.py + test_aggregates.py pre-Parquet scaffolding)
 
 ---
 
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 02 (test-benchmark-scaffolding) — EXECUTING
-Plan: 3 of 5 (Plans 02-01 + 02-05 complete; 02-02/03/04 remaining)
+Plan: 4 of 5 (Plans 02-01, 02-02, 02-05 complete; 02-03/04 remaining)
 **Phase:** 2 — Test & Benchmark Scaffolding
-**Plan:** 02-02 (next)
+**Plan:** 02-03 (next — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`)
 **Status:** Executing Phase 02
 **Focus:** Formula pinning tests, schema conformance, row conservation, external benchmarks, determinism
 
 ```
-Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 2/5 plans)
+Progress: [██░░░░░░░░░░░░░░░░░░░░░░] 1/12 phases complete (Phase 2: 3/5 plans)
 ```
 
 ---
@@ -54,16 +54,15 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 1/12
-**Plans complete:** 6/9 (Phase 1 closed 4/4; Phase 2 now 2/5)
-**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping)
-**Test coverage:** `test_counterfactual.py` passing (6 new tests: 2 GOV-04 guards + 4 parametrised pin cases). Still 3 of §9.6's required test classes outstanding in Phase 2 (`test_schemas.py`, `test_aggregates.py`, `test_benchmarks.py` — land in Plans 02-02/03/04). `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
+**Plans complete:** 7/9 (Phase 1 closed 4/4; Phase 2 now 3/5)
+**Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, GOV-04 (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
+**Test coverage:** 16 passing + 2 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), plus legacy `tests/data/*` (3 passing + 2 skipped). Still 1 of §9.6's Phase-2 test classes outstanding (`test_benchmarks.py` — lands in Plan 02-03). `test_determinism.py` deferred to Phase 4 per 02-CONTEXT D-03 (confirmed by 02-05 bookkeeping).
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | 02-01 Counterfactual pin + GOV-04 | 3 min | 3 | 3 |
 | 02-05 Scope-correction bookkeeping | 5 min | 4 (incl. Task 0 user-approved) | 4 |
-
----
+| 02-02 Pandera schemas + test_schemas.py + test_aggregates.py scaffolding | 2 min | 3 | 5 |
 
 ## Accumulated Context
 
@@ -81,6 +80,8 @@ Progress: [██░░░░░░░░░░░░░░░░░░░░░
 | TEST-01: 4-parametrised pin test + remediation-hook failure message (02-01) | `round(actual, 4) == expected` at 4dp across 2019/2022 + zero-gas regression; failure message tells the PR author to bump METHODOLOGY_VERSION + add CHANGES.md entry, making silent constant drift structurally impossible |
 | ARCHITECTURE.md §11 P1 amended before ROADMAP edits (02-05 Task 0, user-approved) | Per user memory project_spec_source.md: when ARCHITECTURE.md and ROADMAP disagree, the spec wins. Executor halted correctly on spec-precedence check; user approved Option 1 (amend spec first). test_determinism.py removed from P1 Deliverables (deferred to P3); Ben Pile / REF / Turver anchor replaced by LCCC + regulator-native sources; test_schemas.py + test_aggregates.py added as P1 deliverables with "Parquet variants in P3" qualifier. |
 | TEST-02/03/05 formally reassigned Phase 2 → Phase 4 (02-05) | Phase 2 ships pre-Parquet scaffolding variants of test_schemas.py + test_aggregates.py today (useful-today scaffolding, not formal satisfaction); Phase 4 adds Parquet variants + test_determinism.py to close the three formal requirements. ROADMAP.md + REQUIREMENTS.md + CHANGES.md all aligned. |
+| Loader-owned pandera validation (02-02) | `.validate()` inside the loader body (not in the test) means every caller benefits — charts, ad-hoc notebooks, future scheme modules — not only the pytest run. Matches the pre-existing `load_lccc_dataset` idiom verbatim. Schema drift fails at read-time, not silently downstream. |
+| Row-conservation via `pd.testing.assert_series_equal` (02-02) | Decomposed-then-collapsed groupby sums are algebraically identical under pandas; exact equality is the correct assertion. Tolerance-based comparison would mask the actual failure mode (groupby drops rows on NaN keys). |
 
 ### Blockers
 
@@ -94,7 +95,7 @@ None currently.
 - [x] Plan Phase 2 (`/gsd-plan-phase 2`)
 - [x] Execute Phase 2 Plan 01 — counterfactual pin + GOV-04 seed
 - [x] Execute Phase 2 Plan 05 — scope-correction bookkeeping (ROADMAP + REQUIREMENTS + CHANGES + ARCHITECTURE §11 P1 amendment)
-- [ ] Execute Phase 2 Plan 02 — `tests/test_schemas.py` (pandera scaffolding)
+- [x] Execute Phase 2 Plan 02 — pandera schemas on elexon/ons_gas + `tests/test_schemas.py` + `tests/test_aggregates.py` pre-Parquet scaffolding
 - [ ] Execute Phase 2 Plan 03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`
 - [ ] Execute Phase 2 Plan 04 — GitHub Actions CI workflow (uv + pytest on push/PR)
 
@@ -115,9 +116,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** Execute next plan in Phase 2 (Plan 02-02 — `tests/test_schemas.py` pandera scaffolding). The ARCHITECTURE.md / ROADMAP / REQUIREMENTS / CHANGES docs are now internally consistent; 02-02/03/04 ship against a clean baseline.
+**Next command:** Execute next plan in Phase 2 (Plan 02-03 — `tests/test_benchmarks.py` + `tests/fixtures/benchmarks.yaml`). The full test suite is now 16 passing + 2 skipped; schemas and aggregates scaffolding are in place and CI (02-04) will exercise them once the benchmarks plan lands.
 
-**Stopped at:** Completed 02-05-PLAN.md (4 tasks incl. user-approved Task 0 amending ARCHITECTURE.md §11 P1; 4 commits: `ea7db6a`, `0cef764`, `b83272d`, `8b82467`).
+**Stopped at:** Completed 02-02-PLAN.md (3 tasks, 3 commits: be34caf, 6f8a2bb, af68831; pandera schemas + test_schemas.py + test_aggregates.py scaffolding).
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
