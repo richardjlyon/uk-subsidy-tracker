@@ -49,20 +49,20 @@ All charts:
   both interactive HTML (`docs/charts/html/*.html`) and
   Twitter-optimised PNG (1200×675, `docs/charts/html/*_twitter.png`);
 - compute the gas counterfactual identically — see
-  [Gas counterfactual](../technical-details/gas-counterfactual.md).
+  [Gas counterfactual](../methodology/gas-counterfactual.md).
 
 ## Reproducing
 
 All charts are regenerated from public data by a single command:
 
 ```bash
-uv run python -m cfd_payment.plotting
+uv run python -m uk_subsidy_tracker.plotting
 ```
 
 Or an individual chart:
 
 ```bash
-uv run python -m cfd_payment.plotting.subsidy.cfd_dynamics
+uv run python -m uk_subsidy_tracker.plotting.subsidy.cfd_dynamics
 ```
 
-Source: [github.com/richardjlyon/cfd-payment](https://github.com/richardjlyon/cfd-payment).
+Source: [github.com/richardjlyon/uk-subsidy-tracker](https://github.com/richardjlyon/uk-subsidy-tracker).

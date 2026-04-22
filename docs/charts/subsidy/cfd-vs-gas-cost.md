@@ -135,7 +135,7 @@ administrator.
 
 ### Gas alternative (orange line)
 
-Full methodology in [Gas counterfactual](../../technical-details/gas-counterfactual.md).
+Full methodology in [Gas counterfactual](../../methodology/gas-counterfactual.md).
 In summary: for each day, we compute an implied £/MWh for gas-generated
 electricity as
 
@@ -159,11 +159,11 @@ order of magnitude are robust to these choices.
 - **CfD data** — [LCCC Contracts for Difference data portal](https://www.lowcarboncontracts.uk/data-portal/dataset/actual-cfd-generation-and-avoided-ghg-emissions/actual-cfd-generation-and-avoided-ghg-emissions)
 - **Gas price** — [ONS System Average Price of gas](https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/gk36/mm22)
 - **Carbon price** — [UK ETS auction results (GOV.UK)](https://www.gov.uk/government/publications/participating-in-the-uk-ets)
-- **Chart source** — [`src/cfd_payment/plotting/subsidy/cfd_vs_gas_cost.py`](https://github.com/richlyon/cfd-payment/blob/main/src/cfd_payment/plotting/subsidy/cfd_vs_gas_cost.py)
-- **Counterfactual model** — [`src/cfd_payment/counterfactual.py`](https://github.com/richlyon/cfd-payment/blob/main/src/cfd_payment/counterfactual.py)
+- **Chart source** — [`src/uk_subsidy_tracker/plotting/subsidy/cfd_vs_gas_cost.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/plotting/subsidy/cfd_vs_gas_cost.py)
+- **Counterfactual model** — [`src/uk_subsidy_tracker/counterfactual.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/counterfactual.py)
 
 To reproduce:
 
 ```bash
-uv run python -m cfd_payment.plotting.subsidy.cfd_vs_gas_cost
+uv run python -m uk_subsidy_tracker.plotting.subsidy.cfd_vs_gas_cost
 ```

@@ -98,12 +98,12 @@ in 2035, 692 TWh in 2050) as a multiplier on generation volumes.
 - **Generation data** — [LCCC Actual CfD Generation](https://www.lowcarboncontracts.uk/data-portal/dataset/actual-cfd-generation-and-avoided-ghg-emissions/actual-cfd-generation-and-avoided-ghg-emissions)
 - **Portfolio data** — [LCCC CfD Contract Portfolio Status](https://www.lowcarboncontracts.uk/data-portal/dataset/cfd-contract-portfolio-status)
 - **Demand projections** — [NESO Future Energy Scenarios](https://www.neso.energy/publications/future-energy-scenarios-fes)
-- **Chart source** — [`src/cfd_payment/plotting/subsidy/remaining_obligations.py`](https://github.com/richardjlyon/cfd-payment/blob/main/src/cfd_payment/plotting/subsidy/remaining_obligations.py)
+- **Chart source** — [`src/uk_subsidy_tracker/plotting/subsidy/remaining_obligations.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/plotting/subsidy/remaining_obligations.py)
 
 To reproduce:
 
 ```bash
-uv run python -m cfd_payment.plotting.subsidy.remaining_obligations
+uv run python -m uk_subsidy_tracker.plotting.subsidy.remaining_obligations
 ```
 
 ## See also

@@ -86,13 +86,13 @@ is the running sum of daily `premium_gbp`.
 - **CfD data** — [LCCC Actual CfD Generation and avoided GHG emissions](https://www.lowcarboncontracts.uk/data-portal/dataset/actual-cfd-generation-and-avoided-ghg-emissions/actual-cfd-generation-and-avoided-ghg-emissions)
 - **Gas price** — [ONS System Average Price of gas](https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/gk36/mm22)
 - **Carbon price** — [UK ETS auction results (GOV.UK)](https://www.gov.uk/government/publications/participating-in-the-uk-ets)
-- **Chart source** — [`src/cfd_payment/plotting/subsidy/cfd_dynamics.py`](https://github.com/richardjlyon/cfd-payment/blob/main/src/cfd_payment/plotting/subsidy/cfd_dynamics.py)
-- **Counterfactual model** — [`src/cfd_payment/counterfactual.py`](https://github.com/richardjlyon/cfd-payment/blob/main/src/cfd_payment/counterfactual.py)
+- **Chart source** — [`src/uk_subsidy_tracker/plotting/subsidy/cfd_dynamics.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/plotting/subsidy/cfd_dynamics.py)
+- **Counterfactual model** — [`src/uk_subsidy_tracker/counterfactual.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/counterfactual.py)
 
 To reproduce:
 
 ```bash
-uv run python -m cfd_payment.plotting.subsidy.cfd_dynamics
+uv run python -m uk_subsidy_tracker.plotting.subsidy.cfd_dynamics
 ```
 
 ## See also
@@ -101,5 +101,5 @@ uv run python -m cfd_payment.plotting.subsidy.cfd_dynamics
   real cash flows (wholesale + levy) vs hypothetical gas alternative.
 - [Remaining Obligations](remaining-obligations.md) — what the
   contracts already signed will cost from here on.
-- [Gas counterfactual](../../technical-details/gas-counterfactual.md) —
+- [Gas counterfactual](../../methodology/gas-counterfactual.md) —
   full methodology for the orange line.

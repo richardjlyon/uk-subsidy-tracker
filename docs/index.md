@@ -56,25 +56,25 @@ All analysis is built from public data:
 
 The gas counterfactual methodology — how "what gas would have cost"
 is computed — is documented in detail at
-[Gas counterfactual](technical-details/gas-counterfactual.md).
+[Gas counterfactual](methodology/gas-counterfactual.md).
 
 ## Code & reproducibility
 
 Everything on this site is reproducible from the source repository:
 
 ```bash
-git clone https://github.com/richardjlyon/cfd-payment
-cd cfd-payment
+git clone https://github.com/richardjlyon/uk-subsidy-tracker
+cd uk-subsidy-tracker
 uv sync
-uv run python -m cfd_payment.plotting    # regenerate all charts
+uv run python -m uk_subsidy_tracker.plotting    # regenerate all charts
 uv run mkdocs serve                      # serve this site locally
 ```
 
-Source: [github.com/richardjlyon/cfd-payment](https://github.com/richardjlyon/cfd-payment).
+Source: [github.com/richardjlyon/uk-subsidy-tracker](https://github.com/richardjlyon/uk-subsidy-tracker).
 
 ## Status
 
 A work in progress. The three charts above are production; supporting
 analyses (capacity factor, intermittency, cannibalisation) are in the
 source repo but not yet documented here. Corrections and contributions
-welcome via [GitHub Issues](https://github.com/richardjlyon/cfd-payment/issues).
+welcome via [GitHub Issues](https://github.com/richardjlyon/uk-subsidy-tracker/issues).
