@@ -6,9 +6,8 @@ dist/
 build/
 .venv/
 
-# Downloaded datasets
-data/*.csv
-data/*.xlsx
+# Raw datasets ≤100 MB are committed to git (per CLAUDE.md reproducibility policy).
+# Larger files push to Cloudflare R2 with manifest pointer — add specific paths here.
 
 # IDE
 .idea/
