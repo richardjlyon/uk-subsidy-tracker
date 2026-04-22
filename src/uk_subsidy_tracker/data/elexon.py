@@ -17,6 +17,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, timedelta
 
 import pandas as pd
+import pandera.pandas as pa
 import requests
 
 from uk_subsidy_tracker import DATA_DIR
@@ -30,6 +31,30 @@ AGWS_FILE = DATA_DIR / "elexon_agws.csv"
 SYSTEM_PRICE_FILE = DATA_DIR / "elexon_system_prices.csv"
 
 MAX_WORKERS = 10
+
+
+# Pandera schemas for raw Elexon CSVs (Phase 2 pre-Parquet scaffolding for TEST-02).
+elexon_agws_schema = pa.DataFrameSchema(
+    {
+        "settlementDate": pa.Column("datetime64[ns]", coerce=True),
+        "settlementPeriod": pa.Column(int, coerce=True),
+        "businessType": pa.Column(str),
+        "quantity": pa.Column(float, nullable=True, coerce=True),
+    },
+    strict=False,
+    coerce=True,
+)
+
+elexon_system_price_schema = pa.DataFrameSchema(
+    {
+        "settlementDate": pa.Column("datetime64[ns]", coerce=True),
+        "settlementPeriod": pa.Column(int, coerce=True),
+        "systemSellPrice": pa.Column(float, nullable=True, coerce=True),
+        "systemBuyPrice": pa.Column(float, nullable=True, coerce=True),
+    },
+    strict=False,
+    coerce=True,
+)
 
 
 def _fetch_agws_chunk(start: date, end: date) -> list[dict]:
@@ -131,6 +156,7 @@ def load_elexon_wind_daily() -> pd.DataFrame:
     Returns DataFrame with columns: date, wind_mw (average onshore + offshore).
     """
     df = pd.read_csv(AGWS_FILE)
+    df = elexon_agws_schema.validate(df)
     wind = df[df["businessType"] == "Wind generation"]
     wind = wind.copy()
     wind["date"] = pd.to_datetime(wind["settlementDate"]).dt.date
@@ -145,6 +171,7 @@ def load_elexon_prices_daily() -> pd.DataFrame:
     Returns DataFrame with columns: date, price_gbp_per_mwh.
     """
     df = pd.read_csv(SYSTEM_PRICE_FILE)
+    df = elexon_system_price_schema.validate(df)
     df["date"] = pd.to_datetime(df["settlementDate"]).dt.date
     daily = (
         df.groupby("date")["systemSellPrice"]

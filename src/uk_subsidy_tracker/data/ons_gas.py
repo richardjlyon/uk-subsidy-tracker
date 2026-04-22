@@ -3,12 +3,24 @@
 from pathlib import Path
 
 import pandas as pd
+import pandera.pandas as pa
 import requests
 
 from uk_subsidy_tracker import DATA_DIR
 from uk_subsidy_tracker.data.utils import HEADERS
 
 GAS_SAP_DATA_FILENAME = "ons_gas_sap.xlsx"
+
+
+# Pandera schema for the output of load_gas_price() (Phase 2 pre-Parquet scaffolding for TEST-02).
+ons_gas_schema = pa.DataFrameSchema(
+    {
+        "date": pa.Column("datetime64[ns]", coerce=True),
+        "gas_p_per_kwh": pa.Column(float, coerce=True),
+    },
+    strict=False,
+    coerce=True,
+)
 
 
 def download_dataset() -> Path:
@@ -49,6 +61,7 @@ def load_gas_price() -> pd.DataFrame:
     df["date"] = pd.to_datetime(df["date"])
     df["gas_p_per_kwh"] = pd.to_numeric(df["gas_p_per_kwh"], errors="coerce")
     df = df.dropna(subset=["gas_p_per_kwh"]).reset_index(drop=True)
+    df = ons_gas_schema.validate(df)
     return df
 
 
