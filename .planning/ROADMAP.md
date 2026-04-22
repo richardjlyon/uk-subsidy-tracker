@@ -50,7 +50,13 @@ Plans:
   3. `tests/test_benchmarks.py` documents divergence from Ben Pile (2021 + 2026), REF subset, and Turver aggregate explicitly in output or docstring
   4. GitHub Actions CI workflow triggers on every push to `main` and reports pass/fail
   5. `counterfactual.py` carries a `methodology_version` string; `CHANGES.md` logs the initial version
-**Plans**: TBD
+**Plans:** 5 plans
+Plans:
+- [ ] 02-01-PLAN.md — Counterfactual pin test + METHODOLOGY_VERSION + CHANGES.md 1.0.0 entry (TEST-01, GOV-04)
+- [ ] 02-02-PLAN.md — Pandera schemas on Elexon/ONS loaders + test_schemas.py + test_aggregates.py pre-Parquet scaffolding (TEST-02, TEST-03)
+- [ ] 02-03-PLAN.md — Benchmarks fixture (Pydantic + YAML) + test_benchmarks.py with LCCC floor + external anchors (TEST-04)
+- [ ] 02-04-PLAN.md — GitHub Actions CI workflow running uv + pytest on push/PR (TEST-06)
+- [ ] 02-05-PLAN.md — REQ-ID bookkeeping: reassign TEST-02/03/05 to Phase 4 in ROADMAP + REQUIREMENTS + CHANGES
 
 ### Phase 3: Chart Triage Execution
 **Goal**: The CfD chart set is tidy and fully documented, with every PRODUCTION chart reachable from a five-theme navigation structure
