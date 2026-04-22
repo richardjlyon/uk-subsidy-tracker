@@ -24,7 +24,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 ### Chart Triage & Theme Pages
 
-- [ ] **TRIAGE-01**: `bang_for_buck_old.py` deleted and `scissors.py` removed (CUT verdict from §5.2) — preserved in git history only
+- [x] **TRIAGE-01**: `bang_for_buck_old.py` deleted and `scissors.py` removed (CUT verdict from §5.2) — preserved in git history only
 - [ ] **TRIAGE-02**: Docs pages written for seven PROMOTE charts: `cfd_payments_by_category`, `lorenz`, `subsidy_per_avoided_co2_tonne`, `capture_ratio`, `capacity_factor/seasonal`, `intermittency/generation_heatmap`, `intermittency/rolling_minimum`
 - [ ] **TRIAGE-03**: `docs/` restructured into five theme directories (`cost/`, `recipients/`, `efficiency/`, `cannibalisation/`, `reliability/`) with narrative index, methodology, and per-chart pages
 - [ ] **TRIAGE-04**: Every PRODUCTION chart on the site is reachable from its theme page navigation
@@ -171,7 +171,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | TEST-05 | Phase 4 | Pending |
 | TEST-06 | Phase 2 | Complete |
 | GOV-04 | Phase 2 | Complete |
-| TRIAGE-01 | Phase 3 | Pending |
+| TRIAGE-01 | Phase 3 | Complete |
 | TRIAGE-02 | Phase 3 | Pending |
 | TRIAGE-03 | Phase 3 | Pending |
 | TRIAGE-04 | Phase 3 | Pending |
