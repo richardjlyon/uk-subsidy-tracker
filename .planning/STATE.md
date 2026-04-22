@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-01-PLAN.md (Wave 0 deps + SEED-001 Tier 2 drift test)
-last_updated: "2026-04-22T23:06:14.323Z"
+stopped_at: Completed 04-02-PLAN.md (raw-layer migration + sidecars)
+last_updated: "2026-04-22T23:16:44.308Z"
 progress:
   total_phases: 12
   completed_phases: 3
   total_plans: 19
-  completed_plans: 14
-  percent: 74
+  completed_plans: 15
+  percent: 79
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
 **Last updated:** 2026-04-22
-**Session:** Phase 04 Plan 01 complete: Wave 0 deps (pyarrow==24.0.0 + duckdb==1.5.2) added; SEED-001 Tier 2 drift tripwire shipped (tests/fixtures/constants.yaml + tests/fixtures/__init__.py ConstantProvenance/Constants/load_constants extension + tests/test_constants_provenance.py 13-case parametrised test); CHANGES.md [Unreleased] entry recorded; 23 passed + 4 skipped → 36 passed + 4 skipped (zero regressions). METHODOLOGY_VERSION unchanged at "0.1.0". Drift-proof manually verified: edit CCGT_EFFICIENCY 0.55→0.56 fires remediation-hook failure citing METHODOLOGY_VERSION + constants.yaml + CHANGES.md.
+**Session:** Phase 04 Plan 02 complete: atomic raw-layer migration — `data/*.{csv,xlsx}` → `data/raw/<publisher>/<file>` via `git mv` at 100% rename similarity (five files across lccc/elexon/ons); `.meta.json` sidecars backfilled for all five (SHA-256 + upstream_url + retrieved_at + backfilled_at:"2026-04-22"); loaders updated (elexon.py, ons_gas.py, lccc_datasets.yaml) in same commit as rename (D-06); `scripts/backfill_sidecars.py` one-shot helper committed; lccc.py needed NO edits (YAML-as-single-source-of-truth paid off); 36 passed + 4 skipped (zero regressions); `uv run python -m uk_subsidy_tracker.plotting` + `uv run mkdocs build --strict` both green. Three atomic commits: 3f0d037 (chore script), 5859b15 (refactor migration), ed4c258 (docs CHANGES). Known caveat: sidecar retrieved_at fell to BACKFILL_DATE fallback because `git log --follow` cannot chase uncommitted renames; explicitly authorised by D-05 with `backfilled_at` flagging reconstruction.
 
 ---
 
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 04 (publishing-layer) — EXECUTING
-Plan: 2 of 6 (Plan 01 complete)
+Plan: 3 of 6 (Plans 01 + 02 complete)
 **Phase:** 4
-**Plan:** 01 complete — Wave 0 deps + SEED-001 Tier 2 drift test shipped
+**Plan:** 02 complete — Raw-layer migration: data/*.{csv,xlsx} → data/raw/<publisher>/<file> + .meta.json sidecars; loaders updated atomically
 **Status:** Executing Phase 04
-**Focus:** Raw-layer migration (Plan 02 next); then derived layer → publishing layer → workflows → docs + benchmark floor.
+**Focus:** Derived layer CfD schemes (Plan 03 next); then publishing layer → workflows → docs + benchmark floor.
 
 ```
-Progress: [███████░░░░░░░░░░░░░░░░░] 3/12 phases complete (14/19 plans = 74%)
+Progress: [████████░░░░░░░░░░░░░░░░] 3/12 phases complete (15/19 plans = 79%)
 ```
 
 ---
@@ -54,7 +54,7 @@ Progress: [███████░░░░░░░░░░░░░░░░
 ## Performance Metrics
 
 **Phases complete:** 3/12
-**Plans complete:** 14/19 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4; Phase 4 in progress 1/6)
+**Plans complete:** 15/19 (Phase 1 closed 4/4; Phase 2 closed 5/5; Phase 3 closed 4/4; Phase 4 in progress 2/6)
 **Requirements delivered:** FND-01, FND-02, FND-03, GOV-05, GOV-06 (CITATION.cff portion), TEST-01, TEST-04, TEST-06, GOV-04 (reinforced in 04-01 via SEED-001 Tier 2 tripwire) + (Phase 3: TRIAGE-01, TRIAGE-02, TRIAGE-03, TRIAGE-04, GOV-01) (+ TEST-02/03/05 formally reassigned to Phase 4 by 02-05 bookkeeping; pre-Parquet scaffolding for TEST-02/03 shipped by 02-02)
 **Test coverage:** 36 passing + 4 skipped. `test_counterfactual.py` (6), `test_schemas.py` (5, pre-Parquet scaffolding), `test_aggregates.py` (2, pre-Parquet scaffolding), `test_benchmarks.py` (2 skipped per D-11 fallback — no lccc_self entries, no external anchors transcribed), `test_docs_structure.py` (7, Phase-3 invariants: CUT files absent, 5 themes present, 7 PROMOTE pages exist, D-01 sections present, GOV-01 four-way coverage, mkdocs validation block intact), `test_constants_provenance.py` (13, Phase-4 SEED-001 Tier 2 drift tripwire: 6 name-in-yaml + 6 value-matches-live + 1 non-failing audits-overdue), plus legacy `tests/data/*` (3 passing + 2 skipped). All four §9.6 Phase-2 test classes now present. `test_determinism.py` deferred to Phase 4 Plan 04-03+ per 02-CONTEXT D-03.
 
@@ -70,6 +70,7 @@ Progress: [███████░░░░░░░░░░░░░░░░
 | Phase 03 P03 | 9min | 7 tasks | 7 files |
 | Phase 03 P04 | 5min | 5 tasks | 3 files (charts regen, ci.yml, test_docs_structure.py, STATE.md) |
 | Phase 04 P01 | 5 min | 3 tasks | 6 files |
+| Phase 04 P02 | 5min | 3 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,9 @@ Progress: [███████░░░░░░░░░░░░░░░░
 | SEED-001 Tier 2: DEFAULT_NON_FUEL_OPEX tracked, not CCGT_EXISTING_FLEET_OPEX_PER_MWH (04-01) | Both live on the module at 5.0 via Python-level alias. Chose the alias because its docstring is the policy-answering one (existing-fleet counterfactual) and it is the default kwarg on `compute_counterfactual()`. Explicit bool exclusion in `_live_constants()` prevents future `FLAG_FOO = True` boolean flags (`bool` is an `int` subclass) from silently entering the tracked-numeric set. |
 | METHODOLOGY_VERSION stays "0.1.0" through Phase 4 (04-01 + downstream) | Per CONTEXT D-12 + pre-existing condition: "1.0.0" is reserved for first portal launch (Phase 6+). Phase 4 ensures the value propagates into new Parquet + manifest surfaces; bumping is a later milestone event. |
 | TDD RED→GREEN shipped as single task commit, not three (04-01 Task 2) | Plan Task 2 explicitly authorised "three sub-steps in a single task — TDD". RED (test-first) was verified via pytest collection error (`ImportError: cannot import name 'load_constants'`) before loader extension landed in-memory, but ship as one atomic commit so the test + loader + YAML triumvirate travels together in git history — mirrors the `tests/__init__.py` Rule-3 fix pattern from 02-03. |
+| Raw-layer D-06 atomicity: renames + sidecars + loader edits in one commit (04-02 Task 2) | Splitting the rename (commit A) from loader edits (commit B) would break CI at commit A — loaders still point at old flat paths but files are gone. Splitting sidecars (commit C) loses the D-06 discipline ("CI stays green across the rename commit"). Single commit 5859b15 with 5 R + 5 A + 3 M keeps all three concerns co-atomic; `pytest` green on the tip. 100% rename similarity held on all 5 files. |
+| lccc.py needed NO edits — YAML is single source of truth (04-02 Task 2) | `load_lccc_dataset` reads `pd.read_csv(DATA_DIR / filename)` where `filename` comes from `lccc_datasets.yaml` via `LCCCAppConfig`. Updating only the YAML (both `filename:` fields to `raw/lccc/...`) suffices. Grep `lccc-\|lccc_` in lccc.py returned only legitimate schema/function names, zero hard-coded raw-file paths. The Pydantic-config-as-single-source-of-truth pattern from Phase 1 paid off: 1 YAML edit vs. 3-5 Python edits that would otherwise have been required. |
+| Sidecar retrieved_at fallback accepted (04-02 Task 2) | `git log --follow --format=%cI` cannot chase through an uncommitted rename, so all five sidecars backfilled pre-commit received the BACKFILL_DATE fallback (2026-04-22T00:00:00+00:00) rather than the real commit date of the pre-rename file (2026-04-22T07:26:28-04:00 from commit 75774b8). D-05 explicitly authorises this ("best-effort ... backfilled_at flags reconstructed entries"); acceptance criteria met. Post-commit re-run of `scripts/backfill_sidecars.py` would resolve to real dates, but not worth a second commit when `backfilled_at: "2026-04-22"` already flags reconstruction transparently to Plan 04 manifest.py. |
 
 ### Blockers
 
@@ -129,7 +133,7 @@ None currently.
 - [x] Execute Phase 3 Plan 04 — Wave 4: full regen + CI strict-build gate (TRIAGE-04)
 - [x] Plan Phase 4 (`/gsd-plan-phase 4`) — Publishing Layer (6 plans planned)
 - [x] Execute Phase 4 Plan 01 — Wave 0: pyarrow + duckdb deps; SEED-001 Tier 2 constants drift tripwire
-- [ ] Execute Phase 4 Plan 02 — Raw-layer migration (`data/*` → `data/raw/<publisher>/<file>` + .meta.json sidecars; loader path updates)
+- [x] Execute Phase 4 Plan 02 — Raw-layer migration (`data/*` → `data/raw/<publisher>/<file>` + .meta.json sidecars; loader path updates; 100% rename similarity; 3 atomic commits 3f0d037 / 5859b15 / ed4c258)
 - [ ] Execute Phase 4 Plan 03 — Derived layer: `src/uk_subsidy_tracker/schemas/` Pydantic + `schemes/cfd/*` derivation (cost_model + aggregation + forward_projection writes to `data/derived/cfd/*.parquet`)
 - [ ] Execute Phase 4 Plan 04 — Publishing layer: `src/uk_subsidy_tracker/publish/` (manifest.py + csv_mirror.py + snapshot.py); `site/data/manifest.json`
 - [ ] Execute Phase 4 Plan 05 — Workflows: `.github/workflows/refresh.yml` (daily cron + PR-based commit-back) + `deploy.yml` (tag-push release asset upload)
@@ -151,7 +155,7 @@ None currently.
 - 7 PROMOTE chart pages filled with full D-01 content in Plan 03-03 (commits 7f38d46, 3e55b22, 4d57874, 30638bf, 3656da3, b75d36d, f527479): lorenz, cfd-payments-by-category, subsidy-per-avoided-co2-tonne, capture-ratio, capacity-factor-seasonal, generation-heatmap, rolling-minimum — each 127-172 lines, all 6 D-01 H2 sections in canonical order, GOV-01 four-way coverage (PNG + methodology link + ≥1 test permalink + Python source permalink) grep-verifiable per page. D-05 shared gas-counterfactual link present on Efficiency flagship alongside pre-existing Cost-theme pages. OQ4 Phase-4 CF-formula pin-test seed recorded in `capacity-factor-seasonal.md` Caveats. Adversarial rhetorical payloads locked per RESEARCH §7.
 - CI is now live: `.github/workflows/ci.yml` single-job pytest on push/PR, pinned `astral-sh/setup-uv@v8.1.0` + `actions/checkout@v5`, green on both trigger paths
 - GitHub repo lives at `github.com/richardjlyon/uk-subsidy-tracker` (old `cfd-payment` repo archived; origin URL updated locally)
-- Raw data files (5 files, each ≤100MB) now committed under `data/` per CLAUDE.md reproducibility policy (retrospective Phase-1 shortfall fixed in commit 75774b8)
+- Raw data files (5 files, each ≤100MB) migrated from flat `data/*.{csv,xlsx}` to canonical `data/raw/<publisher>/<file>` layout per ARCHITECTURE §4.1 in Plan 04-02 (commit 5859b15; 100% rename similarity; `git log --follow` chases back through the pre-rename 75774b8 → 5859b15 history end-to-end). Sibling `.meta.json` sidecars carry SHA-256 + upstream URL + retrieved_at + `backfilled_at: "2026-04-22"` for each file. `scripts/backfill_sidecars.py` retained for future re-runs (commit 3f0d037). Pre-rename flat `data/*.{csv,xlsx}` paths no longer exist.
 - Derived layer (`data/derived/`) does not exist yet; created in Phase 4
 - Publishing layer (`site/data/`) does not exist yet; created in Phase 4
 - Wave 0 deps live: `pyarrow==24.0.0` + `duckdb==1.5.2` in `uv.lock` (commit b9c8233). Both wheel-resolved for Python 3.13 on macOS-arm64; linux-x86_64 standard.
@@ -164,9 +168,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-02 raw-layer migration). Phase 4 Plan 01 (Wave 0) closed: pyarrow==24.0.0 + duckdb==1.5.2 in uv.lock; SEED-001 Tier 2 drift tripwire shipped (tests/test_constants_provenance.py: 13 cases across 6 tracked constants + 1 non-failing audit warning); 36 passed + 4 skipped (was 23 + 4). Remaining Phase 4 plans: 02-raw-layer-migration → 03-derived-layer → 04-publishing-layer-manifest → 05-workflows → 06-docs-and-benchmark-floor.
+**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-03 derived-layer CfD schemes). Phase 4 Plan 02 closed: atomic raw-layer migration shipped — 5 files moved to `data/raw/<publisher>/<file>` via `git mv` (100% similarity); 5 × `.meta.json` sidecars backfilled with SHA-256 + upstream URL + ISO-8601 retrieved_at + `backfilled_at` marker; loaders (elexon.py, ons_gas.py, lccc_datasets.yaml) updated in same atomic commit (5859b15); `scripts/backfill_sidecars.py` retained for future re-runs; 36 passed + 4 skipped (zero regressions); `uv run python -m uk_subsidy_tracker.plotting` + `uv run mkdocs build --strict` both green. Remaining Phase 4 plans: 03-derived-layer → 04-publishing-layer-manifest → 05-workflows → 06-docs-and-benchmark-floor.
 
-**Stopped at:** Completed 04-01-PLAN.md (Wave 0 deps + SEED-001 Tier 2 drift test)
+**Stopped at:** Completed 04-02-PLAN.md (raw-layer migration + sidecars)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*

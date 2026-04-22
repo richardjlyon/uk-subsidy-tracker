@@ -89,7 +89,7 @@ Plans:
 **Plans:** 6 plans
 Plans:
 - [x] 04-01-wave0-deps-and-constants-drift-test-PLAN.md — Add pyarrow + duckdb deps; ship SEED-001 Tier 2 constants drift test (constants.yaml + fixtures loader + test_constants_provenance.py)
-- [ ] 04-02-raw-layer-migration-PLAN.md — Atomic git mv of 5 raw files to data/raw/<publisher>/<file>; backfill 5 .meta.json sidecars; update loaders + YAML paths (D-04/05/06)
+- [x] 04-02-raw-layer-migration-PLAN.md — Atomic git mv of 5 raw files to data/raw/<publisher>/<file>; backfill 5 .meta.json sidecars; update loaders + YAML paths (D-04/05/06)
 - [ ] 04-03-derived-layer-cfd-schemes-PLAN.md — schemas/cfd.py Pydantic + schemes/ Protocol + schemes/cfd/ contract + rebuild_derived; Parquet variants for test_schemas + test_aggregates; new test_determinism (D-01/03/19/20/21/22)
 - [ ] 04-04-publishing-layer-manifest-PLAN.md — publish/{manifest,csv_mirror,snapshot}.py + refresh_all.py + test_manifest + test_csv_mirror (D-07/08/09/10/11/13/18; PUB-01/02/03/06; GOV-02)
 - [ ] 04-05-workflows-refresh-deploy-PLAN.md — refresh.yml cron + deploy.yml tag; refresh-failure-template.md (D-13/14/16/17; GOV-03; GOV-06)
