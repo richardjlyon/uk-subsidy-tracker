@@ -1,27 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://richardjlyon.github.io/cfd-payment/</loc>
-         <lastmod>2026-04-20</lastmod>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/</loc>
+         <lastmod>2026-04-22</lastmod>
     </url>
     <url>
-         <loc>https://richardjlyon.github.io/cfd-payment/charts/</loc>
-         <lastmod>2026-04-20</lastmod>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/about/citation/</loc>
+         <lastmod>2026-04-22</lastmod>
     </url>
     <url>
-         <loc>https://richardjlyon.github.io/cfd-payment/charts/subsidy/cfd-dynamics/</loc>
-         <lastmod>2026-04-20</lastmod>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/about/corrections/</loc>
+         <lastmod>2026-04-22</lastmod>
     </url>
     <url>
-         <loc>https://richardjlyon.github.io/cfd-payment/charts/subsidy/cfd-vs-gas-cost/</loc>
-         <lastmod>2026-04-20</lastmod>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/methodology/gas-counterfactual/</loc>
+         <lastmod>2026-04-22</lastmod>
     </url>
     <url>
-         <loc>https://richardjlyon.github.io/cfd-payment/charts/subsidy/remaining-obligations/</loc>
-         <lastmod>2026-04-20</lastmod>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cannibalisation/</loc>
+         <lastmod>2026-04-22</lastmod>
     </url>
     <url>
-         <loc>https://richardjlyon.github.io/cfd-payment/technical-details/gas-counterfactual/</loc>
-         <lastmod>2026-04-20</lastmod>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cannibalisation/capture-ratio/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cannibalisation/methodology/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cost/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cost/cfd-dynamics/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cost/cfd-vs-gas-cost/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cost/methodology/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/cost/remaining-obligations/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/efficiency/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/efficiency/methodology/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/efficiency/subsidy-per-avoided-co2-tonne/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/recipients/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/recipients/cfd-payments-by-category/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/recipients/lorenz/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/recipients/methodology/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/reliability/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/reliability/capacity-factor-seasonal/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/reliability/generation-heatmap/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/reliability/methodology/</loc>
+         <lastmod>2026-04-22</lastmod>
+    </url>
+    <url>
+         <loc>https://richardjlyon.github.io/uk-subsidy-tracker/themes/reliability/rolling-minimum/</loc>
+         <lastmod>2026-04-22</lastmod>
     </url>
 </urlset>
