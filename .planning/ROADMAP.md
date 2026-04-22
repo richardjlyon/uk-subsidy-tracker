@@ -86,7 +86,14 @@ Plans:
   3. `publish/snapshot.py` creates an immutable `site/data/v<date>/` directory on tagged release
   4. `docs/data/index.md` explains how journalists and academics use the datasets, including citation via versioned snapshot URL
   5. GitHub Actions daily refresh workflow (06:00 UTC cron) with per-scheme dirty-check is committed and functional
-**Plans**: TBD
+**Plans:** 6 plans
+Plans:
+- [ ] 04-01-wave0-deps-and-constants-drift-test-PLAN.md — Add pyarrow + duckdb deps; ship SEED-001 Tier 2 constants drift test (constants.yaml + fixtures loader + test_constants_provenance.py)
+- [ ] 04-02-raw-layer-migration-PLAN.md — Atomic git mv of 5 raw files to data/raw/<publisher>/<file>; backfill 5 .meta.json sidecars; update loaders + YAML paths (D-04/05/06)
+- [ ] 04-03-derived-layer-cfd-schemes-PLAN.md — schemas/cfd.py Pydantic + schemes/ Protocol + schemes/cfd/ contract + rebuild_derived; Parquet variants for test_schemas + test_aggregates; new test_determinism (D-01/03/19/20/21/22)
+- [ ] 04-04-publishing-layer-manifest-PLAN.md — publish/{manifest,csv_mirror,snapshot}.py + refresh_all.py + test_manifest + test_csv_mirror (D-07/08/09/10/11/13/18; PUB-01/02/03/06; GOV-02)
+- [ ] 04-05-workflows-refresh-deploy-PLAN.md — refresh.yml cron + deploy.yml tag; refresh-failure-template.md (D-13/14/16/17; GOV-03; GOV-06)
+- [ ] 04-06-docs-and-benchmark-floor-PLAN.md — docs/data/index.md + mkdocs nav + citation versioned-URL + LCCC ARA 2024/25 floor disposition (PUB-04; GOV-06; TEST-04; D-26/27)
 
 ### Phase 5: RO Module
 **Goal**: The Renewables Obligation scheme is fully tracked from raw Ofgem data through to published charts, benchmarked against Turver's totals, and integrated into the site as the second scheme module
@@ -185,7 +192,7 @@ Plans:
 | 1. Foundation Tidy | 0/4 | Not started | - |
 | 2. Test & Benchmark Scaffolding | 5/5 | Complete | 2026-04-22 |
 | 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
-| 4. Publishing Layer | 0/0 | Not started | - |
+| 4. Publishing Layer | 0/6 | Not started | - |
 | 5. RO Module | 0/0 | Not started | - |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
