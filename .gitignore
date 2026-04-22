@@ -27,8 +27,23 @@ output/*.json
 docs/charts/html/*.html
 docs/charts/html/*.png
 
-# MkDocs build output
-site/
+# MkDocs build output. Phase 4 note: `site/data/` is produced by
+# `uk_subsidy_tracker.refresh_all` and committed intentionally (D-15) —
+# the daily refresh PR writes site/data/latest/cfd/* and site/data/manifest.json
+# and Cloudflare Pages serves these from main. Git does not support
+# re-including files under an ignored directory, so we ignore the mkdocs-build
+# subtrees explicitly rather than blanket-ignoring site/.
+/site/assets/
+/site/stylesheets/
+/site/search/
+/site/sitemap.xml
+/site/sitemap.xml.gz
+/site/themes/
+/site/methodology/
+/site/charts/
+/site/about/
+/site/index.html
+/site/404.html
 
 # Claude workflow state
 .claude/
