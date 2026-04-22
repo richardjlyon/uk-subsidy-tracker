@@ -105,7 +105,7 @@ These are limits of the model, not reasons to distrust the direction:
 
 ## Reproducibility
 
-The full calculation lives in [`src/cfd_payment/counterfactual.py`](https://github.com/richlyon/cfd-payment/blob/main/src/cfd_payment/counterfactual.py).
+The full calculation lives in [`src/uk_subsidy_tracker/counterfactual.py`](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/src/uk_subsidy_tracker/counterfactual.py).
 
 Key constants:
 
@@ -118,13 +118,13 @@ Key constants:
 To reproduce the chart:
 
 ```bash
-uv run python -m cfd_payment.plotting.subsidy.cfd_vs_gas_cost
+uv run python -m uk_subsidy_tracker.plotting.subsidy.cfd_vs_gas_cost
 ```
 
 To run a sensitivity scenario, call `compute_counterfactual()` with overrides:
 
 ```python
-from cfd_payment.counterfactual import (
+from uk_subsidy_tracker.counterfactual import (
     compute_counterfactual,
     CCGT_NEW_BUILD_CAPEX_OPEX_PER_MWH,
 )
