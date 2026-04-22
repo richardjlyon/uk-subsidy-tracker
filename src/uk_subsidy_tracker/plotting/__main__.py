@@ -1,3 +1,15 @@
+"""Entry point for regenerating every chart published on the site.
+
+Invoked as ``python -m uk_subsidy_tracker.plotting``. Each chart's ``main()``
+is executed inside a ``try/except`` so one failing chart does not silently
+mask the others in CI — the run ends with a summary and a non-zero exit
+code listing every failure.
+
+The module body is guarded by ``if __name__ == "__main__":`` so that
+accidental imports (e.g. ``from uk_subsidy_tracker.plotting.__main__ import
+capture_ratio``) do not trigger a full chart regeneration as a side effect.
+"""
+
 from uk_subsidy_tracker.plotting.cannibalisation.capture_ratio import main as capture_ratio
 from uk_subsidy_tracker.plotting.cannibalisation.price_vs_wind import main as price_vs_wind
 from uk_subsidy_tracker.plotting.capacity_factor.monthly import main as cf_monthly
@@ -19,24 +31,45 @@ from uk_subsidy_tracker.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
     main as subsidy_per_avoided_co2_tonne,
 )
 
-# Subsidy economics
-cfd_vs_gas_total()
-cfd_dynamics()
-cfd_payments_by_category()
-subsidy_per_avoided_co2_tonne()
-bang_for_buck()
-remaining_obligations()
-lorenz()
 
-# Capacity factor
-cf_monthly()
-cf_seasonal()
+def main() -> None:
+    """Regenerate every published chart, collecting failures for a summary."""
+    charts = [
+        # Subsidy economics
+        ("cfd_vs_gas_total", cfd_vs_gas_total),
+        ("cfd_dynamics", cfd_dynamics),
+        ("cfd_payments_by_category", cfd_payments_by_category),
+        ("subsidy_per_avoided_co2_tonne", subsidy_per_avoided_co2_tonne),
+        ("bang_for_buck", bang_for_buck),
+        ("remaining_obligations", remaining_obligations),
+        ("lorenz", lorenz),
+        # Capacity factor
+        ("cf_monthly", cf_monthly),
+        ("cf_seasonal", cf_seasonal),
+        # Intermittency
+        ("heatmap", heatmap),
+        ("load_duration", load_duration),
+        ("rolling_minimum", rolling_minimum),
+        # Cannibalisation
+        ("capture_ratio", capture_ratio),
+        ("price_vs_wind", price_vs_wind),
+    ]
 
-# Intermittency
-heatmap()
-load_duration()
-rolling_minimum()
+    failures: list[tuple[str, Exception]] = []
+    for name, fn in charts:
+        try:
+            fn()
+            print(f"OK  {name}")
+        except Exception as e:  # noqa: BLE001 — CI needs to see every failure
+            print(f"ERR {name}: {e}")
+            failures.append((name, e))
 
-# Cannibalisation
-capture_ratio()
-price_vs_wind()
+    if failures:
+        raise SystemExit(
+            f"{len(failures)} chart(s) failed: "
+            + ", ".join(n for n, _ in failures)
+        )
+
+
+if __name__ == "__main__":
+    main()
