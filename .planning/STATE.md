@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-last_updated: "2026-04-22T01:46:17.957Z"
+last_updated: "2026-04-22T01:55:44.239Z"
 progress:
   total_phases: 12
   completed_phases: 0
@@ -37,9 +37,11 @@ progress:
 
 ## Current Position
 
+Phase: 01 (foundation-tidy) — EXECUTING
+Plan: 1 of 4
 **Phase:** 1 — Foundation Tidy
 **Plan:** TBD (not yet planned)
-**Status:** Ready to execute
+**Status:** Executing Phase 01
 **Focus:** Repo rename (`cfd-payment` → `uk-subsidy-tracker`), MkDocs Material theme switch, root docs committed
 
 ```

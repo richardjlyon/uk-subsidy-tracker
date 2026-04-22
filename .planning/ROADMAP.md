@@ -34,7 +34,7 @@
   5. `CITATION.cff` contains correct author, repository URL, and version metadata
 **Plans:** 4 plans
 Plans:
-- [ ] 01-01-PLAN.md — Package rename sweep: git mv src/cfd_payment → src/uk_subsidy_tracker, pyproject.toml, 24 Python files + 2 tests + demo_dark_theme.py imports
+- [x] 01-01-PLAN.md — Package rename sweep: git mv src/cfd_payment → src/uk_subsidy_tracker, pyproject.toml, 24 Python files + 2 tests + demo_dark_theme.py imports
 - [ ] 01-02-PLAN.md — MkDocs Material theme + palette toggle + nav wiring, move docs/technical-details/gas-counterfactual.md → docs/methodology/, sweep docs/index.md + docs/charts/index.md
 - [ ] 01-03-PLAN.md — Commit ARCHITECTURE.md + RO-MODULE-SPEC.md, create CHANGES.md (Keep-a-Changelog) + CITATION.cff (CFF 1.2.0) + README.md + docs/about/{corrections,citation}.md; licence decision checkpoint
 - [ ] 01-04-PLAN.md — Create GitHub `correction` label, run mkdocs build --strict, phase-exit verification checkpoint
