@@ -49,4 +49,8 @@ class SchemeModule(Protocol):
     def validate(self) -> list[str]: ...
 
 
-__all__ = ["SchemeModule"]
+# Barrel re-export — every scheme module implementing the §6.1 contract. Keep
+# alphabetical for grep-discoverability; Phase 7+ adds FiT, SEG, etc.
+from uk_subsidy_tracker.schemes import cfd, ro  # noqa: E402
+
+__all__ = ["SchemeModule", "cfd", "ro"]
