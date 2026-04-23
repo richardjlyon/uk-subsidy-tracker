@@ -27,6 +27,10 @@ import importlib
 # submodule attribute at the package level. Use importlib to bypass the
 # attribute shadow and load the submodule object directly.
 cfd_refresh = importlib.import_module("uk_subsidy_tracker.schemes.cfd._refresh")
+# Same submodule-shadow pattern for RO — `schemes/ro/__init__.py` aliases
+# `from ._refresh import refresh as _refresh`, shadowing the submodule at
+# the package level (Plan 05-05). importlib reaches the submodule directly.
+ro_refresh = importlib.import_module("uk_subsidy_tracker.schemes.ro._refresh")
 
 
 @pytest.fixture
@@ -147,4 +151,151 @@ def test_refresh_loop_generated_at_advances_once_then_stable(tmp_raw_tree):
     # Step 4: invariant holds — dirty-check reports clean; no rebuild next pass.
     assert cfd_refresh.upstream_changed() is False, (
         "Second pass MUST short-circuit — sidecars now match live bytes"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Plan 05-07 — RO parallels (mirror the CfD invariants above).
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def tmp_ro_raw_tree(tmp_path, monkeypatch):
+    """Seed tmp_path with the three RO raw files + sidecars that match,
+    pointing ro_refresh at tmp_path as DATA_DIR. Returns the tmp_path root.
+    """
+    raw_root = tmp_path
+    (raw_root / "raw/ofgem").mkdir(parents=True, exist_ok=True)
+    from uk_subsidy_tracker.data.sidecar import write_sidecar
+    for rel, url in ro_refresh._URL_MAP.items():
+        raw_path = raw_root / rel
+        raw_path.write_bytes(f"INITIAL-CONTENT-{rel}".encode())
+        write_sidecar(raw_path=raw_path, upstream_url=url)
+    # Redirect the scheme module at tmp_path.
+    monkeypatch.setattr(ro_refresh, "DATA_DIR", raw_root)
+    return raw_root
+
+
+def _patched_ro_refresh_downloaders(raw_root: Path, new_content: dict[str, bytes]):
+    """Return a context manager stack that patches the three RO downloaders
+    to write `new_content[rel]` bytes to each raw file in `raw_root`.
+
+    Mirrors the CfD helper `_patched_refresh_downloaders` above. The three
+    Ofgem downloaders are patched to write synthetic bytes rather than hit
+    the network; `ro_refresh.refresh()` then iterates `_URL_MAP` and
+    rewrites the three sidecars via `write_sidecar()`, so on the next
+    `upstream_changed()` call the SHA comparison agrees and returns False.
+    """
+    stack = ExitStack()
+
+    def fake_register():
+        rel = "raw/ofgem/ro-register.xlsx"
+        (raw_root / rel).write_bytes(new_content[rel])
+
+    def fake_generation():
+        rel = "raw/ofgem/ro-generation.csv"
+        (raw_root / rel).write_bytes(new_content[rel])
+
+    def fake_prices():
+        rel = "raw/ofgem/roc-prices.csv"
+        (raw_root / rel).write_bytes(new_content[rel])
+
+    stack.enter_context(patch(
+        "uk_subsidy_tracker.data.ofgem_ro.download_ofgem_ro_register",
+        side_effect=fake_register,
+    ))
+    stack.enter_context(patch(
+        "uk_subsidy_tracker.data.ofgem_ro.download_ofgem_ro_generation",
+        side_effect=fake_generation,
+    ))
+    stack.enter_context(patch(
+        "uk_subsidy_tracker.data.roc_prices.download_roc_prices",
+        side_effect=fake_prices,
+    ))
+    return stack
+
+
+def test_ro_refresh_converges_on_unchanged_upstream(tmp_ro_raw_tree):
+    """After ro_refresh.refresh(), upstream_changed() = False (D-18 per-scheme)."""
+    new_content = {rel: f"FRESH-CONTENT-{rel}".encode()
+                   for rel in ro_refresh._URL_MAP}
+
+    with _patched_ro_refresh_downloaders(tmp_ro_raw_tree, new_content):
+        ro_refresh.refresh()
+
+    # Invariant: after a successful refresh, the dirty-check reports clean.
+    assert ro_refresh.upstream_changed() is False, (
+        "upstream_changed() must return False after refresh() rewrites RO sidecars"
+    )
+
+
+def test_manifest_includes_both_schemes_after_end_to_end_refresh(tmp_path):
+    """Plan 05-07: multi-scheme refresh produces manifest.json with cfd.* AND ro.* entries.
+
+    Pins the core Plan 05-07 must_have truth — "manifest.json with 10 Dataset
+    entries (5 CfD + 5 RO)" — by exercising the manifest-build path directly
+    on a tmp derived tree populated with both schemes. Does NOT hit network;
+    Parquets are synthesised in-process.
+    """
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from uk_subsidy_tracker.publish import manifest as manifest_mod
+    from uk_subsidy_tracker.data.sidecar import write_sidecar
+
+    # ---- Synthesise derived/<scheme>/*.parquet for both schemes ----
+    derived_root = tmp_path / "derived"
+    grains = (
+        "station_month",
+        "annual_summary",
+        "by_technology",
+        "by_allocation_round",
+        "forward_projection",
+    )
+    for scheme in ("cfd", "ro"):
+        (derived_root / scheme).mkdir(parents=True)
+        for grain in grains:
+            tbl = pa.table({"methodology_version": ["0.1.0"]})
+            pq.write_table(tbl, derived_root / scheme / f"{grain}.parquet")
+
+    # ---- Synthesise raw-file tree + sidecars covering both schemes ----
+    # manifest.build calls `_source_for_raw(rel, raw_dir)` for every
+    # raw-path registered under GRAIN_SOURCES[scheme][grain]. Every such
+    # path needs a matching file + sidecar in `raw_dir`, else FileNotFoundError.
+    raw_dir = tmp_path / "raw"
+    cfd_rels = [
+        "lccc/actual-cfd-generation.csv",
+        "lccc/cfd-contract-portfolio-status.csv",
+        "ons/gas-sap.xlsx",
+        "elexon/system-prices.csv",
+    ]
+    ro_rels = [
+        "ofgem/ro-register.xlsx",
+        "ofgem/ro-generation.csv",
+        "ofgem/roc-prices.csv",
+    ]
+    for rel in cfd_rels + ro_rels:
+        raw_path = raw_dir / rel
+        raw_path.parent.mkdir(parents=True, exist_ok=True)
+        raw_path.write_bytes(f"FAKE-{rel}".encode())
+        write_sidecar(raw_path=raw_path, upstream_url=f"file://stub/{rel}")
+
+    # ---- Build the manifest iterating both schemes ----
+    from uk_subsidy_tracker.schemes import cfd, ro
+    manifest = manifest_mod.build(
+        version="v2026.04",
+        schemes=[("cfd", cfd), ("ro", ro)],
+        derived_root=derived_root,
+        raw_dir=raw_dir,
+        output_path=tmp_path / "manifest.json",
+    )
+
+    ids = set(d.id for d in manifest.datasets)
+    cfd_ids = {i for i in ids if i.startswith("cfd.")}
+    ro_ids = {i for i in ids if i.startswith("ro.")}
+    assert len(cfd_ids) == 5, f"CfD: got {sorted(cfd_ids)}"
+    assert len(ro_ids) == 5, f"RO: got {sorted(ro_ids)}"
+    assert len(manifest.datasets) == 10, (
+        f"Plan 05-07 truth: 5 CfD + 5 RO = 10 Dataset entries; "
+        f"got {len(manifest.datasets)}: {sorted(ids)}"
     )
