@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `docs/data/index.md` (Plan 04-06) — journalist/academic how-to-use-our-data
+  page (PUB-04). Six canonical sections (What we publish / How to use it /
+  How to cite it / Provenance guarantees / Known caveats and divergences /
+  Corrections and updates) matching CONTEXT D-27 verbatim. Copy-pasteable
+  working snippets for pandas + DuckDB + R that fetch `manifest.json` and
+  follow the URL fields to Parquet/CSV, plus a SHA-256 integrity check.
+  BibTeX + APA citation templates referencing the versioned-snapshot URL
+  pattern. Cross-links to `methodology/gas-counterfactual.md`,
+  `about/corrections.md`, `CITATION.cff`, `CHANGES.md`, and
+  `tests/test_benchmarks.py`. Closes PUB-04 + PUB-06 (external consumer
+  can fetch manifest → follow URL → retrieve Parquet/CSV with provenance).
+- `mkdocs.yml` Data nav tab (Plan 04-06) — top-level `Data: data/index.md`
+  entry added to the 22-entry 5-theme tree, lifting the nav to 23 entries.
+  `mkdocs build --strict` stays green (0 warnings, 0 errors).
+- `docs/index.md` homepage link (Plan 04-06) — "For journalists and
+  academics → [Use our data]" pointer to `docs/data/index.md`. Completes
+  the navigation surface so academic readers land on the citation workflow
+  without hunting through theme tabs.
 - `.github/workflows/refresh.yml` (Plan 04-05) — daily 06:00 UTC cron
   automation. PR-based posture (D-16): scheme dirty-check
   (`refresh_all.py`) runs on a scheduled trigger; if any raw file's
@@ -179,6 +197,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Pydantic-validated loader at `tests/fixtures/__init__.py`.
 
 ### Changed
+- `docs/about/citation.md` (Plan 04-06) — updated to document the
+  versioned-snapshot URL pattern (GOV-06). Adds a "Citing a specific
+  data snapshot" section with a BibTeX template anchored on
+  `releases/tag/v<YYYY.MM>` — the durable academic citation target that
+  survives repo renames and custom-domain migrations. Pattern: always
+  tag-name; never `main` or `latest/`. Cross-links to
+  `docs/data/index.md` for the full reader-side documentation.
+- `tests/fixtures/benchmarks.yaml::lccc_self` (Plan 04-06 Task 3) —
+  D-11 fallback re-confirmed per Disposition C. Phase 4 Plan 06
+  re-examined the D-10 mandatory floor activation per CONTEXT D-26
+  and kept the Phase-2 empty-list posture. YAML header extended with
+  a 2026-04-22 audit note: the LCCC ARA 2024/25 PDF
+  (https://www.lowcarboncontracts.uk/documents/293/LCCC_ARA_24-25_11.pdf)
+  reports financial-year Apr 2024 – Mar 2025 without a quarterly
+  breakdown that reconstructs calendar-year 2024 cleanly. A 0.1% floor
+  tolerance against an FY-vs-CY mismatch (RESEARCH Pitfall 7) is
+  strictly worse than no floor per Phase 2 D-10/D-11 — a wrong floor
+  silently pins the pipeline to a misaligned reference. Follow-up
+  remains open: populate when a future LCCC quarterly publication
+  supplies a clean CY aggregate. `test_lccc_self_reconciliation_floor`
+  continues to skip cleanly with a D-11-citing reason string. TEST-04
+  stays satisfied (benchmark infrastructure lives; activation deferred).
 - `.gitignore` (Plan 04-04) — replaced blanket `site/` ignore with explicit
   patterns for each mkdocs-build subtree (`/site/assets/`,
   `/site/stylesheets/`, `/site/search/`, `/site/themes/`,
