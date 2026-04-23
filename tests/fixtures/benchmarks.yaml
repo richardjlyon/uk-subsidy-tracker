@@ -21,6 +21,18 @@
 #   - When empty, `tests/test_benchmarks.py::test_lccc_self_reconciliation_floor`
 #     skips cleanly with a D-11-citing reason string (see Task 2).
 #   - Follow-up to land the transcribed figure is filed in Phase 3/4.
+#
+# Audit: 2026-04-22 — Phase 4 Plan 06 (Disposition C).
+#   Phase 4 Plan 06 re-examined the D-11 posture per CONTEXT D-26. The LCCC
+#   ARA 2024/25 PDF (https://www.lowcarboncontracts.uk/documents/293/LCCC_ARA_24-25_11.pdf)
+#   reports FY Apr 2024 – Mar 2025 without a quarterly breakdown that
+#   reconstructs calendar-year 2024 cleanly. A 0.1% floor tolerance against
+#   an FY-vs-CY mismatch (RESEARCH Pitfall 7) is strictly worse than no
+#   floor per Phase 2 D-10/D-11 — a wrong floor silently pins the pipeline
+#   to a misaligned reference. Fallback preserved with explicit evidence;
+#   awaiting a future LCCC quarterly publication that supplies a clean CY
+#   aggregate, at which point this entry will be populated at 0.1%
+#   tolerance. Matches the Plan 06 Task 3 `<autonomous_fallback>` clause.
 lccc_self: []
 
 ofgem_transparency: []
