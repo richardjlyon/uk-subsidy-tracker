@@ -31,6 +31,13 @@ from uk_subsidy_tracker.schemas import (
     ForwardProjectionRow,
     StationMonthRow,
 )
+from uk_subsidy_tracker.schemas.ro import (
+    RoAnnualSummaryRow,
+    RoByAllocationRoundRow,
+    RoByTechnologyRow,
+    RoForwardProjectionRow,
+    RoStationMonthRow,
+)
 from uk_subsidy_tracker.schemes import cfd
 
 
@@ -121,5 +128,72 @@ def test_parquet_grain_schema(grain, model, derived_dir):
 
     # Validate every row. All five CfD grains are small (<20k rows) — the
     # per-row Pydantic validation completes in <1s each for this project.
+    for row in df.to_dict(orient="records"):
+        model.model_validate(row)
+
+
+# ===========================================================================
+# RO parametrised schema tests (Plan 05-10; mirrors CfD block above).
+#
+# Per PATTERNS.md directive, RO uses an INDEPENDENT module-scoped fixture
+# (`ro_derived_dir`) and a separate `_RO_GRAIN_MODELS` dict. CfD + RO are NOT
+# merged into one parametrisation — keeps shared-fixture contention away and
+# allows the two schemes' rebuild costs to amortise independently.
+# ===========================================================================
+
+
+@pytest.fixture(scope="module")
+def ro_derived_dir(tmp_path_factory) -> Path:
+    """Rebuild all five RO grains once for the module (reused across tests)."""
+    from uk_subsidy_tracker.schemes import ro
+
+    out = tmp_path_factory.mktemp("test-schemas-ro-derived")
+    ro.rebuild_derived(output_dir=out)
+    return out
+
+
+_RO_GRAIN_MODELS = {
+    "station_month": RoStationMonthRow,
+    "annual_summary": RoAnnualSummaryRow,
+    "by_technology": RoByTechnologyRow,
+    "by_allocation_round": RoByAllocationRoundRow,
+    "forward_projection": RoForwardProjectionRow,
+}
+
+
+@pytest.mark.parametrize("grain, model", list(_RO_GRAIN_MODELS.items()))
+def test_ro_parquet_grain_schema(grain, model, ro_derived_dir):
+    """RO-03 / TEST-02: every RO Parquet grain conforms to its Pydantic row model.
+
+    Column set + order is asserted unconditionally (D-10 Parquet column-order
+    contract is meaningful even on empty data — schema lives in the file
+    header). Per-row Pydantic validation skips on empty Parquets to remain
+    green under the seed-stub raw inputs that ship with the repo; once real
+    Ofgem RER data lands the rows are validated automatically.
+    """
+    path = ro_derived_dir / f"{grain}.parquet"
+    assert path.exists(), (
+        f"RO {grain}.parquet missing — check ro.rebuild_derived output"
+    )
+
+    df = pq.read_table(path).to_pandas()
+
+    # Column-order discipline: Parquet columns MUST equal model field
+    # declaration order (D-10). Valid against empty data — column metadata
+    # is a header-level contract.
+    expected_cols = list(model.model_fields.keys())
+    assert list(df.columns) == expected_cols, (
+        f"{grain} Parquet column order {list(df.columns)} != model field "
+        f"order {expected_cols} — requires CHANGES.md ## Methodology versions "
+        f"entry (D-10)"
+    )
+
+    if len(df) == 0:
+        pytest.skip(
+            f"RO {grain}.parquet is empty (seed-stub data); per-row schema "
+            f"validation deferred until real RER data is wired"
+        )
+
+    # Validate each row via the Pydantic model.
     for row in df.to_dict(orient="records"):
         model.model_validate(row)
