@@ -102,7 +102,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 - [x] **GOV-01**: Every PRODUCTION chart carries four artefacts — narrative page, methodology page, test (in test_benchmarks or scheme-specific), source-file link — all cross-referenced
 - [x] **GOV-02**: `manifest.json` exposes full provenance per dataset (source URL, retrieval timestamp, source SHA-256, pipeline git SHA, methodology version)
-- [ ] **GOV-03**: Daily refresh CI workflow (06:00 UTC cron) with per-scheme dirty-check rebuilds only what changed upstream
+- [x] **GOV-03**: Daily refresh CI workflow (06:00 UTC cron) with per-scheme dirty-check rebuilds only what changed upstream
 - [x] **GOV-04**: Methodology versioning — `counterfactual.py` formula carries version number; changes bump `methodology_version` in manifest; `CHANGES.md` logs rationale
 - [ ] **GOV-05**: Public `docs/about/corrections.md` lists every correction with date, reason, affected charts; GitHub Issues `correction` label triages
 - [x] **GOV-06**: `CITATION.cff` + versioned snapshot URLs enable academic citation; per-release tag publishes immutable `site/data/v<date>/`
@@ -183,7 +183,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | PUB-05 | Phase 4 | Complete |
 | PUB-06 | Phase 4 | Complete |
 | GOV-02 | Phase 4 | Complete |
-| GOV-03 | Phase 4 | Pending |
+| GOV-03 | Phase 4 | Complete |
 | RO-01 | Phase 5 | Pending |
 | RO-02 | Phase 5 | Pending |
 | RO-03 | Phase 5 | Pending |

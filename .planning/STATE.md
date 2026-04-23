@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-04-publishing-layer-manifest-PLAN.md (publish/ package + refresh_all + test_manifest + test_csv_mirror)
-last_updated: "2026-04-22T23:55:35.604Z"
+stopped_at: Completed 04-05-workflows-refresh-deploy-PLAN.md (refresh.yml + deploy.yml + refresh-failure-template.md)
+last_updated: "2026-04-23T00:04:57.242Z"
 progress:
   total_phases: 12
   completed_phases: 3
   total_plans: 19
-  completed_plans: 17
-  percent: 89
+  completed_plans: 18
+  percent: 95
 ---
 
 # Project State: UK Renewable Subsidy Tracker
 
-**Last updated:** 2026-04-22
-**Session:** Phase 04 Plan 04 complete: publishing layer shipped — `src/uk_subsidy_tracker/publish/` package with manifest.py (Pydantic Manifest/Dataset/Source models, D-07 verbatim; per-grain GRAIN_SOURCES provenance table B-02 mitigation; content-addressed generated_at Pitfall-3 mitigation; upstream_url:str not HttpUrl Pitfall-6 mitigation; raw-file sha256 re-computed on build W-05 mitigation; json.dumps sort_keys+indent=2+LF D-08), csv_mirror.py (pinned pandas args D-10), snapshot.py CLI (--version/--output/--dry-run D-13/D-14). `src/uk_subsidy_tracker/refresh_all.py` per-scheme dirty-check orchestrator (D-16, D-18). .gitignore Rule-1 fix: blanket `site/` replaced with explicit per-mkdocs-subtree patterns because Git does not support re-including files under an ignored directory (!site/data/ silently ineffective); verified via mkdocs build --strict + git check-ignore probe. 15 new tests (8 manifest + 7 csv_mirror); full suite 54+4 → 69+4 (+15, zero regressions); mkdocs --strict green. Five atomic commits: 2e90d11 (feat manifest RED→GREEN), f6afd73 (feat csv_mirror), a024c99 (feat snapshot CLI), 14125f4 (feat refresh_all + gitignore), 3e94bf4 (docs CHANGES). PUB-01/02/03/05/06 + GOV-02 + GOV-06 now closed — external consumer can fetch manifest.json → follow absolute URL → retrieve Parquet+CSV+schema.json with full provenance. D-12 chain closed end-to-end: counterfactual.METHODOLOGY_VERSION → DataFrame column → Parquet column → validate() check → manifest top-level field. Two Rule-1 auto-fixes: yaml.safe_load crashes on mkdocs.yml Python-tag constructors (line-scan fix); !site/data/ ineffective (explicit per-subtree gitignore fix).
+**Last updated:** 2026-04-23
+**Session:** Phase 04 Plan 05 complete: workflows shipped — `.github/workflows/refresh.yml` (daily 06:00 UTC cron + `workflow_dispatch`; in-workflow gates BEFORE PR open — `refresh_all` → benchmark floor → determinism/schema/aggregates/constants/manifest/csv_mirror pytest → plotting → `mkdocs build --strict`; `peter-evans/create-pull-request@v8` opens `daily-refresh`-labelled PR on `refresh/<run_id>` branch; `peter-evans/create-issue-from-file@v6` opens `refresh-failure`-labelled Issue on any step failure using the new `.github/refresh-failure-template.md`; least-privilege permissions `contents:write + pull-requests:write + issues:write`; timeout-minutes: 30) + `.github/workflows/deploy.yml` (tag-triggered `push: tags: ['v*']`; D-14 calendar-tag regex validation; `uv run python -m uk_subsidy_tracker.publish.snapshot --version ${{ github.ref_name }} --output snapshot-out/`; `softprops/action-gh-release@v2` uploads manifest.json + 3 globbed directories; permissions `contents:write` only) + `.github/refresh-failure-template.md` (GitHub Issue body template — four canonical failure modes + `refresh-failure` vs `correction` label distinction per D-17). Three atomic commits: f3b9e33 (feat refresh workflow + template), bbb421d (feat deploy workflow), 20b7701 (docs CHANGES). Supply-chain hygiene enforced via grep: every `uses:` pinned to explicit major (actions/checkout@v5, astral-sh/setup-uv@v8.1.0, peter-evans/create-pull-request@v8, peter-evans/create-issue-from-file@v6, softprops/action-gh-release@v2); zero `@main`/`@master` refs. Pitfall 2 documented, not fought: default `GITHUB_TOKEN` will NOT cascade ci.yml on the refresh PR, so in-workflow gates run BEFORE PR open; future REFRESH_PAT upgrade path documented in workflow header + CHANGES.md + PR body. GOV-03 + PUB-03 closed; GOV-06 operationalised end-to-end (snapshot-URL citation anchor was closed at manifest-field level in 04-04; deploy.yml now makes those URLs actually resolvable). Full test suite 69 passed + 4 skipped (zero regressions); `mkdocs build --strict` green. User setup deferred to user (dashboard-only): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation. Plan executed exactly as written — no deviations.
 
 ---
 
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 04 (publishing-layer) — EXECUTING
-Plan: 5 of 6 (Plans 01 + 02 + 03 + 04 complete)
+Plan: 6 of 6 (Plans 01 + 02 + 03 + 04 + 05 complete)
 **Phase:** 4
-**Plan:** 04 complete — Publishing layer: publish/{manifest,csv_mirror,snapshot}.py + refresh_all.py; manifest.json contract shipped with per-grain provenance, content-addressed generated_at, absolute URLs; snapshot CLI produces versioned release-asset tree; refresh orchestrator short-circuits on clean state.
+**Plan:** 05 complete — Workflows: `.github/workflows/refresh.yml` (daily cron + PR-based commit-back) + `.github/workflows/deploy.yml` (tag-push release-asset upload) + `.github/refresh-failure-template.md`. GOV-03 + PUB-03 closed; GOV-06 operationalised end-to-end.
 **Status:** Executing Phase 04
-**Focus:** Workflows (Plan 05 next: refresh.yml + deploy.yml); then docs + benchmark floor (Plan 06).
+**Focus:** Docs + benchmark floor (Plan 06: `docs/data/index.md` + LCCC ARA 2024/25 self-reconciliation floor activation — the final plan in Phase 4).
 
 ```
-Progress: [█████████░] 89% (17/19 plans)
+Progress: [██████████] 95% (18/19 plans)
 ```
 
 ---
@@ -73,6 +73,7 @@ Progress: [█████████░] 89% (17/19 plans)
 | Phase 04 P02 | 5min | 3 tasks | 14 files |
 | Phase 04-publishing-layer P03 | 11min | 4 tasks | 14 files |
 | Phase 04 P04 | 12min | 5 tasks | 9 files |
+| Phase 04 P05 | 3min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,9 @@ Progress: [█████████░] 89% (17/19 plans)
 | int64 year cast in rollup builders (04-03 Task 3 Rule-1 auto-fix) | pandas `dt.year` returns int32; Pydantic row models declared `year` as int64. Test_aggregates Parquet row-conservation tests surfaced the mismatch via `pd.testing.assert_series_equal` index-dtype check. Fixed at the **producer** side (aggregation.py) rather than consumer (test fixture) — the declared schema IS the contract and produced Parquet must match. Without the cast, any Plan 04-04 manifest reader assuming int64 (per the schema.json sidecar) would also break. |
 | Plan 04-03 TDD shipped across TWO commits, not one (04-03) | Unlike Plan 04-01 where RED + GREEN were one commit (explicitly authorised in plan text), Plan 04-03 Task 1 shipped the RED state separately (6b695cd) from Task 2's GREEN implementation (e00a4f6). Rationale: the RED commit contains Pydantic schemas + Protocol declaration (load-bearing code that survives even if GREEN implementation is later rewritten); keeping it separate means `git show 6b695cd -- src/uk_subsidy_tracker/schemas/` isolates the contract-declaration change for future review without the 700-line GREEN diff cluttering it. |
 | Rollup builders re-read station_month.parquet rather than share an in-memory DataFrame (04-03 Task 2) | D-03: the station × month derivation is canonical; every rollup is a groupby-sum of it. Reading the **written** Parquet back (rather than passing a DataFrame from cost_model → aggregation) exercises the round-trip path and guarantees rollup consistency with what Plan 04-04 will publish. Tiny I/O cost: full CfD dataset is <20k rows across all grains, 0.74s end-to-end including all reads. |
+| peter-evans/create-pull-request pinned to @v8, softprops/action-gh-release pinned to @v2 (04-05) | v8 is the current stable major for create-pull-request and is backwards-compatible with the CONTEXT D-16 default of v6 (no input change required). softprops/action-gh-release @v3 requires Node-24 which is not yet stable across all GitHub-hosted runners; v2 (v2.6.2) is Node-20-compatible. Every action pinned to an explicit major; `! grep -rE 'uses:.*@(main\|master)' .github/workflows/` is the grep-enforceable supply-chain hygiene tripwire. |
+| In-workflow gates BEFORE PR open (04-05) | Default `GITHUB_TOKEN` does NOT cascade ci.yml on PR creation (Pitfall 2 — security feature). Rather than add a PAT + cascade-loop guard, refresh.yml runs the full test pyramid (benchmark floor → determinism/schema/aggregates/constants/manifest/csv_mirror → plotting → mkdocs --strict) INSIDE the refresh job before `peter-evans/create-pull-request@v8` fires. Consequence: if any gate fails, `if: failure()` creates a refresh-failure Issue — the PR never opens, and the reviewer is not handed a broken diff. REFRESH_PAT upgrade path documented in workflow header + CHANGES.md + PR body for future Phase-4.1 adoption if operational friction warrants. |
+| Tag-format validation inline in deploy.yml, not via a tag-validation action (04-05) | D-14 calendar format `v<YYYY.MM>(-rc<N>)?` is constrained enough to regex-match in a 5-line bash step (`if [[ ! "$tag" =~ ^v[0-9]{4}\.[0-9]{2}(-rc[0-9]+)?$ ]]; then ... fi`). Introducing another action (e.g. mathieudutour/github-tag-action) brings another supply-chain dependency and more YAML for minimal value. Grep-visible inline, `::error::` annotation renders identically to an action-level failure on the GitHub UI. |
 
 ### Blockers
 
@@ -142,8 +146,10 @@ None currently.
 - [x] Execute Phase 4 Plan 02 — Raw-layer migration (`data/*` → `data/raw/<publisher>/<file>` + .meta.json sidecars; loader path updates; 100% rename similarity; 3 atomic commits 3f0d037 / 5859b15 / ed4c258)
 - [x] Execute Phase 4 Plan 03 — Derived layer: `src/uk_subsidy_tracker/schemas/` Pydantic + `schemes/cfd/*` derivation shipped; 5 Parquet + 5 schema.json siblings emitted in 0.74s; TEST-02/03/05 formally closed on Parquet output (`test_determinism.py` 10/10 via `pyarrow.Table.equals()`); `isinstance(cfd, SchemeModule)` smoke green; GOV-02 substrate (methodology_version column) shipped. Four commits 6b695cd / e00a4f6 / 1a0575f / 79ccb2b.
 - [x] Execute Phase 4 Plan 04 — Publishing layer: `src/uk_subsidy_tracker/publish/{manifest,csv_mirror,snapshot}.py` + `refresh_all.py` shipped. manifest.py: Pydantic Manifest/Dataset/Source models (D-07 verbatim), per-grain GRAIN_SOURCES provenance (B-02 mitigation), content-addressed generated_at (Pitfall 3), upstream_url:str not HttpUrl (Pitfall 6), raw-file sha256 re-computed on build (W-05). csv_mirror.py: pinned pandas args (D-10). snapshot.py CLI: --version/--output/--dry-run (D-13/D-14). refresh_all.py per-scheme dirty-check + short-circuit (D-16/D-18). 15 new tests (8 manifest + 7 csv_mirror); 69 passed + 4 skipped. Five commits 2e90d11 / f6afd73 / a024c99 / 14125f4 / 3e94bf4. PUB-01/02/03/05/06 + GOV-02 + GOV-06 closed.
-- [ ] Execute Phase 4 Plan 05 — Workflows: `.github/workflows/refresh.yml` (daily cron + PR-based commit-back) + `deploy.yml` (tag-push release asset upload)
+- [x] Execute Phase 4 Plan 05 — Workflows: `.github/workflows/refresh.yml` (daily cron + PR-based commit-back) + `deploy.yml` (tag-push release asset upload) + `.github/refresh-failure-template.md`. Three atomic commits f3b9e33 / bbb421d / 20b7701. GOV-03 + PUB-03 closed; GOV-06 operationalised end-to-end. 69 passed + 4 skipped; mkdocs --strict green. User setup deferred to user (dashboard-only: "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation).
 - [ ] Execute Phase 4 Plan 06 — Docs + benchmark floor: `docs/data/index.md` + LCCC ARA 2024/25 self-reconciliation floor activation
+- [ ] User: enable "Allow GitHub Actions to create and approve pull requests" at https://github.com/richardjlyon/uk-subsidy-tracker/settings/actions (Plan 04-05 user_setup)
+- [ ] User: create GitHub labels `daily-refresh` (blue) + `refresh-failure` (red) at https://github.com/richardjlyon/uk-subsidy-tracker/labels (Plan 04-05 user_setup; distinct from pre-existing `correction` label)
 - [ ] Phase 3/4: transcribe LCCC ARA 2024/25 calendar-year CfD aggregate into `tests/fixtures/benchmarks.yaml::lccc_self` to activate the mandatory D-10 floor check (folded into Phase 4 Plan 06)
 - [ ] Phase 3/4: populate external benchmark anchors (OBR EFO calendar-year translation, DESNZ, HoC, NAO) as transcribable figures surface
 - [ ] Phase 4+: Author `docs/abbreviations.md` glossary (CfD, AR1, CCGT, MWh, ETS, SCC, LCCC) to populate `content.tooltips` Material feature (OQ5 seed from Phase 3 Plan 03-04 — feature enabled, glossary empty)
@@ -167,6 +173,7 @@ None currently.
 - Wave 0 deps live: `pyarrow==24.0.0` + `duckdb==1.5.2` in `uv.lock` (commit b9c8233). Both wheel-resolved for Python 3.13 on macOS-arm64; linux-x86_64 standard.
 - SEED-001 Tier 2 drift tripwire live: `tests/test_constants_provenance.py` 13 cases (6 name-in-yaml + 6 value-matches-live + 1 audits-not-overdue warn) wired against `tests/fixtures/constants.yaml` through `tests/fixtures/__init__.py::load_constants` (commit f2548df). SEED-001 Tier 3 (auto-rendered provenance doc page) deferred per CONTEXT D-25.
 - `_TRACKED` allowlist in `tests/test_constants_provenance.py` = 6 constants (CCGT_EFFICIENCY, GAS_CO2_INTENSITY_THERMAL, DEFAULT_NON_FUEL_OPEX, DEFAULT_CARBON_PRICES_{2021,2022,2023}). Adding a new regulator-sourced constant to `counterfactual.py` requires adding to both `_TRACKED` AND `constants.yaml` for the tripwire to fire on it.
+- **Workflows live.** `.github/workflows/refresh.yml` (89 lines) + `.github/workflows/deploy.yml` (65 lines) + `.github/refresh-failure-template.md` (19 lines) shipped in Plan 04-05 (commits f3b9e33 / bbb421d / 20b7701). refresh.yml fires at 06:00 UTC daily + on `workflow_dispatch`; in-workflow gates (benchmark floor → determinism/schema/aggregates/constants/manifest/csv_mirror pytest → plotting → mkdocs --strict) run BEFORE PR open; `peter-evans/create-pull-request@v8` opens `daily-refresh`-labelled PR on `refresh/<run_id>` branch; `peter-evans/create-issue-from-file@v6` opens `refresh-failure`-labelled Issue on any step failure. deploy.yml fires on `git push --tags` matching `v*`; validates D-14 calendar-tag format inline; runs `uk_subsidy_tracker.publish.snapshot --version ${{ github.ref_name }} --output snapshot-out/`; uploads via `softprops/action-gh-release@v2` with 4-glob allowlist (manifest.json + **/*.parquet + **/*.csv + **/*.schema.json). All actions pinned to explicit majors; zero `@main`/`@master` refs. Permissions least-privilege: refresh.yml = contents/pr/issues:write; deploy.yml = contents:write only. GOV-03 + PUB-03 closed; GOV-06 operationalised end-to-end.
 
 ---
 
@@ -174,9 +181,9 @@ None currently.
 
 **To resume:** Read `.planning/STATE.md` (this file), then `.planning/ROADMAP.md` for phase structure, then `ARCHITECTURE.md §11` for authoritative exit criteria.
 
-**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-05 workflows refresh+deploy). Phase 4 Plan 04 closed: publishing layer shipped end-to-end — `src/uk_subsidy_tracker/publish/` package (manifest.py with Pydantic D-07 verbatim shape, csv_mirror.py with pinned pandas args D-10, snapshot.py CLI for release-asset assembly D-13/D-14) plus `refresh_all.py` per-scheme dirty-check orchestrator (D-16/D-18). PUB-01/02/03/05/06 + GOV-02 + GOV-06 closed. 15 new tests (8 manifest + 7 csv_mirror); 69 passed + 4 skipped (+15 vs 04-03 baseline, zero regressions); mkdocs --strict green. Five atomic commits 2e90d11 / f6afd73 / a024c99 / 14125f4 / 3e94bf4. Two Rule-1 auto-fixes: yaml.safe_load crashes on mkdocs.yml Python-tag constructors (line-scan site_url loader); !site/data/ silently ineffective (explicit per-mkdocs-subtree gitignore patterns replace the blanket site/ rule). D-12 chain now closed end-to-end: counterfactual.METHODOLOGY_VERSION → DataFrame column → Parquet column → validate() check → manifest top-level field. snapshot --dry-run produces a 16-file artefact tree (1 manifest.json + 5 parquet + 5 csv + 5 schema.json). Remaining Phase 4 plans: 04-05-workflows → 04-06-docs-and-benchmark-floor.
+**Next command:** `/gsd-execute-phase 4` (continues executing — next plan: 04-06 docs + benchmark floor, the final plan in Phase 4). Phase 4 Plan 05 closed: workflows shipped end-to-end — `.github/workflows/refresh.yml` (daily 06:00 UTC cron + manual dispatch; in-workflow gates BEFORE PR open; `peter-evans/create-pull-request@v8` opens daily-refresh-labelled PR; `peter-evans/create-issue-from-file@v6` opens refresh-failure-labelled Issue on any step failure using new `.github/refresh-failure-template.md`; permissions contents:write + pull-requests:write + issues:write; timeout 30m) + `.github/workflows/deploy.yml` (tag-triggered `push: tags: ['v*']`; D-14 calendar-tag regex validation inline; `uk_subsidy_tracker.publish.snapshot` + `softprops/action-gh-release@v2`; permissions contents:write only; timeout 20m). GOV-03 + PUB-03 closed; GOV-06 operationalised end-to-end (manifest-field version_url closed in 04-04; deploy.yml makes it resolvable today). Three atomic commits f3b9e33 / bbb421d / 20b7701. No deviations — plan executed exactly as written. 69 passed + 4 skipped (zero regressions); mkdocs --strict green. Supply-chain hygiene grep-verifiable: every `uses:` pinned to explicit major (actions/checkout@v5, astral-sh/setup-uv@v8.1.0, peter-evans/create-pull-request@v8, peter-evans/create-issue-from-file@v6, softprops/action-gh-release@v2); zero `@main`/`@master` refs. Pitfall 2 (default GITHUB_TOKEN will not cascade ci.yml on the refresh PR) documented not fought: in-workflow gates fire BEFORE PR open; reviewer sees only clean diffs. User setup deferred to user (dashboard-only): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation. Remaining Phase 4 plans: 04-06-docs-and-benchmark-floor (final).
 
-**Stopped at:** Completed 04-04-publishing-layer-manifest-PLAN.md (publish/ package + refresh_all + test_manifest + test_csv_mirror)
+**Stopped at:** Completed 04-05-workflows-refresh-deploy-PLAN.md (refresh.yml + deploy.yml + refresh-failure-template.md)
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
