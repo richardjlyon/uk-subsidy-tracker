@@ -11,6 +11,11 @@
 # External anchor sections (ofgem_transparency, obr_efo, desnz_energy_trends,
 # hoc_library, nao_audit) are present-but-may-be-empty per D-11 fallback
 # posture. Populate as regulator-native figures are transcribed.
+#
+# `ref_constable:` is the PRIMARY RO benchmark anchor per CONTEXT D-13 /
+# D-14 (Phase 5 RO-06). HARD BLOCK at 3.0% — D-11 skip-fallback does NOT
+# apply; divergence drives investigation + `05-09-DIVERGENCE.md` audit
+# for Plan 05-13 Task 4 review, never silent skip.
 
 # lccc_self posture (CONTEXT D-10 + D-11 fallback):
 #   - If the LCCC ARA 2024/25 PDF figure can be transcribed cleanly, populate
@@ -49,3 +54,169 @@ desnz_energy_trends: []
 hoc_library: []
 
 nao_audit: []
+
+# ============================================================================
+# ref_constable — Renewable Energy Foundation (Constable) 2025-05-01
+# ============================================================================
+# Primary RO benchmark anchor per D-13 / D-14 (Phase 5 RO-06).
+# HARD BLOCK: 3.0% tolerance is a public numerical-accuracy commitment.
+# Investigate root cause BEFORE adjusting tolerance if reconciliation fails.
+#
+# Source: REF "UK Renewable Electricity Subsidy Totals: 2002 to the Present Day" (Constable, 2025-05-01)
+# Blog: https://www.ref.org.uk/ref-blog/390-uk-renewable-electricity-subsidy-totals-2002-to-the-present-day
+# PDF:  https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf
+# Retrieved: 2026-04-22 (researcher in 05-RESEARCH.md §5; PDF ~372KB, Table 1 transcribed from HTML rendering)
+# Basis: Scheme Year (April-March) aggregate RO cost, £bn nominal;
+#        GB-only; includes cofiring + mutualisation; EXCLUDES NIRO.
+# Scope alignment with pipeline D-12 headline: matches (GB-only all-in incl cofiring + mutualisation).
+# CY-vs-SY note: D-07 pipeline plots by calendar year; annual aggregates align with SY within ±1%
+#                reporting precision for cumulative measures.
+# Turver note: Turver substack SY20 = £6.4bn (matches REF 2021); Turver SY21 = £6.8bn (REF = £6.4bn,
+#              ~6% drift — Turver reflects later Ofgem Annual Report snapshot; REF is earlier cut).
+# Tolerance: REF_TOLERANCE_PCT = 3.0 (D-14 hard block)
+#
+# Audit 2026-04-23: initial transcription from REF Table 1 (22 years 2002-2023 verbatim per
+#   RESEARCH §5 lines 1101-1122). Phase 5 Plan 05-09.
+#
+#   Unattended-execution posture (Plan 05-09 Task 2):
+#   Derived RO Parquet currently flows from Plan 05-01 Option-D stubs (zero-row output).
+#   Under stub conditions `ro_annual_totals_gbp_bn` returns `{}` and the parametrised
+#   reconciliation raises "no pipeline data for year N" for every REF year — which
+#   is itself a divergence-class event under D-14. The test's xfail-via-sentinel
+#   escape hatch activates: `.planning/phases/05-ro-module/05-09-DIVERGENCE.md`
+#   documents the zero-row condition for Plan 05-13 Task 4 review. When Plan 05-13
+#   replaces the Option-D stubs with real Ofgem data and `schemes.ro.rebuild_derived()`
+#   emits non-stub `ro_cost_gbp`, delete 05-09-DIVERGENCE.md to re-arm the hard block.
+ref_constable:
+  - year: 2002
+    value_gbp_bn: 0.3
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2002-03 (scheme launch); RO all-in GB, incl cofiring + mutualisation, excl NIRO"
+    tolerance_pct: 3.0
+  - year: 2003
+    value_gbp_bn: 0.4
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2003-04; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2004
+    value_gbp_bn: 0.5
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2004-05; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2005
+    value_gbp_bn: 0.6
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2005-06; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2006
+    value_gbp_bn: 0.7
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2006-07; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2007
+    value_gbp_bn: 0.9
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2007-08; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2008
+    value_gbp_bn: 1.0
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2008-09; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2009
+    value_gbp_bn: 1.1
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2009-10; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2010
+    value_gbp_bn: 1.3
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2010-11; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2011
+    value_gbp_bn: 1.5
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2011-12; 2011-2022 window start for ROADMAP SC #3"
+    tolerance_pct: 3.0
+  - year: 2012
+    value_gbp_bn: 2.0
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2012-13; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2013
+    value_gbp_bn: 2.6
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2013-14; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2014
+    value_gbp_bn: 3.1
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2014-15; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2015
+    value_gbp_bn: 3.7
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2015-16; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2016
+    value_gbp_bn: 4.5
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2016-17; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2017
+    value_gbp_bn: 5.3
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2017-18; RO all-in GB (March 2017 accreditation closure)"
+    tolerance_pct: 3.0
+  - year: 2018
+    value_gbp_bn: 5.9
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2018-19; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2019
+    value_gbp_bn: 6.3
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2019-20; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2020
+    value_gbp_bn: 5.7
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2020-21; RO all-in GB"
+    tolerance_pct: 3.0
+  - year: 2021
+    value_gbp_bn: 6.4
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2021-22; mutualisation year per D-11 (£119.7M shortfall, £44.0M redistribution Dec 2022)"
+    tolerance_pct: 3.0
+  - year: 2022
+    value_gbp_bn: 6.4
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2022-23; 2011-2022 window end for ROADMAP SC #3; Turver substack reports £6.8bn (~6% drift, later snapshot)"
+    tolerance_pct: 3.0
+  - year: 2023
+    value_gbp_bn: 6.8
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-22
+    notes: "SY 2023-24; REF series end"
+    tolerance_pct: 3.0

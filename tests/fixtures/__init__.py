@@ -24,7 +24,10 @@ class BenchmarkEntry(BaseModel):
     """A single benchmark figure from a named source."""
 
     source: str = Field(..., description="Parent YAML key, e.g. 'lccc_self' or 'obr_efo'.")
-    year: int = Field(..., ge=2015, le=2050)
+    # D-13 (Phase 5 Plan 05-09): ref_constable anchor covers RO 2002-2023, so
+    # the lower bound relaxes from 2015 to 2002. Existing CfD-era entries are
+    # unaffected (all >=2015).
+    year: int = Field(..., ge=2002, le=2050)
     value_gbp_bn: float = Field(..., description="Published aggregate value in £bn.")
     url: HttpUrl
     retrieved_on: date
@@ -45,9 +48,20 @@ class Benchmarks(BaseModel):
     desnz_energy_trends: list[BenchmarkEntry] = Field(default_factory=list)
     hoc_library: list[BenchmarkEntry] = Field(default_factory=list)
     nao_audit: list[BenchmarkEntry] = Field(default_factory=list)
+    # D-13 (Phase 5 Plan 05-09): REF Constable 2025 Table 1 is the primary RO
+    # benchmark anchor. Exposed alongside external anchors but carries its own
+    # HARD-BLOCK tolerance (REF_TOLERANCE_PCT = 3.0) per D-14 — not D-11 fallback.
+    ref_constable: list[BenchmarkEntry] = Field(default_factory=list)
 
     def all_external_entries(self) -> list[BenchmarkEntry]:
-        """All non-LCCC-floor entries (for parametrised external-anchor tests)."""
+        """All non-LCCC-floor entries (for parametrised external-anchor tests).
+
+        NOTE: `ref_constable` is NOT included here — it carries its own
+        dedicated parametrised test (`test_ref_constable_ro_reconciliation`)
+        with a D-14 hard-block tolerance. Including it here would pipe REF
+        entries into `test_external_benchmark_within_tolerance` with the
+        wrong tolerance dispatch key semantics.
+        """
         return [
             *self.ofgem_transparency,
             *self.obr_efo,
