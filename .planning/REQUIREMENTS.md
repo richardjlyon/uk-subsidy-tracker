@@ -40,7 +40,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 ### Renewables Obligation (RO) Module
 
-- [ ] **RO-01**: Ofgem RO scraper populates `data/raw/ofgem/{ro-register,ro-generation,roc-prices}.csv` with sidecar meta.json
+- [x] **RO-01**: Ofgem RO scraper populates `data/raw/ofgem/{ro-register,ro-generation,roc-prices}.csv` with sidecar meta.json
 - [ ] **RO-02**: `src/uk_subsidy_tracker/schemes/ro/` module conforms to §6.1 contract (`upstream_changed`, `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`)
 - [ ] **RO-03**: RO derived Parquet tables: `station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`
 - [ ] **RO-04**: RO S2 dynamics chart (4-panel), S3 cost by technology, S4 concentration/Lorenz, S5 forward commitment published
@@ -184,7 +184,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | PUB-06 | Phase 4 | Complete |
 | GOV-02 | Phase 4 | Complete |
 | GOV-03 | Phase 4 | Complete |
-| RO-01 | Phase 5 | Pending |
+| RO-01 | Phase 5 | Complete |
 | RO-02 | Phase 5 | Pending |
 | RO-03 | Phase 5 | Pending |
 | RO-04 | Phase 5 | Pending |
