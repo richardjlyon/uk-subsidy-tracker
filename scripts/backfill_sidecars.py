@@ -49,6 +49,19 @@ URL_MAP = {
         "https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices",
     "ons/gas-sap.xlsx":
         "https://www.ons.gov.uk/file?uri=/economy/economicoutputandproductivity/output/datasets/systemaveragepricesapofgas/2026/systemaveragepriceofgasdataset160426.xlsx",
+    # --- Ofgem RO (Plan 05-01, Option-D fallback) ----------------------
+    # `option-d-stub:ofgem-rer-manual` is a stable marker string (not a
+    # real HTTPS URL). It populates the sidecar `upstream_url` field so
+    # the field is grep-comparable across paths, and signals to the Plan
+    # 05-13 reviewer that real-source URLs must be plumbed during
+    # post-execution review (along with `_REGISTER_URL` / `_GENERATION_URL`
+    # / `_PRICES_URL` constants in the corresponding scrapers).
+    "ofgem/ro-register.xlsx":
+        "option-d-stub:ofgem-rer-manual",
+    "ofgem/ro-generation.csv":
+        "option-d-stub:ofgem-rer-manual",
+    "ofgem/roc-prices.csv":
+        "option-d-stub:ofgem-rer-manual",
 }
 
 
