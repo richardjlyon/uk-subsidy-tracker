@@ -114,7 +114,7 @@ Plans:
 - [x] 05-04-PLAN.md — counterfactual.DEFAULT_CARBON_PRICES backward extension 2005-2017 + 22 new constants.yaml entries + _TRACKED completion + CHANGES.md (RO-02)
 - [x] 05-05-PLAN.md — schemes/ro/ module (__init__ + _refresh + cost_model + aggregation + forward_projection) + smoke rebuild tests + §6.1 Protocol conformance (RO-02, RO-03)
 - [x] 05-06-PLAN.md — publish/manifest.py scheme-parametric refactor + refresh_all.publish_latest update + multi-scheme manifest tests (RO-03)
-- [ ] 05-07-PLAN.md — refresh_all.SCHEMES RO registration (one-line append) + test_refresh_loop RO invariant tests (RO-02, RO-03)
+- [x] 05-07-PLAN.md — refresh_all.SCHEMES RO registration (one-line append) + test_refresh_loop RO invariant tests (RO-02, RO-03)
 - [ ] 05-08-PLAN.md — 4 RO charts ro_dynamics + ro_by_technology + ro_concentration + ro_forward_projection + plotting/__main__ wiring (RO-04)
 - [ ] 05-09-PLAN.md — REF Constable 2025 Table 1 → benchmarks.yaml + Benchmarks.ref_constable Pydantic field + test_benchmarks.py::test_ref_constable_ro_reconciliation parametrised D-14 hard-block test (RO-06)
 - [ ] 05-10-PLAN.md — test_schemas + test_aggregates + test_determinism RO grain parametrisations (RO-03)
