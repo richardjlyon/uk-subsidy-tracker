@@ -1,0 +1,945 @@
+# RO banding factors (ROCs per MWh) by technology x commissioning-window x country.
+#
+# Source: REF "Notes on the Renewable Obligation" Table 1 (primary transcription) plus
+# The Renewables Obligation Order 2009 (SI 2009/785) and amendment SIs
+# (SI 2011/2704, SI 2013/768, SI 2015/920, SI 2016/745, SI 2017/1084).
+#
+# Per CONTEXT D-01 the authoritative rocs_issued source is Ofgem's published
+# ROCs_Issued column; this YAML table is an AUDIT CROSS-CHECK consumed by
+# schemes/ro/cost_model.py per D-04 Check 1.
+#
+# NIRO entries (country: "NI") are [ASSUMED] per 05-RESEARCH.md section 7 (and the
+# 05-RESEARCH.md section 3 note that NIROC bandings require Utility Regulator NI
+# verification). Every NI entry is flagged with "[ASSUMED]" in its "basis" field for
+# grep-discoverability until a Plan 05-13 follow-up transcribes the NIROC primary
+# source.
+#
+# Grandfathering rule (REF "Notes", pre-banding 1 ROC/MWh rule): projects accredited
+# before 11 July 2006 receive 1 ROC/MWh regardless of their technology's banded rate.
+# Encoded here as explicit grandfathered=true entries; RoBandingTable.lookup() short-
+# circuits to these rows when commissioning_date < 2006-07-11.
+#
+# Audit log:
+#   2026-04-22 - Initial transcription from REF Table 1 (05-02 Task 1).
+
+entries:
+  # ==========================================================================
+  # Offshore wind (GB) -- 5 cells
+  # ==========================================================================
+  - technology: "Offshore wind"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1 column 'Pre-2013')"
+    retrieved_on: 2026-04-22
+
+  - technology: "Offshore wind"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1 column '2013/14')"
+    retrieved_on: 2026-04-22
+
+  - technology: "Offshore wind"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1 column '2014/15')"
+    retrieved_on: 2026-04-22
+
+  - technology: "Offshore wind"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.9
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1 column '2015/16')"
+    retrieved_on: 2026-04-22
+
+  - technology: "Offshore wind"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1 column '2016/17')"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Onshore wind (GB) -- 5 cells
+  # ==========================================================================
+  - technology: "Onshore wind"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Onshore wind"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 0.9
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Onshore wind"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 0.9
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Onshore wind"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 0.9
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1; onshore-wind early-closure rules)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Onshore wind"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 0.9
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Anaerobic Digestion (GB) -- 5 cells
+  # ==========================================================================
+  - technology: "Anaerobic Digestion"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Anaerobic Digestion"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Anaerobic Digestion"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Anaerobic Digestion"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.9
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Anaerobic Digestion"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Dedicated biomass (GB) -- 5 cells
+  # ==========================================================================
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.5
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 1.5
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 1.5
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.5
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.4
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Dedicated biomass + CHP (GB) -- 5 cells
+  # ==========================================================================
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    chp: true
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 2.0
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 2.0
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.9
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Biomass Conversion (GB) -- 5 cells (non-CHP, flat 1.0 per REF Table 1)
+  # ==========================================================================
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 1.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 1.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.0
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.0
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Biomass Conversion + CHP (GB) -- 5 cells (flat 1.5 per REF Table 1)
+  # ==========================================================================
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.5
+    chp: true
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 1.5
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 1.5
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.5
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Biomass Conversion"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.5
+    chp: true
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding + CHP uplift (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Solar PV -- pre-2013 (legacy single-category row)
+  # ==========================================================================
+  - technology: "Solar photovoltaic"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785) and Amendment Order 2011 (SI 2011/2704)"
+    url: "https://www.legislation.gov.uk/uksi/2011/2704/made"
+    basis: "Pre-2013 banding (REF Table 1) -- solar PV early-review under SI 2011/2704"
+    retrieved_on: 2026-04-22
+
+  # Solar PV -- ground-mounted (GB) -- 4 cells (2013/14 through 2016/17)
+  - technology: "Solar PV - ground mounted"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 1.6
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - ground mounted"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 1.4
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - ground mounted"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.3
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1) -- solar early-closure window"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - ground mounted"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.2
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # Solar PV -- building-mounted (GB) -- 4 cells (2013/14 through 2016/17)
+  - technology: "Solar PV - building mounted"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 1.7
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - building mounted"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 1.6
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - building mounted"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.5
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - building mounted"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.4
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Landfill Gas (GB) -- pre-2013 single-cell + closed-sites + heat-recovery sub-bandings
+  # ==========================================================================
+  - technology: "Landfill Gas"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 0.25
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Landfill Gas - closed sites"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 0.2
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013-2017 banding (REF Table 1 'Landfill Gas -- closed sites')"
+    retrieved_on: 2026-04-22
+
+  - technology: "Landfill Gas - heat recovery"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 0.1
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013-2017 banding (REF Table 1 'Landfill Gas -- heat recovery')"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Sewage Gas (GB) -- 5 cells, flat 0.5
+  # ==========================================================================
+  - technology: "Sewage Gas"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2017-03-31
+    banding_factor: 0.5
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2 (flat across 2009-2017 review cycle per REF Table 1)"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 through 2016/17 banding -- flat rate (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Hydroelectric (GB) -- England/Wales 0.7, Scotland 1.0 (REF Table 1 splits)
+  # ==========================================================================
+  - technology: "Hydroelectric (except Scotland)"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1 'Hydroelectric (except Scotland)')"
+    retrieved_on: 2026-04-22
+
+  - technology: "Hydroelectric (except Scotland)"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 0.7
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013-2017 banding (REF Table 1 -- flat 0.7 across four windows)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Hydroelectric (Scotland)"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.0
+    source: "Renewables Obligation (Scotland) Order 2009 and amendments"
+    url: "https://www.legislation.gov.uk/ssi/2009/140/made"
+    basis: "Scotland hydro flat 1.0 ROC/MWh across all windows (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Geothermal (GB) -- 5 cells
+  # ==========================================================================
+  - technology: "Geothermal"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Geothermal"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2014-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013/14 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Geothermal"
+    country: "GB"
+    commissioning_window_start: 2014-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2014/15 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Geothermal"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.9
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Geothermal"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Tidal / Wave / Energy-from-Waste CHP (GB) -- selected REF Table 1 cells
+  # ==========================================================================
+  - technology: "Wave"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2017-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2 (flat 2.0 across bands per REF Table 1)"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Wave flat 2.0 across all windows (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Tidal barrage (<1GW DNC)"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Tidal barrage (<1GW DNC)"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013-2015 banding (REF Table 1 flat 2.0)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Tidal barrage (<1GW DNC)"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Energy from Waste + CHP"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.0
+    chp: true
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2 (flat 1.0 per REF Table 1)"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "EfW + CHP flat 1.0 across all windows (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Microgeneration (GB) -- <=50kW DNC, 5 cells
+  # ==========================================================================
+  - technology: "Microgeneration"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 microgeneration banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Microgeneration"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013-2015 microgeneration banding (REF Table 1 flat 2.0)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Microgeneration"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.9
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 microgeneration banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Microgeneration"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 microgeneration banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Advanced / standard gasification/pyrolysis (GB) -- 5 cells each
+  # ==========================================================================
+  - technology: "Advanced gasification/pyrolysis"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Renewables Obligation Order 2009 (SI 2009/785), Schedule 2"
+    url: "https://www.legislation.gov.uk/uksi/2009/785/made"
+    basis: "Pre-2013 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Advanced gasification/pyrolysis"
+    country: "GB"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2015-03-31
+    banding_factor: 2.0
+    source: "The Renewables Obligation (Amendment) Order 2013 (SI 2013/768)"
+    url: "https://www.legislation.gov.uk/uksi/2013/768/made"
+    basis: "2013-2015 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Advanced gasification/pyrolysis"
+    country: "GB"
+    commissioning_window_start: 2015-04-01
+    commissioning_window_end: 2016-03-31
+    banding_factor: 1.9
+    source: "The Renewables Obligation (Amendment) Order 2015 (SI 2015/920)"
+    url: "https://www.legislation.gov.uk/uksi/2015/920/made"
+    basis: "2015/16 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Advanced gasification/pyrolysis"
+    country: "GB"
+    commissioning_window_start: 2016-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.8
+    source: "The Renewables Obligation (Amendment) Order 2016 (SI 2016/745)"
+    url: "https://www.legislation.gov.uk/uksi/2016/745/made"
+    basis: "2016/17 banding (REF Table 1)"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # Grandfathered rule (pre-2006-07-11 accreditations -- 1 ROC/MWh regardless of tech)
+  # Encoded per-technology so lookup() can short-circuit on (tech, country) match.
+  # ==========================================================================
+  - technology: "Onshore wind"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2006-07-10
+    banding_factor: 1.0
+    grandfathered: true
+    source: "Renewables Obligation Order 2002 (pre-banding 1-ROC/MWh rule)"
+    url: "https://www.legislation.gov.uk/uksi/2002/914/made"
+    basis: "Pre-2006-07-11 grandfathering -- 1 ROC/MWh regardless of technology"
+    retrieved_on: 2026-04-22
+
+  - technology: "Offshore wind"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2006-07-10
+    banding_factor: 1.0
+    grandfathered: true
+    source: "Renewables Obligation Order 2002 (pre-banding 1-ROC/MWh rule)"
+    url: "https://www.legislation.gov.uk/uksi/2002/914/made"
+    basis: "Pre-2006-07-11 grandfathering -- 1 ROC/MWh regardless of technology"
+    retrieved_on: 2026-04-22
+
+  - technology: "Hydroelectric (except Scotland)"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2006-07-10
+    banding_factor: 1.0
+    grandfathered: true
+    source: "Renewables Obligation Order 2002 (pre-banding 1-ROC/MWh rule)"
+    url: "https://www.legislation.gov.uk/uksi/2002/914/made"
+    basis: "Pre-2006-07-11 grandfathering -- 1 ROC/MWh regardless of technology"
+    retrieved_on: 2026-04-22
+
+  - technology: "Landfill Gas"
+    country: "GB"
+    commissioning_window_start: null
+    commissioning_window_end: 2006-07-10
+    banding_factor: 1.0
+    grandfathered: true
+    source: "Renewables Obligation Order 2002 (pre-banding 1-ROC/MWh rule)"
+    url: "https://www.legislation.gov.uk/uksi/2002/914/made"
+    basis: "Pre-2006-07-11 grandfathering -- 1 ROC/MWh regardless of technology"
+    retrieved_on: 2026-04-22
+
+  # ==========================================================================
+  # NIRO (country='NI') -- [ASSUMED] per 05-RESEARCH section 3 + section 7.
+  # Cells mirror GB pre-2013 and 2013-2017 banded rates pending Utility Regulator NI
+  # primary-source verification. Flagged by "[ASSUMED]" in basis for grep.
+  # ==========================================================================
+  - technology: "Offshore wind"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC pre-2013 banding; verification pending Utility Regulator NI primary-source review (05-RESEARCH sec 3 + sec 7)"
+    retrieved_on: 2026-04-22
+
+  - technology: "Offshore wind"
+    country: "NI"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 2.0
+    source: "NI Renewables Obligation (Amendment) Order 2013 (NISR series)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC 2013-2017 banding; verification pending Utility Regulator NI primary-source review"
+    retrieved_on: 2026-04-22
+
+  - technology: "Onshore wind"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.0
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC pre-2013 banding mirrors GB; verification pending"
+    retrieved_on: 2026-04-22
+
+  - technology: "Onshore wind"
+    country: "NI"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.0
+    source: "NI Renewables Obligation (Amendment) Order 2013 (NISR series)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC 2013-2017 banding; NI retained 1.0 through closure where GB reduced"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 1.5
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC pre-2013 banding mirrors GB"
+    retrieved_on: 2026-04-22
+
+  - technology: "Dedicated biomass"
+    country: "NI"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.5
+    source: "NI Renewables Obligation (Amendment) Order 2013 (NISR series)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC 2013-2017 banding"
+    retrieved_on: 2026-04-22
+
+  - technology: "Anaerobic Digestion"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC pre-2013 banding mirrors GB"
+    retrieved_on: 2026-04-22
+
+  - technology: "Anaerobic Digestion"
+    country: "NI"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 2.0
+    source: "NI Renewables Obligation (Amendment) Order 2013 (NISR series)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC 2013-2017 banding"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar photovoltaic"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 2.0
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC pre-2013 solar banding mirrors GB"
+    retrieved_on: 2026-04-22
+
+  - technology: "Solar PV - ground mounted"
+    country: "NI"
+    commissioning_window_start: 2013-04-01
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.5
+    source: "NI Renewables Obligation (Amendment) Order 2013 (NISR series)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC 2013-2017 solar ground-mounted banding; verification pending"
+    retrieved_on: 2026-04-22
+
+  - technology: "Hydroelectric (except Scotland)"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2017-03-31
+    banding_factor: 1.0
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC hydro banding flat 1.0 across all windows"
+    retrieved_on: 2026-04-22
+
+  - technology: "Landfill Gas"
+    country: "NI"
+    commissioning_window_start: null
+    commissioning_window_end: 2013-03-31
+    banding_factor: 0.25
+    source: "Northern Ireland Renewables Obligation Order 2009 (NISR 2009/154)"
+    url: "https://www.legislation.gov.uk/nisr/2009/154/made"
+    basis: "[ASSUMED] NIROC landfill-gas pre-2013 banding mirrors GB"
+    retrieved_on: 2026-04-22
