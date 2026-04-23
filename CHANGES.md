@@ -232,6 +232,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sidecars written by both paths are indistinguishable on common keys.
 
 ### Changed
+- **`counterfactual.DEFAULT_CARBON_PRICES` extended backward to 2002**
+  per Phase 5 Plan 05-04 (D-05). Years 2002-2004 are 0.0 (pre-EU-ETS;
+  no carbon scheme pre-EU-ETS Phase I start 2005-01-01); years 2005-2017
+  are EU ETS annual averages (Phase I 2005-2007 / Phase II 2008-2012 /
+  Phase III 2013-2017), EUR→GBP at BoE contemporary annual-average
+  rates (EEA + ICE/EEX reference). Existing 2018-2026 values unchanged.
+  Enables RO scheme counterfactual computation for pre-2018 obligation
+  years — RO launched 2002-04-01 so the full 2002-present span is
+  required. 2005-2017 values carry `[VERIFICATION-PENDING]` inline
+  flag pending audit against primary EEA + BoE sources before next_audit
+  (2027-01-15). Per D-06 `METHODOLOGY_VERSION` stays `"0.1.0"` — additive
+  change (new year keys only; no existing values revised; no formula-shape
+  change). Bump to 1.0.0 remains reserved for Phase 6+ portal launch.
+- **`tests/fixtures/constants.yaml` extended with 22 new entries**
+  (Plan 05-04) — 16 new 2002-2017 `DEFAULT_CARBON_PRICES_YYYY` blocks
+  matching the live dict extension, plus 6 completion blocks for pre-
+  existing but untracked year keys (2018, 2019, 2020, 2024, 2025, 2026)
+  that close the Phase 4 SEED-001 Tier 2 partial-coverage gap flagged
+  in Phase 4 Plan 01 STATE note. `_TRACKED` set in
+  `tests/test_constants_provenance.py` grows from 6 entries (3 base +
+  3 carbon years) to 28 entries (3 base + 25 carbon years 2002-2026).
+  Drift tripwire now covers every live `DEFAULT_CARBON_PRICES` year
+  key — any silent edit to the dict fails the drift test with a
+  remediation message citing METHODOLOGY_VERSION + constants.yaml +
+  CHANGES.md. Test count: 98 passed + 4 skipped → 142 passed + 4 skipped
+  (+44 parametrised cases).
 - `scripts/backfill_sidecars.py` (Plan 04-07) — refactored to delegate
   SHA computation + atomic JSON write to `write_sidecar()`, then overlay
   the two backfill-specific fields (`retrieved_at` from `git log
@@ -370,6 +396,47 @@ src/uk_subsidy_tracker/counterfactual.py carries a methodology_version
 constant starting in Phase 2 (test scaffolding). Changes to that constant
 are logged in this section with rationale and the affected chart list.
 -->
+
+### DEFAULT_CARBON_PRICES backward extension to 2002 — 2026-04-23, Plan 05-04
+
+**Audit event — no version bump.** Per D-06, `METHODOLOGY_VERSION`
+remains `"0.1.0"`. This is an additive change (new year keys 2002-2017;
+no existing 2018-2026 values revised; no formula-shape change).
+Bump to 1.0.0 remains reserved for the Phase 6+ portal launch milestone.
+
+Change summary:
+- 2002-2004: `0.0` (no carbon scheme pre-EU-ETS Phase I start 2005-01-01)
+- 2005-2017: EU ETS annual averages, GBP-converted at BoE contemporary
+  annual-average rate
+  - Phase I 2005-2007: £12.3, £11.9, £0.5 (2007 is Phase I price crash —
+    allowances were non-bankable into Phase II and collapsed to ~€0.10
+    by September 2007; historically correct, see `docs/schemes/ro.md`
+    methodology callout)
+  - Phase II 2008-2012: £17.7, £11.7, £12.3, £11.3, £6.0
+  - Phase III 2013-2017: £3.8, £4.8, £5.6, £4.3, £5.1
+
+Provenance:
+- `counterfactual.py::DEFAULT_CARBON_PRICES` docstring `Provenance:`
+  block cites EEA + BoE + ICE + OBR + DESNZ source URLs.
+- `tests/fixtures/constants.yaml` per-year blocks carry full
+  `{source, url, basis, retrieved_on, next_audit, value, unit, notes}`.
+- 2005-2017 values carry `[VERIFICATION-PENDING]` inline flag in the
+  `basis:` field — executor accepted Plan 05-04 research seed values
+  pending audit against primary EEA + BoE sources before next_audit
+  (2027-01-15). Research seeds traced to Plan 05-04 `<interfaces>`
+  table derived from EEA "Emissions, allowances, surplus and prices
+  in the EU ETS 2005-2020" + Bank of England EUR/GBP annual-average
+  series.
+
+Impact:
+- RO scheme (launched 2002-04-01, `data/derived/ro/station_month.parquet`
+  lands in Plan 05-05) can now compute `gas_counterfactual_gbp` for
+  every obligation year 2002-present via `compute_counterfactual()`.
+- `methodology_version` column on every RO Parquet row will still read
+  `"0.1.0"` — version-consistency check in `schemes/ro/validate()` (D-04)
+  does not fire.
+- Closes Phase 4 SEED-001 partial-coverage gap: drift tripwire now
+  enumerates all 25 `DEFAULT_CARBON_PRICES` year keys (was only 3).
 
 ### 1.0.0 — 2026-04-22 — Initial formula (fuel + carbon + O&M)
 
