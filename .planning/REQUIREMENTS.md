@@ -45,7 +45,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 - [x] **RO-03**: RO derived Parquet tables: `station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`
 - [x] **RO-04**: RO S2 dynamics chart (4-panel), S3 cost by technology, S4 concentration/Lorenz, S5 forward commitment published
-- [ ] **RO-05**: RO scheme docs page (`docs/schemes/ro.md`) + theme-page integration for Cost and Recipients themes
+- [x] **RO-05**: RO scheme docs page (`docs/schemes/ro.md`) + theme-page integration for Cost and Recipients themes
 - [x] **RO-06**: RO aggregate 2011-2022 benchmarks within 3% of Turver's published totals
 
 ### Feed-in Tariff (FiT) Module
@@ -189,7 +189,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | RO-02 | Phase 5 | Partial (05-02 bandings + 05-04 carbon substrate; §6.1 in 05-05) |
 | RO-03 | Phase 5 | Complete |
 | RO-04 | Phase 5 | Complete |
-| RO-05 | Phase 5 | Pending |
+| RO-05 | Phase 5 | Complete |
 | RO-06 | Phase 5 | Complete |
 | X-01 | Phase 6 | Pending |
 | X-02 | Phase 6 | Pending |
