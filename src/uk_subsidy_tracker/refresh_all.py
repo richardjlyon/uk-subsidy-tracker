@@ -27,11 +27,12 @@ from pathlib import Path
 
 from uk_subsidy_tracker import DATA_DIR, PROJECT_ROOT
 from uk_subsidy_tracker.publish import csv_mirror, manifest as manifest_mod
-from uk_subsidy_tracker.schemes import cfd
+from uk_subsidy_tracker.schemes import cfd, ro
 
-# Known schemes (Phase 5+ appends here: ('ro', ro), ('fit', fit), ...).
+# Known schemes (Phase 5+ appends here: ('fit', fit), ...).
 SCHEMES = (
     ("cfd", cfd),
+    ("ro", ro),
 )
 
 SITE_DATA_DIR = PROJECT_ROOT / "site" / "data"
