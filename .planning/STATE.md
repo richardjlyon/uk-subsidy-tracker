@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-07-PLAN.md
-last_updated: "2026-04-23T05:50:02.350Z"
+stopped_at: Completed 05-08-PLAN.md
+last_updated: "2026-04-23T06:03:14.582Z"
 progress:
   total_phases: 12
   completed_phases: 4
   total_plans: 33
-  completed_plans: 27
-  percent: 82
+  completed_plans: 28
+  percent: 85
 ---
 
 # Project State: UK Renewable Subsidy Tracker
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 05 (ro-module) — EXECUTING
-Plan: 7 of 13 COMPLETE (Wave 3 lead-off shipped; Plan 05-08 RO charts unblocked next)
+Plan: 8 of 13 COMPLETE (Wave 3 RO charts shipped; Plan 05-09 REF Constable benchmark reconciliation unblocked next)
 **Phase:** 5
-**Plan:** 05-07 COMPLETE (Wave 3 lead-off — refresh_all.SCHEMES += ('ro', ro) + manifest provenance maps extended to RO); 05-01..06 also COMPLETE; 05-08..13 remain
+**Plan:** 05-08 COMPLETE (Wave 3 — 4 RO chart modules ro_dynamics/ro_by_technology/ro_concentration/ro_forward_projection + plotting/__main__.py wiring); 05-01..07 also COMPLETE; 05-09..13 remain
 **Status:** Executing Phase 05
-**Focus:** `refresh_all.SCHEMES` extended from `(("cfd", cfd),)` to `(("cfd", cfd), ("ro", ro))` — `refresh_all.main()` now iterates both schemes under D-18 per-scheme dirty-check. Smoke-verified on the committed seed state: both schemes short-circuit `upstream unchanged` in 0.49s. `manifest.py::GRAIN_SOURCES/GRAIN_TITLES/GRAIN_DESCRIPTIONS` populated with `"ro"` sub-dicts (Rule 2 auto-fix — Plan 05-06 left these CfD-only; without them the multi-scheme iterator silently produced a CfD-only manifest.json). Provenance narrowing mirrors CfD: station_month/annual_summary/by_technology carry all 5 inputs (3 Ofgem + gas-sap + system-prices); by_allocation_round drops gas/balancing; forward_projection is register-only. `tests/test_refresh_loop.py` grew from 2 tests to 4 via `importlib.import_module()` submodule-shadow bypass (mirrors Plan 04-07 pattern): `test_ro_refresh_converges_on_unchanged_upstream` pins the D-18 invariant for RO; `test_manifest_includes_both_schemes_after_end_to_end_refresh` pins the plan's core must_have truth (10 Dataset entries = 5 CfD + 5 RO) by synthesising a tmp derived+raw tree and calling `manifest.build()` directly. Three atomic commits: `8b2fc1d` (Task 1 feat: refresh_all.py SCHEMES append), `86bf146` (Task 2 RED: test-only commit — Test 1 passes because 05-05 already established the invariant, Test 2 fails "grain ro.* not in GRAIN_SOURCES"), `6bb38b7` (Task 2 GREEN: manifest.py RO provenance maps). Test coverage: **153 passed + 4 skipped** (was 151 + 4; +2 RO refresh-loop tests; zero regressions). One Rule-2 deviation (manifest.py provenance population) cited in 05-07-SUMMARY.md. RO-02 + RO-03 end-to-end refresh path closed. Plan 05-08 (RO chart files) unblocked next.
+**Focus:** 4 RO chart modules landed under `src/uk_subsidy_tracker/plotting/subsidy/ro_*.py` — `ro_dynamics.py` (S2 4-panel: generation TWh / ROC £/ROC with e-ROC sensitivity overlay / premium £/MWh / cumulative £bn with per-year mutualisation annotation driven by `mutualisation_gbp > 0` — D-11 verified scope SY 2021-22 only), `ro_by_technology.py` (S3 2-panel stacked bars + cumulative area, 6 categories with D-10 biomass cofiring-vs-dedicated split, colour convention Offshore #1f77b4 → Onshore #6baed6 → Biomass dedicated #8c564b → Biomass cofiring #d62728 → Solar PV #ff7f0e → Other #2ca02c), `ro_concentration.py` (S4 Lorenz on station-level lifetime ro_cost_gbp, GB-only per D-09/D-12 with 50% + 80% threshold markers + top-3 station_id callouts), `ro_forward_projection.py` (S5 2-panel drawdown to 2037, annual stacked by technology + cumulative trace, no NESO-growth scenario since RO closed to new accreditations per SI 2017/1084). Filenames match RO-MODULE-SPEC Appendix A verbatim; `subsidy_ro_dynamics_twitter.png` + 3 siblings. `plotting/__main__.py` extended (+11 lines: 4 imports + 4 charts-list tuples + section comment). `plotting/subsidy/__init__.py` (previously empty) now carries a package docstring citing Phase 4 D-02 "CfD charts untouched" discipline for the RO additions. Empty-upstream graceful-degradation pattern established: each RO chart's `_prepare()` returns empty DataFrame when `data/derived/ro/*.parquet` is absent/empty, and `main()` short-circuits to `_placeholder()` helper emitting a titled single-panel annotation figure — so `uv run python -m uk_subsidy_tracker.plotting` succeeds end-to-end (18 charts OK; 0 ERR) even with the committed Plan 05-01 Option-D stub seeds. GB-only + NIRO-via-filter annotation landed on every RO chart (T-5.08-02 mitigation). Two atomic commits: `9f75f13` (Task 1 feat: ro_dynamics + ro_by_technology S2 + S3), `0703fde` (Task 2 feat: ro_concentration + ro_forward_projection + __main__ wiring). Zero regression: **153 passed + 4 skipped** (unchanged from Plan 05-07 baseline — chart modules are orchestrator-exercised, not pytest-exercised). Zero auto-fix deviations — plan executed exactly as written, with 4 plan-internal implementation choices (empty-upstream placeholder fallback, Panel-2 proxy £/ROC series, simplified 2×1 layout for forward_projection, station_id Lorenz callouts pending Plan 05-13 enrichment) documented in `05-08-SUMMARY.md` key-decisions. **RO-04 now closed.** Plan duration ~5 min. **Plan 05-09 (REF Constable 2025 Table 1 benchmark reconciliation — `ref_constable` section in `benchmarks.yaml` + `test_benchmarks.py::ref_constable` parametrised test with `REF_TOLERANCE_PCT = 3.0` hard-block per D-14) is unblocked next. **Earlier session:** Phase 05 Plan 07 COMPLETE — Wave 3 lead-off. `refresh_all.SCHEMES` extended from `(("cfd", cfd),)` to `(("cfd", cfd), ("ro", ro))` — one-line append per CONTEXT §"refresh_all.SCHEMES gets a one-line append". `main()` iterates both schemes under D-18 per-scheme dirty-check; smoke-verified: both short-circuit `upstream unchanged` on committed seed state in 0.49s. `src/uk_subsidy_tracker/publish/manifest.py::GRAIN_SOURCES / GRAIN_TITLES / GRAIN_DESCRIPTIONS` populated with full `"ro"` sub-dicts (51 lines added) — Rule 2 auto-fix because Plan 05-06 refactored the iterator to be scheme-parametric but left the provenance dicts CfD-only; without these, the multi-scheme iterator silently produced a CfD-only manifest.json (5 Datasets) instead of the 10 Datasets the plan's must_have truth pins.
 
 ```
-Progress: [████████░░] 82% (27/33 plans)
+Progress: [█████████░] 85% (28/33 plans)
 ```
 
 ---
@@ -82,6 +82,7 @@ Progress: [████████░░] 82% (27/33 plans)
 | Phase 05-ro-module P04 | 4min | 3 tasks | 4 files |
 | Phase 05 P06 | 5min | 2 tasks | 3 files |
 | Phase 05-ro-module P07 | 4min | 2 tasks | 3 files |
+| Phase 05 P08 | 5min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -227,7 +228,7 @@ None currently.
 
 **Next command:** `/gsd-execute-phase 5 --auto --plan 08` (Phase 5 Plan 07 COMPLETE — Wave 3 lead-off shipped; RO end-to-end refresh path closed). Plan 05-07 shipped 3 atomic commits (`8b2fc1d`, `86bf146`, `6bb38b7`), 3 files modified (refresh_all.py, manifest.py, test_refresh_loop.py), ~4 min duration. 153 passed + 4 skipped (+2 new RO refresh-loop tests; zero regressions). Phase 5 progress: 7/13 plans. `refresh_all.SCHEMES` now iterates both CfD and RO under D-18 per-scheme dirty-check; `manifest.build()` emits 10 Dataset entries (5 CfD + 5 RO) once `data/derived/ro/*.parquet` is rebuilt from non-stub raw data. Plan 05-08 (RO chart files: ro_dynamics, ro_by_technology, ro_concentration, ro_forward_projection) is next. Earlier: `/gsd-execute-phase 5 --auto --plan 07` (Phase 5 Plan 06 COMPLETE — manifest.py multi-scheme scaffolding); `/gsd-execute-phase 5 --auto --plan 03` (Phase 5 Plan 02 COMPLETE — partial RO-02 progress, bandings foundation shipped). Earlier: `/gsd-execute-phase 5 --auto --plan 02` (Phase 5 Plan 01 COMPLETE — RO-01 closed via Option-D fallback). Plan 05-01 shipped 2 atomic commits (8c71cde, 5729d02), 11 created files, 1 modified, 12-file file count, 7-min duration. 82 passed + 4 skipped (+8 new from `tests/data/test_ofgem_ro.py`). Phase 5 progress: 1/13 plans. RO-01 closed; remaining requirements (RO-02..RO-06) routed to Plans 05-02 through 05-13. Plan 05-13 will pick up the 6 Plan 05-01 follow-ups during post-execution review (replace 3 ofgem stubs with real exports, plumb `OFGEM_RER_*` secrets if Playwright path approved, transcribe `roc-prices.csv`, decide on `pdfplumber` middle-ground, re-examine RESEARCH §2 stale URLs). | Earlier: Phase 4 closed 7/7 plans: 04-01 (wave-0 deps + SEED-001 Tier-2 drift tripwire), 04-02 (raw-layer migration), 04-03 (derived layer + schemes/cfd/), 04-04 (publishing layer manifest + csv_mirror + snapshot), 04-05 (refresh.yml + deploy.yml + refresh-failure-template.md), 04-06 (docs/data/index.md + nav tab + citation versioned-snapshot pattern + D-11 lccc_self audit note Disposition C), 04-07 (refresh-loop closure: sidecar.write_sidecar + refresh() wires all 3 downloaders + rewrites all 5 sidecars + ons_gas fail-loud fix + refresh-loop invariant test + backfill script refactor). All five ROADMAP Phase-4 success criteria delivered. PUB-04 closed by 04-06; PUB-01/02/03/05/06 + GOV-02/03/06 closed by 04-04/05; GOV-03 robustness + PUB-05 end-to-end loop locked by 04-07. D-11 fallback preserved with explicit 2026-04-22 audit evidence per user-selected Disposition C (ARA 2024/25 FY-only limitation, RESEARCH Pitfall 7). 74 passed + 4 skipped; `mkdocs build --strict` green; METHODOLOGY_VERSION stays "0.1.0" (bump is Phase 6+). Phase 5 is unblocked: schemes/cfd/ is the §6.1 Protocol template for schemes/ro/ (now including a complete refresh-loop reference implementation that writes sidecars via the shared `sidecar.write_sidecar()` helper); `refresh_all.SCHEMES` is a one-line append; manifest iteration is SCHEMES-driven; docs/data/index.md works unchanged for new schemes. Outstanding user setup (deferred to user, dashboard-only, does not block Phase 5 planning): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation + (from 04-06 follow-up) LCCC ARA CY-aggregate transcription when a future quarterly publication surfaces.
 
-**Stopped at:** Completed 05-07-PLAN.md
+**Stopped at:** Completed 05-08-PLAN.md
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
