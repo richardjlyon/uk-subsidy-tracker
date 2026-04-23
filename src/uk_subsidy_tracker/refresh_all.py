@@ -81,7 +81,8 @@ def publish_latest(version: str) -> None:
         csv_mirror.build(dst)
     manifest_mod.build(
         version=version,
-        derived_dir=DERIVED_DIR / "cfd",
+        schemes=SCHEMES,
+        derived_root=DERIVED_DIR,
         raw_dir=DATA_DIR / "raw",
         output_path=SITE_DATA_DIR / "manifest.json",
     )

@@ -61,13 +61,15 @@ def manifest_artifacts(tmp_path_factory):
         target = DATA_DIR / "raw" / sub
         link = out / "data" / "raw" / sub
         shutil.copytree(target, link, dirs_exist_ok=True)
-    derived = out / "data" / "derived" / "cfd"
+    derived_root = out / "data" / "derived"
+    derived = derived_root / "cfd"
     cfd.rebuild_derived(output_dir=derived)
     manifest_path = out / "site" / "data" / "manifest.json"
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     built = manifest_mod.build(
         version="v2026.04-rc1",
-        derived_dir=derived,
+        schemes=[("cfd", cfd)],
+        derived_root=derived_root,
         raw_dir=out / "data" / "raw",
         output_path=manifest_path,
     )
@@ -75,6 +77,7 @@ def manifest_artifacts(tmp_path_factory):
         "manifest": built,
         "manifest_path": manifest_path,
         "derived_dir": derived,
+        "derived_root": derived_root,
         "raw_dir": out / "data" / "raw",
     }
 
@@ -238,13 +241,14 @@ def test_manifest_generated_at_stable_when_no_upstream_change(manifest_artifacts
     """
     from uk_subsidy_tracker.publish import manifest as manifest_mod
 
-    derived = manifest_artifacts["derived_dir"]
+    derived_root = manifest_artifacts["derived_root"]
     raw = manifest_artifacts["raw_dir"]
 
     m2_path = tmp_path / "second-manifest.json"
     m2 = manifest_mod.build(
         version="v2026.04-rc1",
-        derived_dir=derived,
+        schemes=[("cfd", cfd)],
+        derived_root=derived_root,
         raw_dir=raw,
         output_path=m2_path,
     )

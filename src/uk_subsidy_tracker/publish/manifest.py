@@ -31,6 +31,19 @@ Pitfall 3 mitigation (generated_at stability):
     the same raw state produce byte-identical manifest.json. `refresh_all.py`
     short-circuits BEFORE calling manifest.build() when nothing upstream
     changed, but this field-level stability is the safety net.
+
+Plan 05-06 refactor — multi-scheme iteration:
+    `build()` accepts a `schemes: Iterable[tuple[str, Any]]` of
+    `(scheme_name, scheme_module)` pairs + `derived_root: Path` (the parent
+    of per-scheme `data/derived/<scheme>/` dirs). For each scheme whose
+    `derived_root/<scheme>/` exists, every `*.parquet` in that dir becomes a
+    `Dataset` with `id=f"{scheme}.{grain}"` and URLs scoped to
+    `/data/latest/<scheme>/<grain>.*`. `GRAIN_SOURCES`, `GRAIN_TITLES`, and
+    `GRAIN_DESCRIPTIONS` are nested dicts keyed outer by scheme, inner by
+    grain. CfD path is preserved verbatim (single-entry `schemes` tuple with
+    `("cfd", cfd)` collapses to the same URL pattern the 8 existing tests
+    pin). Phase 7 (FiT) + all subsequent schemes get multi-scheme publishing
+    for free.
 """
 
 from __future__ import annotations
@@ -40,8 +53,10 @@ import json
 import logging
 import os
 import subprocess
+from collections.abc import Iterable
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -51,52 +66,59 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# Per-grain provenance wiring (B-02 mitigation — provenance is per-grain,
-# not "every source feeds every dataset").
+# Per-scheme, per-grain provenance wiring (B-02 mitigation — provenance is
+# per-grain, not "every source feeds every dataset"). Outer key: scheme name;
+# inner key: grain name.
 # ---------------------------------------------------------------------------
 
-GRAIN_SOURCES: dict[str, list[str]] = {
-    "station_month": [
-        "lccc/actual-cfd-generation.csv",
-        "lccc/cfd-contract-portfolio-status.csv",
-        "ons/gas-sap.xlsx",
-        "elexon/system-prices.csv",
-    ],
-    "annual_summary": [
-        "lccc/actual-cfd-generation.csv",
-        "lccc/cfd-contract-portfolio-status.csv",
-        "ons/gas-sap.xlsx",
-        "elexon/system-prices.csv",
-    ],
-    "by_technology": [
-        "lccc/actual-cfd-generation.csv",
-        "lccc/cfd-contract-portfolio-status.csv",
-        "ons/gas-sap.xlsx",
-        "elexon/system-prices.csv",
-    ],
-    "by_allocation_round": [
-        "lccc/actual-cfd-generation.csv",
-        "lccc/cfd-contract-portfolio-status.csv",
-    ],
-    "forward_projection": [
-        "lccc/cfd-contract-portfolio-status.csv",
-    ],
+GRAIN_SOURCES: dict[str, dict[str, list[str]]] = {
+    "cfd": {
+        "station_month": [
+            "lccc/actual-cfd-generation.csv",
+            "lccc/cfd-contract-portfolio-status.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+        ],
+        "annual_summary": [
+            "lccc/actual-cfd-generation.csv",
+            "lccc/cfd-contract-portfolio-status.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+        ],
+        "by_technology": [
+            "lccc/actual-cfd-generation.csv",
+            "lccc/cfd-contract-portfolio-status.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+        ],
+        "by_allocation_round": [
+            "lccc/actual-cfd-generation.csv",
+            "lccc/cfd-contract-portfolio-status.csv",
+        ],
+        "forward_projection": [
+            "lccc/cfd-contract-portfolio-status.csv",
+        ],
+    },
 }
 
-GRAIN_TITLES: dict[str, str] = {
-    "station_month": "CfD Station × Month",
-    "annual_summary": "CfD Annual Summary",
-    "by_technology": "CfD by Technology",
-    "by_allocation_round": "CfD by Allocation Round",
-    "forward_projection": "CfD Forward Projection",
+GRAIN_TITLES: dict[str, dict[str, str]] = {
+    "cfd": {
+        "station_month": "CfD Station × Month",
+        "annual_summary": "CfD Annual Summary",
+        "by_technology": "CfD by Technology",
+        "by_allocation_round": "CfD by Allocation Round",
+        "forward_projection": "CfD Forward Projection",
+    },
 }
 
-GRAIN_DESCRIPTIONS: dict[str, str] = {
-    "station_month": "station × month",
-    "annual_summary": "year",
-    "by_technology": "year × technology",
-    "by_allocation_round": "year × allocation round",
-    "forward_projection": "year (forward)",
+GRAIN_DESCRIPTIONS: dict[str, dict[str, str]] = {
+    "cfd": {
+        "station_month": "station × month",
+        "annual_summary": "year",
+        "by_technology": "year × technology",
+        "by_allocation_round": "year × allocation round",
+        "forward_projection": "year (forward)",
+    },
 }
 
 
@@ -261,7 +283,7 @@ def _source_for_raw(rel_path: str, raw_dir: Path) -> Source:
     retrieved = meta["retrieved_at"]
     if isinstance(retrieved, str) and retrieved.endswith("Z"):
         retrieved = retrieved[:-1] + "+00:00"
-    # Publisher name = first path component (lccc / elexon / ons).
+    # Publisher name = first path component (lccc / elexon / ons / ofgem).
     publisher, _, filename = rel_path.partition("/")
     name = f"{publisher}.{Path(filename).stem}"
     return Source(
@@ -282,62 +304,136 @@ def _versioned_segment(version: str) -> str:
     return version
 
 
-def _assemble_dataset_entries(
-    derived_dir: Path, raw_dir: Path, base: str, version: str,
-) -> list[Dataset]:
-    """Walk derived_dir for *.parquet and emit one Dataset per grain.
+def _grain_title(scheme_name: str, grain: str) -> str:
+    """Per-(scheme, grain) title — falls back to a generated string."""
+    scheme_map = GRAIN_TITLES.get(scheme_name, {})
+    return scheme_map.get(
+        grain, f"{scheme_name.upper()} {grain.replace('_', ' ')}"
+    )
 
-    Provenance (sources[]) per grain comes from GRAIN_SOURCES — not "every
-    source to every dataset" (B-02 mitigation).
+
+def _grain_description(scheme_name: str, grain: str) -> str:
+    """Per-(scheme, grain) one-line grain description — falls back to grain name."""
+    scheme_map = GRAIN_DESCRIPTIONS.get(scheme_name, {})
+    return scheme_map.get(grain, grain)
+
+
+def _grain_sources(scheme_name: str, grain: str) -> list[str] | None:
+    """Per-(scheme, grain) raw-file reference list. None = scheme/grain unregistered."""
+    scheme_map = GRAIN_SOURCES.get(scheme_name)
+    if scheme_map is None:
+        return None
+    return scheme_map.get(grain)
+
+
+def _build_dataset_entry(
+    *,
+    scheme_name: str,
+    grain: str,
+    scheme_derived: Path,
+    raw_dir: Path,
+    base: str,
+    version: str,
+) -> Dataset | None:
+    """Construct one Dataset entry for (scheme_name, grain).
+
+    Returns None if the (scheme, grain) pair has no GRAIN_SOURCES entry —
+    caller logs + skips. Preserves the B-02 mitigation: every grain must
+    have an explicit per-scheme provenance list.
     """
     import pyarrow.parquet as pq
 
-    datasets: list[Dataset] = []
+    parquet_path = scheme_derived / f"{grain}.parquet"
+    if not parquet_path.exists():
+        return None
+    rels = _grain_sources(scheme_name, grain)
+    if rels is None:
+        logger.warning(
+            "grain %s.%s not in GRAIN_SOURCES; skipping",
+            scheme_name, grain,
+        )
+        return None
+    row_count = pq.read_metadata(parquet_path).num_rows
+    file_sha = _sha256(parquet_path)
+    sources = [_source_for_raw(rel, raw_dir) for rel in rels]
     vseg = _versioned_segment(version)
-    for parquet_path in sorted(derived_dir.glob("*.parquet")):
-        grain = parquet_path.stem
-        row_count = pq.read_metadata(parquet_path).num_rows
-        file_sha = _sha256(parquet_path)
-        rels = GRAIN_SOURCES.get(grain)
-        if rels is None:
-            logger.warning("grain %s not in GRAIN_SOURCES; skipping", grain)
+    return Dataset(
+        id=f"{scheme_name}.{grain}",
+        title=_grain_title(scheme_name, grain),
+        grain=_grain_description(scheme_name, grain),
+        row_count=row_count,
+        schema_url=f"{base}/data/latest/{scheme_name}/{grain}.schema.json",
+        parquet_url=f"{base}/data/latest/{scheme_name}/{grain}.parquet",
+        csv_url=f"{base}/data/latest/{scheme_name}/{grain}.csv",
+        versioned_url=f"{base}/data/{vseg}/{scheme_name}/{grain}.parquet",
+        sha256=file_sha,
+        sources=sources,
+        methodology_page=f"{base}/methodology/gas-counterfactual/",
+    )
+
+
+def _assemble_dataset_entries(
+    schemes: Iterable[tuple[str, Any]],
+    derived_root: Path,
+    raw_dir: Path,
+    base: str,
+    version: str,
+) -> list[Dataset]:
+    """Iterate every scheme × every grain and emit one Dataset per grain.
+
+    Grain discovery is filesystem-driven: for each (scheme_name, _module)
+    pair, look for `derived_root / scheme_name / *.parquet` — sorted for
+    determinism. Schemes whose derived dir does not yet exist are skipped
+    silently (valid state on first rebuild or before a scheme has produced
+    any derived output). B-02 mitigation still applies: per-grain GRAIN_SOURCES
+    must be registered or the grain is skipped with a warning.
+    """
+    datasets: list[Dataset] = []
+    for scheme_name, _module in schemes:
+        scheme_derived = derived_root / scheme_name
+        if not scheme_derived.exists():
             continue
-        sources = [_source_for_raw(rel, raw_dir) for rel in rels]
-        datasets.append(Dataset(
-            id=f"cfd.{grain}",
-            title=GRAIN_TITLES.get(grain, grain),
-            grain=GRAIN_DESCRIPTIONS.get(grain, grain),
-            row_count=row_count,
-            schema_url=f"{base}/data/latest/cfd/{grain}.schema.json",
-            parquet_url=f"{base}/data/latest/cfd/{grain}.parquet",
-            csv_url=f"{base}/data/latest/cfd/{grain}.csv",
-            versioned_url=f"{base}/data/{vseg}/cfd/{grain}.parquet",
-            sha256=file_sha,
-            sources=sources,
-            methodology_page=f"{base}/methodology/gas-counterfactual/",
-        ))
+        grain_parquets = sorted(p.stem for p in scheme_derived.glob("*.parquet"))
+        for grain in grain_parquets:
+            entry = _build_dataset_entry(
+                scheme_name=scheme_name,
+                grain=grain,
+                scheme_derived=scheme_derived,
+                raw_dir=raw_dir,
+                base=base,
+                version=version,
+            )
+            if entry is not None:
+                datasets.append(entry)
     return datasets
 
 
 def build(
+    *,
     version: str,
-    derived_dir: Path = Path("data/derived/cfd"),
-    raw_dir: Path = Path("data/raw"),
-    output_path: Path = Path("site/data/manifest.json"),
+    schemes: Iterable[tuple[str, Any]],
+    derived_root: Path,
+    raw_dir: Path,
+    output_path: Path,
 ) -> Manifest:
     """Assemble manifest from disk state and write to output_path.
 
     Args:
         version: calendar-based tag (e.g. 'v2026.04' or 'v2026.04-rc1') that
             feeds the versioned_url segment per dataset.
-        derived_dir: Parquet source directory (default: data/derived/cfd).
-        raw_dir: root of raw publisher dirs (default: data/raw).
-        output_path: where to write manifest.json (default: site/data/manifest.json).
+        schemes: iterable of (scheme_name, scheme_module) pairs; `manifest.build`
+            iterates each scheme's `derived_root/<scheme_name>/*.parquet` and
+            emits one Dataset per grain with `id=f"{scheme_name}.{grain}"`.
+        derived_root: parent of per-scheme derived dirs
+            (typically `PROJECT_ROOT / "data" / "derived"`). Each scheme's
+            derived output lives in `derived_root / <scheme_name> /`.
+        raw_dir: root of raw publisher dirs (default usage: data/raw).
+        output_path: where to write manifest.json.
 
     Returns:
         The Manifest model that was written (also useful in tests).
     """
-    derived_dir = Path(derived_dir)
+    derived_root = Path(derived_root)
     raw_dir = Path(raw_dir)
     output_path = Path(output_path)
 
@@ -345,7 +441,13 @@ def build(
     pipeline_git_sha = _git_sha()
     generated_at = _latest_retrieved_at(raw_dir)
 
-    datasets = _assemble_dataset_entries(derived_dir, raw_dir, base, version)
+    datasets = _assemble_dataset_entries(
+        schemes=schemes,
+        derived_root=derived_root,
+        raw_dir=raw_dir,
+        base=base,
+        version=version,
+    )
 
     manifest = Manifest(
         version=version,
