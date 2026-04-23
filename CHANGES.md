@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `src/uk_subsidy_tracker/data/sidecar.py` (Plan 04-07) — shared
+  `write_sidecar()` helper for `.meta.json` atomicity. Used by both the
+  daily refresh path (`schemes/cfd/_refresh.py::refresh()`) and the
+  one-shot `scripts/backfill_sidecars.py`. Serialisation is byte-identical
+  across both call sites (sort_keys=True, indent=2, trailing newline);
+  writes go via `<path>.meta.json.tmp` + `os.replace` so sidecars are
+  never partial on crash. Closes gap #1 from 04-VERIFICATION.md.
+- `tests/test_refresh_loop.py` (Plan 04-07) — invariant test locking the
+  refresh-loop algebraic property: after `scheme.refresh()` rewrites
+  sidecars, `upstream_changed()` returns False on the next call, and
+  `manifest.generated_at` advances once then stays stable on unchanged
+  second runs. Uses `monkeypatch` + `tmp_path` + mocked downloaders; does
+  not hit network.
+- `tests/test_ons_gas_download.py` (Plan 04-07) — regression test for the
+  `ons_gas.download_dataset()` error-path (3 tests: raises on network
+  failure, uses timeout=60, returns path on success).
 - `docs/data/index.md` (Plan 04-06) — journalist/academic how-to-use-our-data
   page (PUB-04). Six canonical sections (What we publish / How to use it /
   How to cite it / Provenance guarantees / Known caveats and divergences /
@@ -196,7 +212,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per-entry source, year, URL, retrieval date, notes, and tolerance;
   Pydantic-validated loader at `tests/fixtures/__init__.py`.
 
+### Fixed
+- `src/uk_subsidy_tracker/data/ons_gas.py::download_dataset` (Plan 04-07
+  gap #2) — `output_path` is now bound BEFORE the `try` block (previously
+  raised `UnboundLocalError` on any network failure); `requests.get` now
+  carries `timeout=60` matching the Elexon convention; the `except`
+  handler now re-`raise`s (fail-loud per CONTEXT D-17) instead of
+  silently returning an un-downloaded path. Regression test in
+  `tests/test_ons_gas_download.py` locks all three invariants.
+- `src/uk_subsidy_tracker/schemes/cfd/_refresh.py::refresh` (Plan 04-07
+  gap #1) — now invokes all three downloaders (LCCC + Elexon + ONS;
+  previously only LCCC was re-fetched) and calls `write_sidecar()` for
+  each of the five raw files after successful download. This closes the
+  perpetual dirty-check loop identified in 04-VERIFICATION.md: on
+  unchanged upstream, the orchestrator short-circuits correctly; on
+  upstream change, `manifest.generated_at` advances once and stays
+  stable on the next unchanged run. `_URL_MAP` in this file
+  byte-matches `scripts/backfill_sidecars.py::URL_MAP` exactly so
+  sidecars written by both paths are indistinguishable on common keys.
+
 ### Changed
+- `scripts/backfill_sidecars.py` (Plan 04-07) — refactored to delegate
+  SHA computation + atomic JSON write to `write_sidecar()`, then overlay
+  the two backfill-specific fields (`retrieved_at` from `git log
+  --follow`, `backfilled_at` marker). Output bytes unchanged on all
+  common keys; the script's public behaviour and CLI contract are
+  identical. The `sha256_of()` helper was removed (routed through the
+  shared writer). `retrieved_at` timestamps on re-run now resolve via
+  `git log --follow` to the actual rename-commit date (previously fell
+  back to `BACKFILL_DATE` because the rename commit had not yet been
+  made at initial backfill time — documented in STATE.md as expected
+  behaviour).
 - `docs/about/citation.md` (Plan 04-06) — updated to document the
   versioned-snapshot URL pattern (GOV-06). Adds a "Citing a specific
   data snapshot" section with a BibTeX template anchored on

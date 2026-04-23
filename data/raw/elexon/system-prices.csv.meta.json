@@ -2,7 +2,7 @@
   "backfilled_at": "2026-04-22",
   "http_status": null,
   "publisher_last_modified": null,
-  "retrieved_at": "2026-04-22T00:00:00+00:00",
+  "retrieved_at": "2026-04-22T19:11:17-04:00",
   "sha256": "bdfb897048c983b1c342c4d26ba735b19680be202b2d099c04d7e5e47cc20e22",
   "upstream_url": "https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices"
 }

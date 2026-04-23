@@ -2,7 +2,7 @@
   "backfilled_at": "2026-04-22",
   "http_status": null,
   "publisher_last_modified": null,
-  "retrieved_at": "2026-04-22T00:00:00+00:00",
+  "retrieved_at": "2026-04-22T19:11:17-04:00",
   "sha256": "275503720b0a06637cd97edcdf7d35311f47d04eaa062e107eda650b2e2cf2a6",
   "upstream_url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/AGWS"
 }
