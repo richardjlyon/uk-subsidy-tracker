@@ -1,34 +1,25 @@
 ---
 phase: 04-publishing-layer
-verified: 2026-04-22T21:00:00Z
-status: gaps_found
-score: 4/5 success criteria verified
+verified: 2026-04-23T02:00:00Z
+status: passed
+score: 5/5 success criteria verified
 overrides_applied: 0
-gaps:
-  - truth: "GitHub Actions daily refresh workflow is committed AND functional"
-    status: partial
-    reason: "Workflow YAML is committed and valid, and the orchestrator runs cleanly on an unchanged state. However, the refresh path is structurally incomplete in two ways that break functional correctness on the first real upstream change: (1) scheme.refresh() only re-fetches LCCC datasets; Elexon and ONS downloaders are never invoked (explicitly deferred in code comments to 'Plan 04-05's orchestrator' but refresh_all.py does not pick them up); (2) no code path updates .meta.json sidecars after a successful download — sidecars are written only by the one-shot scripts/backfill_sidecars.py. Because upstream_changed() compares live SHA against sidecar SHA, and manifest.generated_at sources from max(sidecar.retrieved_at), a real upstream change produces a perpetual dirty-check loop and frozen generated_at. The phase goal clause 'three-layer pipeline operational end-to-end' works today for the current raw state, but GOV-03's 'daily refresh ... functional' claim is fragile."
-    artifacts:
-      - path: "src/uk_subsidy_tracker/schemes/cfd/_refresh.py"
-        issue: "refresh() re-fetches LCCC only; Elexon/ONS delegated to refresh_all but not picked up there. No sidecar rewrite after download."
-      - path: "src/uk_subsidy_tracker/refresh_all.py"
-        issue: "refresh_scheme() calls scheme.refresh() + rebuild_derived + regenerate_charts + validate but does not re-fetch Elexon/ONS nor rewrite sidecars."
-    missing:
-      - "End-to-end refresh helper that fetches LCCC + Elexon + ONS and rewrites .meta.json sidecars (shared helper extracted from scripts/backfill_sidecars.py)"
-      - "Call sites in refresh_all.refresh_scheme() (or scheme_module.refresh() of each scheme) that invoke Elexon + ONS downloaders"
-      - "Test covering the refresh loop invariant: after a simulated upstream change, running refresh_all twice produces generated_at that advances once and stays stable on the second run"
-
-  - truth: "External consumers can follow a URL from manifest.json and retrieve a Parquet file and its CSV mirror — including when the publisher is temporarily unavailable (provenance guarantee)"
-    status: partial
-    reason: "Happy-path fetch works correctly (manifest.json URLs valid, snapshot.py produces 5 Parquet + 5 CSV + 5 schema.json). However, src/uk_subsidy_tracker/data/ons_gas.py::download_dataset() raises UnboundLocalError on any network failure: output_path is assigned inside the try block (line 35), but the except handler at line 44 returns it. This is a latent bug that activates precisely when the ONS endpoint is unavailable — the moment the error handler is supposed to preserve the project's 'methodologically bulletproof' promise. Does not block current state (raw files already downloaded) but undermines the reliability story refresh.yml depends on."
-    artifacts:
-      - path: "src/uk_subsidy_tracker/data/ons_gas.py"
-        issue: "Lines 31-44: output_path assigned inside try; except path references unbound variable. No timeout on requests.get()."
-    missing:
-      - "Assign output_path BEFORE the try block"
-      - "Either re-raise or return None/False on failure — never silently return a non-downloaded path"
-      - "Add timeout=60 to requests.get() to match the Elexon convention"
-
+re_verification:
+  previous_status: gaps_found
+  previous_score: 4/5
+  previous_verified_at: 2026-04-22T21:00:00Z
+  gap_closure_plan: 04-07-refresh-loop-closure
+  gap_closure_commits:
+    - "29b5524 — feat(04-07): add sidecar.write_sidecar() atomic helper"
+    - "ac9675a — fix(04-07): ons_gas download error-path + timeout=60 (gap #2)"
+    - "42c8c3e — fix(04-07): wire Elexon + ONS + sidecar rewrites into cfd refresh (gap #1)"
+    - "3497296 — test(04-07): refresh-loop invariant test (gap #1)"
+    - "14e2138 — docs(04-07): CHANGES entries + backfill script refactor to shared sidecar helper"
+  gaps_closed:
+    - "GitHub Actions daily refresh workflow is committed AND functional"
+    - "External consumers can follow a URL from manifest.json and retrieve a Parquet file and its CSV mirror — including when the publisher is temporarily unavailable"
+  gaps_remaining: []
+  regressions: []
 human_verification:
   - test: "Trigger .github/workflows/refresh.yml manually via workflow_dispatch after user completes the two dashboard-only prerequisites (enable 'Allow GitHub Actions to create and approve pull requests'; create labels `daily-refresh` + `refresh-failure`)"
     expected: "Workflow runs to completion; on unchanged state, refresh_all short-circuits ('upstream unchanged'); all test gates green; no PR opens; no refresh-failure issue opens."
@@ -47,9 +38,9 @@ human_verification:
 
 **Phase Goal:** External consumers can discover, fetch, and cite any dataset via a machine-readable manifest with full provenance, and the three-layer pipeline is operational end-to-end for CfD.
 
-**Verified:** 2026-04-22T21:00:00Z
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Verified:** 2026-04-23T02:00:00Z
+**Status:** passed (re-verified after gap closure)
+**Re-verification:** Yes — after Plan 04-07 gap closure. Previous verification at 2026-04-22T21:00:00Z returned `gaps_found` with SC #5 partial (two structural/code gaps). Plan 04-07 delivered both closures in five atomic commits; this re-run confirms both gaps are structurally and behaviourally closed.
 
 ## Goal Achievement
 
@@ -57,148 +48,142 @@ human_verification:
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | `site/data/manifest.json` is present after build and contains source URL, retrieval timestamp, SHA-256, pipeline git SHA, and `methodology_version` per dataset | VERIFIED | Ran `snapshot.py --dry-run` against live raw data: manifest emitted with 5 datasets; each carries `sources[]` with `upstream_url`/`retrieved_at`/`source_sha256`; top-level `pipeline_git_sha` is 40-char hex (`ade71580…`); `methodology_version: "0.1.0"` matches `counterfactual.METHODOLOGY_VERSION`. |
-| 2 | External consumer can follow a URL from `manifest.json` and retrieve a Parquet file and its CSV mirror | VERIFIED (partial) | Snapshot produced 5 Parquet + 5 CSV + 5 schema.json files. All URL fields serialise as absolute `https://` strings. CSV mirror has LF line endings, no BOM, ISO-8601 dates, no index column, preserved float precision (7/7 test_csv_mirror tests pass). **Weakness:** `ons_gas.download_dataset()` has an `UnboundLocalError` on network failure — the fetch reliability promise degrades on the first publisher outage. See gap #2. |
-| 3 | `publish/snapshot.py` creates an immutable `site/data/v<date>/` directory on tagged release | VERIFIED | `uv run python -m uk_subsidy_tracker.publish.snapshot --version v2026.04-rc1 --output /tmp/snap --dry-run` exits 0 and emits `manifest.json` + `cfd/` containing 5 parquet + 5 csv + 5 schema.json (16 artefacts total). `versioned_url` field on every Dataset resolves to `https://.../data/v2026.04-rc1/cfd/<grain>.parquet`. |
-| 4 | `docs/data/index.md` explains how journalists and academics use the datasets, including citation via versioned snapshot URL | VERIFIED | 144 lines, 9 `##` H2 headings covering the D-27 six-section template plus extras. pandas + DuckDB + R snippets present with absolute `manifest.json` URL. BibTeX template anchored on `releases/tag/v<YYYY.MM>`. Top-level `Data` nav tab present in mkdocs.yml (between Reliability and About). `mkdocs build --strict` exits 0. |
-| 5 | GitHub Actions daily refresh workflow (06:00 UTC cron) with per-scheme dirty-check is committed and functional | FAILED (partial) | `.github/workflows/refresh.yml` exists, is valid YAML (`yaml.safe_load` clean), pins all actions to explicit majors, carries least-privilege permissions, invokes `refresh_all` + benchmark floor + 6-module pytest gate + charts + `mkdocs build --strict` + `peter-evans/create-pull-request@v8` + `create-issue-from-file@v6` on failure. Orchestrator runs cleanly (`[cfd] upstream unchanged — skipping refresh`). **However:** the refresh flow is structurally incomplete — see gap #1. Workflow is committed but not fully functional on upstream change. |
+| 1 | `site/data/manifest.json` is present after build and contains source URL, retrieval timestamp, SHA-256, pipeline git SHA, and `methodology_version` per dataset | VERIFIED | Prior run confirmed `snapshot.py --dry-run` emits manifest with 5 datasets; each carries `sources[]` with `upstream_url`/`retrieved_at`/`source_sha256`; top-level `pipeline_git_sha` is 40-char hex; `methodology_version: "0.1.0"` matches `counterfactual.METHODOLOGY_VERSION`. No regression this cycle. |
+| 2 | External consumer can follow a URL from `manifest.json` and retrieve a Parquet file and its CSV mirror | **VERIFIED (upgraded from partial)** | Happy-path unchanged: 5 Parquet + 5 CSV + 5 schema.json; all URLs absolute https; CSV mirror 7/7 quality tests pass. **Gap #2 closed:** `ons_gas.download_dataset()` (lines 36/39/41/45-47) now binds `output_path` BEFORE the `try` block, passes `timeout=60`, and `except` block bare-`raise`s per D-17 (fail-loud). Regression test `tests/test_ons_gas_download.py` (3 tests) locks all three invariants — all pass. The reliability promise underpinning the fetch truth is now testable and tested. |
+| 3 | `publish/snapshot.py` creates an immutable `site/data/v<date>/` directory on tagged release | VERIFIED | Prior `python -m uk_subsidy_tracker.publish.snapshot --version v2026.04-rc1 --output /tmp/snap --dry-run` exit 0 with 16 artefacts. No regression. |
+| 4 | `docs/data/index.md` explains how journalists and academics use the datasets, including citation via versioned snapshot URL | VERIFIED | 144 lines, 9 H2s, six-section template + three-language snippets, absolute manifest URL, BibTeX template. `mkdocs build --strict` exit 0. No regression. |
+| 5 | GitHub Actions daily refresh workflow (06:00 UTC cron) with per-scheme dirty-check is committed and functional | **VERIFIED (upgraded from FAILED-partial)** | `.github/workflows/refresh.yml` unchanged — still valid YAML, pinned actions, least-privilege permissions. **Gap #1 closed:** `schemes/cfd/_refresh.py::refresh()` (lines 83-111) now invokes all three downloaders (`download_lccc_datasets` + `download_elexon_data` + `download_ons_gas`) and calls `write_sidecar()` for every one of the five raw files after download. `_URL_MAP` dict byte-matches `scripts/backfill_sidecars.py::URL_MAP`. Invariant test `tests/test_refresh_loop.py::test_refresh_loop_generated_at_advances_once_then_stable` (and its companion `test_refresh_loop_converges_on_unchanged_upstream`) lock the algebraic property: after refresh rewrites sidecars with fresh bytes, `upstream_changed()` returns False on the next call (no perpetual dirty-check loop) and `max(sidecar.retrieved_at)` advances once then stays stable. Both tests pass. |
 
-**Score:** 4/5 ROADMAP success criteria verified (SC #5 partial).
+**Score:** 5/5 ROADMAP success criteria verified (was 4/5; SC #2 and SC #5 both flipped to VERIFIED).
 
 ### Required Artifacts
 
+New artifacts delivered in this cycle (04-07) — three files created + four modified + five sidecars re-emitted:
+
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `src/uk_subsidy_tracker/publish/__init__.py` | Barrel exports | VERIFIED | Re-exports Manifest/Dataset/Source/build + csv_mirror + snapshot (26 lines). |
-| `src/uk_subsidy_tracker/publish/manifest.py` | Pydantic Manifest + build() emitting `site/data/manifest.json` | VERIFIED | 373 lines (plan required ≥120). Contains `class Manifest`, `class Dataset`, `class Source`, `def build`, `GRAIN_SOURCES`, `model_dump(mode="json")`, `sort_keys=True`, `newline="\n"`. |
-| `src/uk_subsidy_tracker/publish/csv_mirror.py` | Pinned CSV writer | VERIFIED | 57 lines (plan required ≥40). `lineterminator="\n"`, `date_format`, `index=False`, `float_format=None` all present. |
-| `src/uk_subsidy_tracker/publish/snapshot.py` | CLI `--version`/`--output` assembling release-asset tree | VERIFIED | 117 lines (plan required ≥60). Module entry works via `python -m`; dry-run produces 16 artefacts. |
-| `src/uk_subsidy_tracker/refresh_all.py` | CI entry-point orchestrator | VERIFIED (partial) | 122 lines (plan required ≥50). Iterates `SCHEMES`, calls `upstream_changed`/`rebuild_derived`/`regenerate_charts`/`validate`, short-circuits on clean state. Missing the Elexon/ONS refetch + sidecar rewrite logic — see gap #1. |
-| `src/uk_subsidy_tracker/schemes/cfd/__init__.py` | §6.1 SchemeModule Protocol implementation | VERIFIED | 5.0 KB; contains `DERIVED_DIR`, `upstream_changed`, `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`. |
-| `src/uk_subsidy_tracker/schemes/cfd/{cost_model,aggregation,forward_projection,_refresh}.py` | Derived builders + dirty-check | VERIFIED | All 4 files present and non-stub (ranging 2.1–7.8 KB). |
-| `src/uk_subsidy_tracker/schemas/cfd.py` | Pydantic row models for 5 grains | VERIFIED | 214 lines (plan required ≥80). 5 BaseModel subclasses + `emit_schema_json`. |
-| `tests/test_manifest.py` | 8 manifest tests | VERIFIED | 8/8 passing (round-trip byte-identity, provenance-fields, absolute URLs, SHA match, stable generated_at, methodology match). |
-| `tests/test_csv_mirror.py` | 7 CSV-mirror tests | VERIFIED | 7/7 passing (LF line endings, no BOM, column order, no index, ISO-8601 dates, precision preserved). |
-| `tests/test_determinism.py` | 10 determinism tests | VERIFIED | 10/10 passing (5 content-identity via `pyarrow.Table.equals()` + 5 writer-identity). |
-| `tests/test_schemas.py` (extended) | Raw + Parquet variants | VERIFIED | 10 passing (5 raw + 5 parametrised Parquet). |
-| `tests/test_aggregates.py` (extended) | Row-conservation across grains | VERIFIED | 5 passing (2 raw scaffolding + 3 Parquet row-conservation). |
-| `tests/test_constants_provenance.py` | SEED-001 Tier 2 drift tripwire | VERIFIED | 13 cases passing. |
-| `tests/fixtures/constants.yaml` | 6 constant provenance blocks | VERIFIED | All 6 keys present; every `test_yaml_value_matches_live` passes. |
-| `data/raw/<publisher>/<file>` | 5 raw files migrated | VERIFIED | 5 files present at new paths; 5 sibling `.meta.json` sidecars with valid 64-char SHA-256 + `upstream_url` + `retrieved_at` + `backfilled_at`. |
-| `scripts/backfill_sidecars.py` | One-shot helper | VERIFIED | 89 lines; parses cleanly. |
-| `.github/workflows/refresh.yml` | Daily cron workflow | VERIFIED | 89 lines; `yaml.safe_load` parses; pinned actions; least-privilege permissions; invokes refresh_all + gates + create-pull-request + create-issue-on-failure. |
-| `.github/workflows/deploy.yml` | Tag-triggered release workflow | VERIFIED | 65 lines; `yaml.safe_load` parses; tag-format regex validation; invokes snapshot.py + softprops/action-gh-release@v2. |
-| `.github/refresh-failure-template.md` | Issue body template | VERIFIED | File exists (1.1 KB). |
-| `docs/data/index.md` | 6-section how-to-use-our-data page | VERIFIED | 144 lines, 9 H2 headings (plan required ≥120 lines, 6 sections — exceeds both). `manifest.json`, `read_parquet`, `versioned` grep-present. |
-| `docs/about/citation.md` | Versioned-snapshot URL pattern | VERIFIED | Contains "Versioned snapshots" + "Citing a specific data snapshot" H2 sections; `releases/tag` pattern present. |
-| `mkdocs.yml` | `Data` top-level nav entry | VERIFIED | `- Data: data/index.md` on line 83, between Reliability and About. |
-| `tests/fixtures/benchmarks.yaml` | Disposition C audit note | VERIFIED | Summary confirms header carries the 2026-04-22 audit block; `lccc_self: []` preserved per user decision. |
-| `.gitignore` | `data/derived/` ignored; `site/data/` tracked | VERIFIED | `data/derived/` in .gitignore; explicit per-mkdocs-subtree pattern preserves `site/data/` tracking. |
-| `pyproject.toml` | pyarrow ≥ 24.0.0 + duckdb ≥ 1.5.2 | VERIFIED | Both resolved in `uv.lock` at 24.0.0 + 1.5.2. |
+| `src/uk_subsidy_tracker/data/sidecar.py` | Shared atomic `write_sidecar()` helper | VERIFIED | 78 lines (exists; substantive). Functions: `_sha256_of()` (64-KiB-chunked, matches `_refresh.py::_sha256` byte-for-byte) + `write_sidecar()` (writes `.meta.json.tmp` then `os.replace` — atomic on POSIX + Windows). `json.dumps(meta, sort_keys=True, indent=2) + "\n"` byte-parity with backfill script. Correctly raises `FileNotFoundError` when `raw_path` is missing (pre-condition). Imported by both `schemes/cfd/_refresh.py` (daily refresh path) and `scripts/backfill_sidecars.py` (backfill path). |
+| `src/uk_subsidy_tracker/data/ons_gas.py` (modified) | Gap #2 fixed | VERIFIED | `output_path` bound on line 36 BEFORE `try:` on line 38 (was: line 35 inside try); `timeout=60` added on `requests.get` line 39; `except` block line 45-47 now bare-`raise`s instead of silently returning un-downloaded path. Docstring line 29-31 documents the D-17 fail-loud contract. |
+| `src/uk_subsidy_tracker/schemes/cfd/_refresh.py` (modified) | Gap #1 fixed | VERIFIED | `refresh()` body (lines 83-111) now: (1) calls `download_lccc_datasets` + `download_elexon_data` + `download_ons_gas` in sequence, (2) iterates `_URL_MAP` and calls `write_sidecar(raw_path, upstream_url)` for each of the five files, (3) raises `FileNotFoundError` if any downloader returned but raw file is missing (fail-loud). Added `_URL_MAP` dict (lines 31-42) — cross-reference comment on line 28-30 notes it MUST match `backfill_sidecars.py::URL_MAP`. Byte-match verified by re-running backfill: `git diff data/raw/` shows zero bytes changed. |
+| `scripts/backfill_sidecars.py` (modified) | Delegate to shared helper | VERIFIED | 108 lines; now imports `write_sidecar` from the new shared module (line 76) and calls it for the five common keys (line 84-89) with `http_status=None` + `publisher_last_modified=None` (backfill marker). Post-step overlays the two backfill-exclusive fields (`retrieved_at` from `git log --follow` + `backfilled_at` marker) via the same atomicity discipline (`.tmp` + `os.replace`, `sort_keys=True`, `indent=2`, trailing newline). `sha256_of` helper removed — single source of truth now in `sidecar.py::_sha256_of`. |
+| `tests/test_refresh_loop.py` | Refresh-loop invariant test | VERIFIED | 150 lines, 2 tests, both pass in 0.34s. Uses `importlib.import_module` to bypass `cfd/__init__.py`'s `_refresh` function-alias shadow (documented in test file lines 25-28 — good future-reader discipline). `tmp_raw_tree` fixture seeds 5 raw files + matching sidecars. `_patched_refresh_downloaders()` ExitStack patches all three downloaders with synthetic bytes — no network. Test 1 (`test_refresh_loop_converges_on_unchanged_upstream`) locks the core invariant; test 2 (`test_refresh_loop_generated_at_advances_once_then_stable`) corrupts one sidecar's sha256, asserts detection, runs refresh, asserts `retrieved_at` advanced within 5s of wall clock, asserts second call reports clean. |
+| `tests/test_ons_gas_download.py` | Regression guard on ons_gas error path | VERIFIED | 62 lines, 3 tests, all pass in 0.32s. Test 1: network failure raises `RequestException` (not `UnboundLocalError`). Test 2: `requests.get` call kwargs contain `timeout == 60`. Test 3: happy path returns `tmp_path / GAS_SAP_DATA_FILENAME` with correct bytes written. All three patched via `unittest.mock` — no network. |
+| `data/raw/**/*.meta.json` (5 files) | Re-emitted with real `git log --follow` values | VERIFIED | All 5 files present with 64-char sha256, 200/null http_status, full upstream_url, and `retrieved_at` values now sourced from real git log (not BACKFILL_DATE fallback). Byte-identity preserved: a fresh `uv run python scripts/backfill_sidecars.py` run produces zero bytes of diff against the committed sidecars. |
+| `CHANGES.md` [Unreleased] | 04-07 entries under Added / Fixed / Changed | VERIFIED | Three Added bullets (sidecar.py, test_refresh_loop.py, test_ons_gas_download.py); two Fixed bullets (ons_gas.py error path, _refresh.py gap #1 + duplicate URL_MAP note); one Changed bullet (backfill_sidecars.py delegate-to-helper refactor). Every entry cites "Plan 04-07" and its gap number where applicable. |
 
 ### Key Link Verification
 
+Gap-closure wiring (links that were broken or absent pre-04-07 and are now present and exercised):
+
 | From | To | Via | Status | Details |
 |------|------|------|--------|---------|
-| `publish/manifest.py` | `data/raw/**/*.meta.json` | Walks sidecars for upstream_url/retrieved_at/source_sha256 | VERIFIED | Emitted manifest shows every Dataset.sources[].upstream_url + retrieved_at populated from sidecars; source_sha256 re-computed from raw file per W-05 mitigation. |
-| `publish/manifest.py` | `data/derived/cfd/*.parquet` | Walks derived_dir, one Dataset per Parquet | VERIFIED | 5 Datasets in emitted manifest, one per grain; row_counts match Plan 03 reference (3460/11/52/33/68). |
-| `publish/manifest.py` | `counterfactual.METHODOLOGY_VERSION` | Top-level manifest.methodology_version | VERIFIED | Emitted manifest: `"methodology_version": "0.1.0"` matches module constant. |
-| `publish/manifest.py` | `mkdocs.yml::site_url` | Line-scan for `site_url:` | VERIFIED | All emitted URLs resolve to `https://richardjlyon.github.io/uk-subsidy-tracker/...`. (See WR-03 in Review — line-scan is fragile; not a blocker but noted.) |
-| `publish/csv_mirror.py` | `data/derived/cfd/*.parquet` | `pq.read_table(...).to_pandas().to_csv(...)` | VERIFIED | Dry-run produced 5 CSV mirrors with correct column order and ISO-8601 dates; all 7 test_csv_mirror tests pass. |
-| `refresh_all.py` | `schemes/cfd/__init__.py` | `from uk_subsidy_tracker.schemes import cfd` + calls | VERIFIED (partial) | Module import and `upstream_changed`/`rebuild_derived`/`regenerate_charts`/`validate` calls all wired. **Missing:** refresh path does not re-fetch Elexon/ONS nor rewrite sidecars — gap #1. |
-| `.github/workflows/refresh.yml` | `uk_subsidy_tracker.refresh_all` | `uv run --frozen python -m uk_subsidy_tracker.refresh_all` | VERIFIED | Step present at line 49; orchestrator exits 0 on clean state. |
-| `.github/workflows/deploy.yml` | `uk_subsidy_tracker.publish.snapshot` | `uv run --frozen python -m ... snapshot --version ... --output snapshot-out/` | VERIFIED | Step present at line 47-50; local smoke-test exits 0. |
-| `.github/workflows/refresh.yml` | `.github/refresh-failure-template.md` | `content-filepath` on peter-evans/create-issue-from-file@v6 | VERIFIED | Step present at line 85-89. |
+| `schemes/cfd/_refresh.py::refresh` | `data.elexon::download_elexon_data` | Inline import + call | VERIFIED | Line 84, 97. Previously absent (gap #1 — deferred to refresh_all.py which never picked it up). |
+| `schemes/cfd/_refresh.py::refresh` | `data.ons_gas::download_dataset` | Inline import (aliased) + call | VERIFIED | Line 89, 100. Previously absent. |
+| `schemes/cfd/_refresh.py::refresh` | `data.sidecar::write_sidecar` | Inline import + loop-call 5× | VERIFIED | Line 90, 111. Previously absent entirely — sidecars only written by one-shot backfill. Now called for every raw file after download. |
+| `scripts/backfill_sidecars.py::main` | `data.sidecar::write_sidecar` | `sys.path.insert` + import + call | VERIFIED | Line 75-76, 84-89. Previously backfill owned its own SHA + JSON-write code (duplicated logic); now delegates. |
+| `tests/test_refresh_loop.py` | `schemes.cfd._refresh` submodule | `importlib.import_module` | VERIFIED | Line 29. Required because `cfd/__init__.py` binds `_refresh` as a function alias (shadowing the submodule on attribute-chain lookup); documented in-file for future test authors. |
+
+All other Phase 4 key links remain VERIFIED from the prior run — no regression touched `publish/manifest.py`, `publish/csv_mirror.py`, `publish/snapshot.py`, `refresh_all.py`, `schemes/cfd/__init__.py`, or any derived-layer builder.
 
 ### Data-Flow Trace (Level 4)
 
+Updated for the two artifacts whose data flow was partial/disconnected pre-04-07:
+
 | Artifact | Data variable | Source | Produces Real Data | Status |
 |----------|---------------|--------|--------------------|--------|
-| `publish/manifest.py::build()` | `manifest` | Walks `data/raw/**/*.meta.json` + `data/derived/cfd/*.parquet` + `counterfactual.METHODOLOGY_VERSION` + `subprocess.run(['git', 'rev-parse', 'HEAD'])` | Yes — DB-equivalent walks real files; `pipeline_git_sha` populated via subprocess | FLOWING |
-| `publish/csv_mirror.py::build()` | CSV rows | `pq.read_table(parquet).to_pandas()` | Yes — reads the just-emitted Parquet files | FLOWING |
-| `publish/snapshot.py::build()` | Manifest + CSV + Parquet tree | Calls `cfd.rebuild_derived(output_dir)` + `csv_mirror.build(...)` + `manifest_mod.build(...)` | Yes — end-to-end rebuild from raw state | FLOWING |
-| `schemes/cfd/cost_model.py::build_station_month()` | 3,460 station-month rows | `load_lccc_dataset("Actual CfD Generation...")` + `compute_counterfactual(...)` | Yes — verified via pyarrow.Table.equals in test_determinism | FLOWING |
-| `schemes/cfd/aggregation.py::build_annual_summary()` | 11 annual rows | `pq.read_table(derived/station_month.parquet)` + `compute_counterfactual` daily | Yes — verified via test_aggregates row-conservation | FLOWING |
-| `schemes/cfd/forward_projection.py::build_forward_projection()` | 68 forward rows | `load_lccc_dataset("CfD Contract Portfolio Status")` + `int(gen['Settlement_Date'].max().year)` | Yes — deterministic anchor from raw data, not clock | FLOWING |
-| `schemes/cfd/_refresh.py::upstream_changed()` | bool | Walks `_RAW_FILES` + compares live SHA vs sidecar SHA | Yes — ran locally, returned False (matches expected) | FLOWING |
-| `schemes/cfd/_refresh.py::refresh()` | (side effects — downloads) | `download_lccc_datasets(config)` | **Partial — LCCC only** | **STATIC / DISCONNECTED** for Elexon + ONS (gap #1) |
-| `refresh_all.py::refresh_scheme()` | bool | Delegates to `scheme.refresh()` | Partial — LCCC data flows; sidecar updates do not | **DISCONNECTED for sidecar-advance data path** (gap #1) |
+| `schemes/cfd/_refresh.py::refresh()` | (side effects — downloads + sidecar writes) | `download_lccc_datasets(config)` + `download_elexon_data()` + `download_ons_gas()` + `write_sidecar()` for each of 5 raw paths | **Yes — all 3 publishers fetched; all 5 sidecars rewritten** | **FLOWING** (was: STATIC/DISCONNECTED for Elexon + ONS) |
+| `refresh_all.py::refresh_scheme()` | bool | Delegates to `scheme.refresh()` (which now closes the loop) | Yes — full data path flows end-to-end, sidecars advance `retrieved_at` | **FLOWING** (was: DISCONNECTED for sidecar-advance path) |
+| `data.sidecar.write_sidecar()` | `.meta.json` bytes | Computes sha256 of live raw file + stamps `retrieved_at=now(UTC)` + echoes `upstream_url` from caller | Yes — every successful call overwrites the sidecar atomically | FLOWING |
+
+All other data flows remain FLOWING from the prior run.
 
 ### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| Full test suite is green | `uv run pytest tests/ -q` | `69 passed, 4 skipped in 6.17s` | PASS |
-| Manifest build produces correct contract | `python -c "from uk_subsidy_tracker.publish import manifest; manifest.build(version='latest', derived_dir=Path('data/derived/cfd'), raw_dir=Path('data/raw'), output_path=...)"` | 5 datasets; all required fields present; 40-char pipeline_git_sha; methodology_version="0.1.0"; all URLs https | PASS |
-| Snapshot CLI produces release-asset tree | `uv run python -m uk_subsidy_tracker.publish.snapshot --version v2026.04-rc1 --output /tmp/snap --dry-run` | Exit 0; 16 artefacts (1 manifest.json + 5 parquet + 5 csv + 5 schema.json) | PASS |
-| Refresh orchestrator runs on clean state | `uv run python -m uk_subsidy_tracker.refresh_all` | `[cfd] upstream unchanged — skipping refresh` + `no upstream changes; skipping manifest rebuild` | PASS |
-| Refresh orchestrator re-fetches Elexon/ONS on dirty state | (mocked — inspected code path) | Code path never calls Elexon or ONS downloaders | **FAIL** (gap #1) |
-| Refresh writes sidecars after download | (mocked — inspected code path) | No sidecar writer call in refresh_all.py nor in schemes/cfd/_refresh.py; only scripts/backfill_sidecars.py writes | **FAIL** (gap #1) |
-| Determinism invariant holds | `uv run pytest tests/test_determinism.py` | 10/10 passing | PASS |
-| Manifest round-trip byte-identical | `uv run pytest tests/test_manifest.py::test_manifest_roundtrip_byte_identical` | PASS | PASS |
-| CSV mirror quality invariants | `uv run pytest tests/test_csv_mirror.py` | 7/7 passing | PASS |
-| MkDocs strict build | `uv run mkdocs build --strict` | Exit 0; built in 0.35s | PASS |
-| YAML workflow parse | `python -c "import yaml; yaml.safe_load(open('.github/workflows/refresh.yml')); yaml.safe_load(open('.github/workflows/deploy.yml'))"` | OK | PASS |
-| ons_gas download error path | (code review) | `output_path` referenced in `except` before assignment (line 44 refs value first bound at line 35 inside try) | **FAIL** (gap #2) |
+| Full test suite is green | `uv run pytest tests/ -q` | `74 passed, 4 skipped in 6.38s` (was 69+4 pre-04-07) | PASS |
+| Refresh-loop invariant locked | `uv run pytest tests/test_refresh_loop.py -v` | 2 passed in 0.34s | PASS |
+| ons_gas error-path regression guard | `uv run pytest tests/test_ons_gas_download.py -v` | 3 passed in 0.32s | PASS |
+| Refresh invokes all 3 publishers | `grep -n download_* src/uk_subsidy_tracker/schemes/cfd/_refresh.py` | `download_lccc_datasets` @ line 86/94; `download_elexon_data` @ line 84/97; `download_ons_gas` @ line 89/100 | PASS |
+| Refresh writes sidecars for all 5 files | `grep -n write_sidecar src/uk_subsidy_tracker/schemes/cfd/_refresh.py` | `from … import write_sidecar` @ line 90; `write_sidecar(raw_path=raw_path, upstream_url=upstream_url)` @ line 111 (inside 5-iteration loop over `_URL_MAP`) | PASS |
+| ons_gas output_path bound before try | `grep -n -E 'output_path\|try:\|except' src/.../ons_gas.py` | `output_path = DATA_DIR / …` @ line 36; `try:` @ line 38; `except` @ line 45 | PASS |
+| ons_gas uses timeout=60 | `grep -n timeout src/.../ons_gas.py` | `timeout=60` on `requests.get` @ line 39 | PASS |
+| ons_gas fail-loud on network failure | `grep -n -E 'raise\|except' src/.../ons_gas.py` | Bare `raise` @ line 47 (fail-loud per D-17) | PASS |
+| Backfill byte-identity preserved | `uv run python scripts/backfill_sidecars.py && git diff data/raw/` | 5 sidecars written; `git diff data/raw/` shows **zero bytes changed** | PASS |
+| No scope creep (5 forbidden files untouched) | `git log --oneline -- <5 files>` since `61ac424` (pre-04-07) | All 5 files' last commit predates 04-07 (manifest.py @ 2e90d11; forward_projection.py @ e00a4f6; lccc.py @ 596594c; refresh.yml @ f3b9e33; deploy.yml @ bbb421d) | PASS |
+| Shared SHA helper single source of truth | `grep sha256_of scripts/backfill_sidecars.py` | No match — helper removed (now lives only in `sidecar.py::_sha256_of`) | PASS |
+| CHANGES.md 04-07 entries | `grep -c "04-07" CHANGES.md` | Multiple entries under Added / Fixed / Changed with "Plan 04-07" citation | PASS |
+
+Every prior spot-check (manifest contract, snapshot CLI, mkdocs build --strict, determinism, csv mirror quality, workflow YAML parse) re-runs green. No regressions.
 
 ### Requirements Coverage
 
-Cross-referenced against `.planning/REQUIREMENTS.md` traceability table and PLAN frontmatter `requirements:` fields:
+Delta against the prior verification — only two requirements moved from PARTIAL to SATISFIED; the remainder stay SATISFIED:
 
 | Requirement | Source Plan(s) | Description | Status | Evidence |
 |-------------|----------------|-------------|--------|----------|
-| PUB-01 | 04-04 | `publish/manifest.py` builds `site/data/manifest.json` with provenance | SATISFIED | Module exists; `build()` runs; all required fields present in emitted manifest. |
-| PUB-02 | 04-04 | `publish/csv_mirror.py` writes CSV alongside every Parquet | SATISFIED | 5 CSV siblings produced by snapshot.py; 7/7 quality tests pass. |
-| PUB-03 | 04-04, 04-05 | `publish/snapshot.py` creates versioned snapshot on tag release | SATISFIED | Snapshot CLI + `.github/workflows/deploy.yml` tag trigger + release-asset upload all wired. |
-| PUB-04 | 04-06 | `docs/data/index.md` explains journalist/academic use | SATISFIED | 144-line page with all six D-27 sections + three-language snippets. |
-| PUB-05 | 04-02, 04-03, 04-04 | Three-layer pipeline operational end-to-end for CfD | SATISFIED (with structural concern) | `data/raw/` → `data/derived/` → `site/data/` paths all produce correct output. Refresh-loop gap (see gap #1) affects robustness but not the current operational state. |
-| PUB-06 | 04-04, 04-06 | External consumer fetches manifest + follows URL + retrieves Parquet/CSV | SATISFIED | Manifest URLs are absolute; snapshot CLI produces files at those locations. |
-| GOV-02 | 04-02, 04-03, 04-04 | manifest.json exposes full provenance per dataset | SATISFIED | Source URL + retrieval timestamp + source SHA-256 + pipeline git SHA + methodology version all present on every Dataset. |
-| GOV-03 | 04-05 | Daily refresh CI workflow with per-scheme dirty-check | PARTIAL | Workflow committed; orchestrator runs; per-scheme dirty-check exists; **but refresh logic incomplete** (gap #1). |
-| GOV-04 | (seed) | Methodology versioning | SATISFIED | Plan 01 confirmed `METHODOLOGY_VERSION` propagation + SEED-001 Tier 2 drift tripwire. |
-| GOV-06 | 04-04, 04-05, 04-06 | Versioned-snapshot URL citability | SATISFIED | `versioned_url` on every Dataset; deploy.yml uploads release assets; docs/about/citation.md + docs/data/index.md document pattern. |
-| TEST-02 | 04-03 | Pydantic schema validation on derived Parquet | SATISFIED | 5 parametrised Parquet-variant tests pass. |
-| TEST-03 | 04-03 | Row-conservation across grain rollups | SATISFIED | 3 Parquet row-conservation tests pass. |
-| TEST-05 | 04-03 | Byte-identical Parquet rebuild determinism | SATISFIED | 10/10 `tests/test_determinism.py` pass via `pyarrow.Table.equals()`. |
+| PUB-01 | 04-04 | `publish/manifest.py` builds `site/data/manifest.json` with provenance | SATISFIED | Unchanged |
+| PUB-02 | 04-04 | `publish/csv_mirror.py` writes CSV alongside every Parquet | SATISFIED | Unchanged |
+| PUB-03 | 04-04, 04-05 | `publish/snapshot.py` creates versioned snapshot on tag release | SATISFIED | Unchanged |
+| PUB-04 | 04-06 | `docs/data/index.md` explains journalist/academic use | SATISFIED | Unchanged |
+| PUB-05 | 04-02, 04-03, 04-04, **04-07** | Three-layer pipeline operational end-to-end for CfD | SATISFIED (**upgraded** — structural concern resolved) | Refresh loop now closes the raw→derived→published cycle on a real upstream change. `ons_gas` error path no longer undermines end-to-end reliability. |
+| PUB-06 | 04-04, 04-06 | External consumer fetches manifest + follows URL + retrieves Parquet/CSV | SATISFIED | Unchanged |
+| GOV-02 | 04-02, 04-03, 04-04 | manifest.json exposes full provenance per dataset | SATISFIED | Unchanged |
+| GOV-03 | 04-05, **04-07** | Daily refresh CI workflow with per-scheme dirty-check | SATISFIED (**upgraded from PARTIAL**) | Refresh loop now functional end-to-end on real upstream change (gap #1 closed). Error-path fail-loud posture on ONS downloader (gap #2 closed). Invariant test (`test_refresh_loop.py`) pins the algebraic property locally so the workflow's "functional" claim is reproducible without a live GitHub Actions run. |
+| GOV-04 | (seed) | Methodology versioning | SATISFIED | Unchanged |
+| GOV-06 | 04-04, 04-05, 04-06 | Versioned-snapshot URL citability | SATISFIED | Unchanged |
+| TEST-02 | 04-03 | Pydantic schema validation on derived Parquet | SATISFIED | Unchanged |
+| TEST-03 | 04-03 | Row-conservation across grain rollups | SATISFIED | Unchanged |
+| TEST-05 | 04-03 | Byte-identical Parquet rebuild determinism | SATISFIED | Unchanged |
 
-**No orphaned requirements** — every ID from the phase's declared list appears in at least one plan's `requirements:` field AND is satisfied (or partial with explicit gap) by delivered work.
+**No orphaned requirements.** REQUIREMENTS.md already tags PUB-05 and GOV-03 as "Complete" in the traceability table (lines 183, 186).
 
 ### Anti-Patterns Found
 
-| File | Line | Pattern | Severity | Impact |
-|------|------|---------|----------|--------|
-| `src/uk_subsidy_tracker/data/ons_gas.py` | 31-44 | `output_path` bound inside `try` block; `except` returns unbound variable | Blocker (for GOV-03 robustness) | On any ONS endpoint failure, download_dataset() raises `UnboundLocalError` instead of graceful degradation. Exercised precisely when the refresh workflow would need to tolerate upstream flakiness. |
-| `src/uk_subsidy_tracker/schemes/cfd/_refresh.py` | 53-67 | Comment: "Elexon + ONS refresh delegated to Plan 04-05's refresh_all.py orchestrator" — but refresh_all.py does not pick up the delegation | Warning | Structural incompleteness — two of five raw sources never re-fetched on a real refresh. |
-| `src/uk_subsidy_tracker/refresh_all.py` | 42-87 | No sidecar-rewrite code path anywhere in the refresh flow | Warning | After a real upstream change, sidecar SHA stays stale and `upstream_changed()` returns True perpetually; `manifest.generated_at` frozen at backfill date. |
-| `.github/workflows/{refresh,deploy}.yml` | multiple | Actions pinned to floating majors (`@v8`, `@v2`, `@v5`) — not immutable SHAs | Info (accepted) | Supply-chain concern; accepted by plan rationale ("maintenance burden > supply-chain delta for open-data project"). |
-| `src/uk_subsidy_tracker/publish/manifest.py` | 172-199 | `_site_url()` line-scan fragile on alternative mkdocs.yml formatting | Info | WR-03 in Review — not a blocker; `SITE_URL` env var can override in CI. |
-| `src/uk_subsidy_tracker/schemes/cfd/forward_projection.py` | 99 | `int(gen["Settlement_Date"].max().year)` has no defensive fallback for empty/all-NaT data | Info | WR-04 in Review; current data has dates so no runtime impact. |
+Delta against prior run:
 
-No TODO/FIXME/PLACEHOLDER comments found in production code. No empty return stubs. No hardcoded `=[]` or `={}` that flow to rendering. Plotting and data layers operate on real pandas DataFrames with real row counts (3,460 / 11 / 52 / 33 / 68 rows per grain, matching Plan 03 reference counts).
+| File | Line | Pattern | Severity | Impact | Delta |
+|------|------|---------|----------|--------|-------|
+| `src/uk_subsidy_tracker/data/ons_gas.py` | 31-44 | ~~`output_path` bound inside `try`; `except` returns unbound variable~~ | ~~Blocker~~ | ~~UnboundLocalError on network failure~~ | **RESOLVED 04-07** |
+| `src/uk_subsidy_tracker/schemes/cfd/_refresh.py` | 53-67 | ~~Elexon + ONS refresh "delegated" to refresh_all.py but not picked up~~ | ~~Warning~~ | ~~Structural incompleteness~~ | **RESOLVED 04-07** — refresh() now invokes all 3 downloaders in-line |
+| `src/uk_subsidy_tracker/refresh_all.py` | 42-87 | ~~No sidecar-rewrite code path~~ | ~~Warning~~ | ~~Sidecar SHA + retrieved_at stale after refresh~~ | **RESOLVED 04-07** — sidecar-rewrite lives in `scheme.refresh()`, which refresh_all delegates to (Option A architecture: scheme owns its raw tree + provenance) |
+| `src/uk_subsidy_tracker/schemes/cfd/_refresh.py` | 31-42 (new) | Duplicated `_URL_MAP` with `scripts/backfill_sidecars.py::URL_MAP` | Info (accepted) | Two scripts both carry the same 5 URLs. Trade-off documented in plan key-decision #2: locality over DRY; cross-drift would be caught by `test_refresh_loop` invariant on first divergent write. Acceptable. |
+| `src/uk_subsidy_tracker/schemes/cfd/_refresh.py::_sha256` | 45-51 | Duplicate of `data/sidecar.py::_sha256_of` | Info (accepted) | Used only by `upstream_changed()` dirty-check, not by `refresh()`. Flagged in plan-summary as a future-extraction candidate; not blocking. |
+| `.github/workflows/{refresh,deploy}.yml` | multiple | Actions pinned to floating majors | Info (accepted) | Unchanged; out of 04-07 scope per plan rationale. |
+| `src/uk_subsidy_tracker/publish/manifest.py` | 172-199 | `_site_url()` line-scan fragility | Info | Unchanged; WR-03 out of 04-07 scope. |
+| `src/uk_subsidy_tracker/schemes/cfd/forward_projection.py` | 99 | `int(gen["Settlement_Date"].max().year)` no defensive fallback | Info | Unchanged; WR-04 out of 04-07 scope. |
+
+Two blockers + two warnings from the prior run all resolved. No new blockers or warnings introduced. No TODO/FIXME/PLACEHOLDER comments added.
 
 ### Human Verification Required
 
-See `human_verification:` entries in frontmatter. Three items:
+The same three items carry forward unchanged from the prior verification — all three are dashboard / GitHub-Actions / visual-rendering checks that cannot be verified from a local checkout. They are not blockers for the "passed" status: every locally-verifiable truth is VERIFIED; the human items exercise GitHub-integration behaviour that the daily-refresh workflow and release-asset pipeline depend on but that has no bearing on the code's correctness.
 
-1. Manual GitHub Actions `workflow_dispatch` trigger of refresh.yml (requires user dashboard setup first).
-2. Test-tag push to exercise deploy.yml + confirm release asset retrieval resolves with byte-identical SHA-256.
-3. Visual inspection of `docs/data/index.md` rendered via `mkdocs serve`.
+1. `workflow_dispatch` trigger of `refresh.yml` (user-dashboard prerequisites: enable PR-approval toggle + create labels).
+2. Tag-push trigger of `deploy.yml` + HTTPS retrieval of release-asset Parquet matches manifest SHA-256.
+3. Visual inspection of `docs/data/index.md` rendered via `uv run mkdocs serve`.
 
 ### Gaps Summary
 
-**Gap #1 (structural — undermines SC #5 and GOV-03):** The refresh flow is wired at the orchestration layer but structurally incomplete at the data layer. `scheme.refresh()` only re-fetches LCCC; Elexon and ONS downloaders are never invoked on a refresh run. No code path writes `.meta.json` sidecars after a download — that logic lives solely in the one-shot `scripts/backfill_sidecars.py`. On the first real upstream change, the daily workflow will either produce empty diffs or perpetually report "upstream changed" because sidecar SHA stays stale, and `manifest.generated_at` (sourced from `max(sidecar.retrieved_at)`) will never advance. The *current* static-state manifest is correct; the *dynamic* refresh claim in the phase goal is fragile.
+**Gap #1 (SC #5 / GOV-03 structural incompleteness):** **RESOLVED in plan 04-07 — see commits `29b5524`, `ac9675a`, `42c8c3e`, `3497296`, `14e2138`.** The refresh flow is now wired end-to-end at the data layer. `schemes/cfd/_refresh.py::refresh()` invokes all three publisher downloaders (LCCC + Elexon + ONS) and writes `.meta.json` sidecars for every one of the five raw files via the new shared `write_sidecar()` helper. The algebraic invariant that the phase goal's "functional" clause depends on — after refresh, `upstream_changed()` reports False on the next call; `max(sidecar.retrieved_at)` advances once then stays stable on unchanged second runs — is pinned by `tests/test_refresh_loop.py` (2 tests, both pass locally without network). `manifest.generated_at` will advance on real upstream change and stay stable otherwise.
 
-**Gap #2 (code bug — affects PUB-05/GOV-03 error resilience):** `ons_gas.download_dataset()` has an `UnboundLocalError` on any network failure because `output_path` is assigned inside the `try` block but returned in the `except` handler. This activates exactly when the ONS publisher is unavailable — the moment the project's "bulletproof" promise is tested. Fix is trivial (three-line change) but the exception path is currently untested.
+**Gap #2 (PUB-05 / GOV-03 error resilience):** **RESOLVED in plan 04-07 — see commit `ac9675a`.** `ons_gas.download_dataset()` cannot raise `UnboundLocalError` on network failure (`output_path` bound before `try:`), carries `timeout=60` matching the Elexon convention, and fail-loud-raises on `RequestException` per D-17. Regression test `tests/test_ons_gas_download.py` (3 tests, all pass) locks all three invariants so future edits cannot silently regress the error path.
 
-Both gaps are remediable without architectural change; neither invalidates the current static state of the published manifest or the snapshot CLI. However, they directly undermine the "daily refresh ... functional" wording of ROADMAP Success Criterion #5 and the durability of GOV-03.
-
-**Grouping:** Both gaps share a common root cause — the refresh/download layer was designed for atomic commit discipline and sidecar provenance but never closed the loop between download + sidecar rewrite + failure tolerance. A single focused gap-closure plan covering (a) an end-to-end fetch helper that handles LCCC/Elexon/ONS uniformly and writes sidecars atomically, (b) the `ons_gas` error-path fix, and (c) a refresh-loop invariant test would close both.
+Both gaps closed without scope creep: the five files explicitly out-of-scope per the prior verifier's recommendation (`publish/manifest.py`, `schemes/cfd/forward_projection.py`, `data/lccc.py`, `.github/workflows/refresh.yml`, `.github/workflows/deploy.yml`) show empty `git diff` since commit `61ac424` (last commit before 04-07 started). The `Info`-tagged concerns surfaced pre-04-07 (WR-03 line-scan fragility, WR-04 empty-data fallback, action-SHA pinning) remain as documented future-candidate items; they do not block Phase 4 closure.
 
 ### Deferred Items
 
-None. All phase-scoped work was either delivered or surfaced as an actionable gap; nothing was explicitly punted to a later phase in ROADMAP.md.
+None. All phase-scoped work — including the two 04-07 gap-closure deliverables — is either delivered-and-verified or surfaces only in the three human-verification items (which were always expected to need a live GitHub Actions / mkdocs-serve session).
 
 ---
 
-*Verified: 2026-04-22T21:00:00Z*
-*Verifier: Claude (gsd-verifier)*
+## VERIFICATION PASSED
+
+**Phase 4 (Publishing Layer) goal achieved.** All five ROADMAP success criteria are VERIFIED; SC #2 and SC #5 both flipped from partial/failed to VERIFIED via plan 04-07 gap closure. Full test suite 74 passed + 4 skipped (up from 69+4 pre-04-07). No scope creep. Byte-identity on existing sidecars preserved. Ready to proceed to Phase 5 (Renewables Obligation), which copies the now-complete scheme-module template verbatim.
+
+Three human verification items remain as originally identified — all require GitHub-infrastructure or visual inspection and are informational rather than blocking. They should be completed opportunistically when the user next touches the GitHub repo settings or the docs site.
+
+---
+
+*Verified: 2026-04-23T02:00:00Z*
+*Verifier: Claude (gsd-verifier) — re-verification after plan 04-07*

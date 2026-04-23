@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: "Completed 04-07-refresh-loop-closure-PLAN.md (gap closure: GOV-03 + PUB-05 fully satisfied)"
-last_updated: "2026-04-23T01:51:04.949Z"
+status: planning
+stopped_at: "Completed 04-07-refresh-loop-closure-PLAN.md (gap closure: GOV-03 + PUB-05 fully satisfied; Phase 4 remains complete at 7/7)"
+last_updated: "2026-04-23T02:03:58.570Z"
 progress:
   total_phases: 12
   completed_phases: 4
@@ -40,9 +40,9 @@ progress:
 
 Phase: 04 (publishing-layer) — EXECUTING
 Plan: 7 of 7
-**Phase:** 4 — COMPLETE
-**Plan:** 07 complete — Gap-closure: closes the two `partial` truths from 04-VERIFICATION.md. Gap #1 (GOV-03): refresh() now fetches LCCC + Elexon + ONS and rewrites all 5 sidecars via shared `write_sidecar()` (atomic .tmp + os.replace); refresh-loop invariant locked by test. Gap #2 (PUB-05): ons_gas.download_dataset() UnboundLocalError fixed + timeout=60 + fail-loud raise. 3 new files (sidecar.py, test_refresh_loop.py, test_ons_gas_download.py) + 4 modified (ons_gas.py, _refresh.py, backfill_sidecars.py, CHANGES.md). Five atomic commits: 29b5524 / ac9675a / 42c8c3e / 3497296 / 14e2138. 74 passed + 4 skipped (+5 new). Phase 4 remains complete (7/7 plans).
-**Status:** Executing Phase 04
+**Phase:** 5
+**Plan:** Not started
+**Status:** Ready to plan
 **Focus:** (none — Phase 4 exit complete with GOV-03 robustness algebraically pinned)
 
 ```

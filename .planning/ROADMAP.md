@@ -10,7 +10,7 @@
 - [x] **Phase 1: Foundation Tidy** — Repo rename, theme switch, root docs committed; brownfield import paths updated
 - [x] **Phase 2: Test & Benchmark Scaffolding** — Four test classes, CI green on main; counterfactual formula pinned
 - [ ] **Phase 3: Chart Triage Execution** — CUT files deleted, seven PROMOTE charts documented, five-theme docs structure built
-- [ ] **Phase 4: Publishing Layer** — manifest.json, CSV mirror, snapshot, data how-to; three-layer pipeline operational for CfD
+- [x] **Phase 4: Publishing Layer** — manifest.json, CSV mirror, snapshot, data how-to; three-layer pipeline operational for CfD (completed 2026-04-23)
 - [ ] **Phase 5: RO Module** — Full Renewables Obligation scheme module, S2–S5 charts, benchmarks within 3% of Turver
 - [ ] **Phase 6: Flagship Cross-Scheme Charts** — X1/X2/X3 portal charts, portal homepage with scheme grid
 - [ ] **Phase 7: FiT Module** — Feed-in Tariff scheme module, S2/S3/S5 charts, scheme grid tile
@@ -86,7 +86,7 @@ Plans:
   3. `publish/snapshot.py` creates an immutable `site/data/v<date>/` directory on tagged release
   4. `docs/data/index.md` explains how journalists and academics use the datasets, including citation via versioned snapshot URL
   5. GitHub Actions daily refresh workflow (06:00 UTC cron) with per-scheme dirty-check is committed and functional
-**Plans:** 6 plans
+**Plans:** 7 plans
 Plans:
 - [x] 04-01-wave0-deps-and-constants-drift-test-PLAN.md — Add pyarrow + duckdb deps; ship SEED-001 Tier 2 constants drift test (constants.yaml + fixtures loader + test_constants_provenance.py)
 - [x] 04-02-raw-layer-migration-PLAN.md — Atomic git mv of 5 raw files to data/raw/<publisher>/<file>; backfill 5 .meta.json sidecars; update loaders + YAML paths (D-04/05/06)
@@ -94,6 +94,7 @@ Plans:
 - [x] 04-04-publishing-layer-manifest-PLAN.md — publish/{manifest,csv_mirror,snapshot}.py + refresh_all.py + test_manifest + test_csv_mirror (D-07/08/09/10/11/13/18; PUB-01/02/03/06; GOV-02)
 - [x] 04-05-workflows-refresh-deploy-PLAN.md — refresh.yml cron + deploy.yml tag; refresh-failure-template.md (D-13/14/16/17; GOV-03; GOV-06)
 - [x] 04-06-docs-and-benchmark-floor-PLAN.md — docs/data/index.md + mkdocs nav + citation versioned-URL + LCCC ARA 2024/25 floor disposition (PUB-04; GOV-06; TEST-04; D-26/27)
+- [x] 04-07-refresh-loop-closure-PLAN.md — Gap closure from 04-VERIFICATION.md: sidecar.write_sidecar() atomic helper + ons_gas UnboundLocalError fix + refresh() wires LCCC+Elexon+ONS + refresh-loop invariant test (GOV-03; PUB-05 robustness)
 
 ### Phase 5: RO Module
 **Goal**: The Renewables Obligation scheme is fully tracked from raw Ofgem data through to published charts, benchmarked against Turver's totals, and integrated into the site as the second scheme module
