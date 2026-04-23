@@ -123,3 +123,121 @@ def test_by_round_vs_annual_parquet(by_allocation_round, annual_summary):
         annual_summary.set_index("year")["cfd_payments_gbp"].sort_index()
     )
     pd.testing.assert_series_equal(from_round, from_annual, check_names=False)
+
+
+# ===========================================================================
+# RO row-conservation tests (Plan 05-10; TEST-03; D-09 country groupby).
+#
+# Per PATTERNS.md directive, RO uses INDEPENDENT module-scoped fixtures
+# (`ro_derived_dir`, `ro_station_month`, etc.) and does NOT merge into the
+# CfD parametrisation. Annual rollup uses (year, country) per D-09 because
+# annual_summary emits one row per (year, country) tuple — NOT one per year.
+# ===========================================================================
+
+
+@pytest.fixture(scope="module")
+def ro_derived_dir(tmp_path_factory) -> Path:
+    from uk_subsidy_tracker.schemes import ro
+
+    out = tmp_path_factory.mktemp("test-aggregates-ro-derived")
+    ro.rebuild_derived(output_dir=out)
+    return out
+
+
+@pytest.fixture(scope="module")
+def ro_station_month(ro_derived_dir) -> pd.DataFrame:
+    df = pq.read_table(ro_derived_dir / "station_month.parquet").to_pandas()
+    # int64 to match the year dtype declared by Ro*Row models (D-10).
+    # `dt.year` returns int32 by default — cast explicitly.
+    df["year"] = df["month_end"].dt.year.astype("int64")
+    return df
+
+
+@pytest.fixture(scope="module")
+def ro_annual_summary(ro_derived_dir) -> pd.DataFrame:
+    return pq.read_table(ro_derived_dir / "annual_summary.parquet").to_pandas()
+
+
+@pytest.fixture(scope="module")
+def ro_by_technology(ro_derived_dir) -> pd.DataFrame:
+    return pq.read_table(ro_derived_dir / "by_technology.parquet").to_pandas()
+
+
+@pytest.fixture(scope="module")
+def ro_by_allocation_round(ro_derived_dir) -> pd.DataFrame:
+    return pq.read_table(ro_derived_dir / "by_allocation_round.parquet").to_pandas()
+
+
+def _skip_if_empty_ro_station_month(df: pd.DataFrame) -> None:
+    """D-11 fallback: skip RO row-conservation when stub data is empty.
+
+    pandas ``assert_series_equal`` rejects empty MultiIndex levels because
+    ``inferred_type`` differs between an empty groupby result (carries the
+    column dtype, e.g. 'string') and an empty ``set_index`` MultiIndex
+    (reports 'empty'). Same shape, different metadata.
+
+    The row-conservation contract is meaningful only on non-empty data;
+    the test re-activates the moment the seed-stub raw inputs are replaced
+    with a single non-empty Ofgem RER fetch.
+    """
+    if len(df) == 0:
+        pytest.skip(
+            "RO station_month is empty (seed-stub raw data); row-conservation "
+            "invariant deferred until real RER data is wired"
+        )
+
+
+def test_ro_annual_vs_station_month_parquet(ro_station_month, ro_annual_summary):
+    """RO-03 / TEST-03: annual_summary.ro_cost_gbp = sum(station_month) per (year, country).
+
+    D-09: annual_summary emits one row per (year, country) tuple, so the
+    row-conservation invariant is groupby year+country (NOT year alone).
+    """
+    _skip_if_empty_ro_station_month(ro_station_month)
+    from_sm = (
+        ro_station_month.groupby(["year", "country"], observed=True)["ro_cost_gbp"]
+        .sum()
+        .sort_index()
+    )
+    from_annual = (
+        ro_annual_summary.set_index(["year", "country"])["ro_cost_gbp"].sort_index()
+    )
+    pd.testing.assert_series_equal(from_sm, from_annual, check_names=False)
+
+
+def test_ro_by_technology_vs_station_month_parquet(ro_station_month, ro_by_technology):
+    """TEST-03: by_technology.ro_cost_gbp = sum(station_month) per (year, technology)."""
+    _skip_if_empty_ro_station_month(ro_station_month)
+    from_sm = (
+        ro_station_month.groupby(["year", "technology"], observed=True)["ro_cost_gbp"]
+        .sum()
+        .sort_index()
+    )
+    from_by_tech = (
+        ro_by_technology.set_index(["year", "technology"])["ro_cost_gbp"].sort_index()
+    )
+    pd.testing.assert_series_equal(from_sm, from_by_tech, check_names=False)
+
+
+def test_ro_by_allocation_round_vs_station_month_parquet(
+    ro_station_month, ro_by_allocation_round
+):
+    """TEST-03: by_allocation_round.ro_cost_gbp = sum(station_month) per (year, commissioning_window).
+
+    RO has no allocation-round axis (unlike CfD); ``commissioning_window``
+    serves as the banding-cohort axis per RESEARCH §5.
+    """
+    _skip_if_empty_ro_station_month(ro_station_month)
+    from_sm = (
+        ro_station_month.groupby(["year", "commissioning_window"], observed=True)[
+            "ro_cost_gbp"
+        ]
+        .sum()
+        .sort_index()
+    )
+    from_by_round = (
+        ro_by_allocation_round.set_index(["year", "commissioning_window"])[
+            "ro_cost_gbp"
+        ].sort_index()
+    )
+    pd.testing.assert_series_equal(from_sm, from_by_round, check_names=False)
