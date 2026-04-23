@@ -1,0 +1,65 @@
+# .github/workflows/deploy.yml
+# Versioned-snapshot release workflow (Phase 4 PUB-03, GOV-06, D-13/D-14).
+#
+# Fires on `git push --tags` where the tag matches `v*` (e.g. `v2026.04`,
+# `v2026.04-rc1`, `v2027.01`). Builds a self-contained snapshot via
+# `snapshot.py` and uploads the contents as release assets.
+#
+# The manifest.json inside the snapshot carries `versioned_url` fields
+# that point at the release asset URLs — academics cite these in papers;
+# GitHub's release storage is effectively permanent.
+name: Release snapshot
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write                  # upload release assets only
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Validate tag format (v<YYYY.MM> per D-14)
+        run: |
+          tag="${{ github.ref_name }}"
+          if [[ ! "$tag" =~ ^v[0-9]{4}\.[0-9]{2}(-rc[0-9]+)?$ ]]; then
+            echo "::error::Tag '$tag' does not match D-14 calendar format v<YYYY.MM> (or v<YYYY.MM>-rc<N>)." >&2
+            exit 1
+          fi
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Install deps
+        run: uv sync --frozen
+
+      - name: Build snapshot artifacts
+        run: |
+          uv run --frozen python -m uk_subsidy_tracker.publish.snapshot \
+            --version "${{ github.ref_name }}" \
+            --output snapshot-out/
+
+      - name: Publish release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            snapshot-out/manifest.json
+            snapshot-out/**/*.parquet
+            snapshot-out/**/*.csv
+            snapshot-out/**/*.schema.json
+          body: |
+            Immutable snapshot ${{ github.ref_name }}.
+
+            **Manifest:** https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/manifest.json
+
+            See the manifest for dataset URLs and SHA-256 checksums. Every figure in this release is reproducible from `git clone` at the tag + `uv sync --frozen` + `uv run python -m uk_subsidy_tracker.refresh_all`.
