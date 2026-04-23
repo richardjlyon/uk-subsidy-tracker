@@ -58,6 +58,10 @@ The charts are organised into five argument themes:
 4. **[Cannibalisation](themes/cannibalisation/index.md)** — why wind crashes its own price, and who tops the difference up.
 5. **[Reliability](themes/reliability/index.md)** — the drought periods no battery can cover.
 
+## For journalists and academics
+
+[**Use our data**](data/index.md) — pandas, DuckDB, and R snippets + citation templates + SHA-256 integrity verification. Start at [`manifest.json`](https://richardjlyon.github.io/uk-subsidy-tracker/data/manifest.json) and follow the URLs.
+
 ## Data sources
 
 All analysis is built from public data:
