@@ -144,15 +144,14 @@ def validate() -> list[str]:
                 )
 
             # REF drift aggregate check (best-effort; silent if fixture absent).
+            # The benchmarks fixture currently lives under tests/fixtures/ (the
+            # hard-block test in tests/test_benchmarks.py is its primary home);
+            # this cheap pipeline-level warner reads the same file.
             try:
                 import yaml  # pyyaml is already a project dep
 
                 ref_path = (
-                    PROJECT_ROOT
-                    / "src"
-                    / "uk_subsidy_tracker"
-                    / "data"
-                    / "benchmarks.yaml"
+                    PROJECT_ROOT / "tests" / "fixtures" / "benchmarks.yaml"
                 )
                 if ref_path.exists() and "year" in ann.columns:
                     raw = yaml.safe_load(ref_path.read_text())
@@ -176,8 +175,15 @@ def validate() -> list[str]:
                                     f"£{built:,.0f} vs ref_constable £{ref_total:,.0f} "
                                     f"(drift {drift_pct:.2f}% > 3.0% tolerance)"
                                 )
-            except Exception:
-                # validate() must never raise; drift detection is best-effort.
+            except (FileNotFoundError, KeyError, yaml.YAMLError):
+                # validate() must never raise; drift detection is best-effort
+                # for the three expected failure modes:
+                # - FileNotFoundError: benchmarks fixture absent (fresh clone)
+                # - KeyError:          ref_constable block / annual_gbp missing
+                # - yaml.YAMLError:    malformed YAML (user-edited fixture)
+                # Any other exception (e.g. AttributeError from a schema-drifted
+                # annual frame, ArithmeticError, OSError) propagates so real
+                # bugs aren't masked.
                 pass
 
     # ---- Check 3 — methodology_version consistency (D-04 Check 3) ----
