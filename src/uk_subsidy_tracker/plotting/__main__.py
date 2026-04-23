@@ -27,6 +27,16 @@ from uk_subsidy_tracker.plotting.subsidy.cfd_payments_by_category import (
 from uk_subsidy_tracker.plotting.subsidy.remaining_obligations import (
     main as remaining_obligations,
 )
+from uk_subsidy_tracker.plotting.subsidy.ro_by_technology import (
+    main as ro_by_technology,
+)
+from uk_subsidy_tracker.plotting.subsidy.ro_concentration import (
+    main as ro_concentration,
+)
+from uk_subsidy_tracker.plotting.subsidy.ro_dynamics import main as ro_dynamics
+from uk_subsidy_tracker.plotting.subsidy.ro_forward_projection import (
+    main as ro_forward_projection,
+)
 from uk_subsidy_tracker.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
     main as subsidy_per_avoided_co2_tonne,
 )
@@ -43,6 +53,11 @@ def main() -> None:
         ("bang_for_buck", bang_for_buck),
         ("remaining_obligations", remaining_obligations),
         ("lorenz", lorenz),
+        # RO subsidy economics (Plan 05-08)
+        ("ro_dynamics", ro_dynamics),
+        ("ro_by_technology", ro_by_technology),
+        ("ro_concentration", ro_concentration),
+        ("ro_forward_projection", ro_forward_projection),
         # Capacity factor
         ("cf_monthly", cf_monthly),
         ("cf_seasonal", cf_seasonal),
