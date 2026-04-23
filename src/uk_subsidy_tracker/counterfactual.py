@@ -86,9 +86,40 @@ already had instead of building renewables?"
 """
 
 DEFAULT_CARBON_PRICES: dict[int, float] = {
+    # 2002-2004: Pre-EU-ETS. No carbon scheme operated; zero by construction (D-05).
+    # RO launched 2002-04-01; these years anchor the table at the scheme start.
+    2002: 0.0,
+    2003: 0.0,
+    2004: 0.0,
+    # 2005-2017: EU ETS Phase I (2005-2007), Phase II (2008-2012), Phase III (2013-2017)
+    # annual averages (EUR→GBP at Bank of England contemporary annual-average rates;
+    # ICE/EEX spot reference). Additive extension per D-05 for RO scheme coverage.
+    # Phase I (2005-2007) collapsed to ~€0.10 by Sept-2007 because allowances were
+    # non-bankable into Phase II; 2007 ~£0.5/tCO2 is historically correct (see
+    # docs/schemes/ro.md methodology callout for the artefact explanation).
+    # [VERIFICATION-PENDING] values below are executor-accepted research seeds from
+    # Plan 05-04 <interfaces> block; a future audit should verify against the EEA
+    # "Emissions, allowances, surplus and prices in the EU ETS 2005-2020" viewer
+    # and the BoE historical EUR/GBP annual-average series before next_audit.
+    2005: 12.3,
+    2006: 11.9,
+    2007: 0.5,
+    2008: 17.7,
+    2009: 11.7,
+    2010: 12.3,
+    2011: 11.3,
+    2012: 6.0,
+    2013: 3.8,
+    2014: 4.8,
+    2015: 5.6,
+    2016: 4.3,
+    2017: 5.1,
+    # 2018-2020: EU ETS Phase III / IV annual averages (UK still in EU ETS pre-Brexit
+    # carbon-scheme divergence), converted EUR→GBP at contemporary average rates.
     2018: 13.0,
     2019: 22.0,
     2020: 22.0,
+    # 2021+: UK ETS annual averages (post-Brexit carbon-scheme divergence).
     2021: 48.0,
     2022: 73.0,
     2023: 45.0,
@@ -98,22 +129,48 @@ DEFAULT_CARBON_PRICES: dict[int, float] = {
 }
 """Annual carbon prices, £/tCO2.
 
-2018–2020: EU ETS annual averages (UK still in EU ETS pre-Brexit
-carbon-scheme divergence), converted EUR→GBP at contemporary average rates.
+2002-2004: No carbon scheme operated; zero by construction (D-05).
 
-2021+: UK ETS annual averages.
+2005-2017: EU ETS annual averages (Phase I 2005-2007 pilot;
+Phase II 2008-2012; Phase III 2013-2017). EUR→GBP at BoE contemporary
+annual-average rates; ICE/EEX spot reference.
+
+2018-2020: EU ETS Phase III/IV annual averages (UK still in EU ETS
+pre-Brexit carbon-scheme divergence), converted EUR→GBP.
+
+2021+: UK ETS annual averages (post-Brexit divergence).
 
 Provenance:
-  sources:      EU ETS 2018–2020 spot (via EEX / ICE reference);
-                UK ETS 2021+ via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK
+  sources:
+    - 2002-2004: No carbon scheme pre-EU-ETS Phase I start (2005-01-01); D-05
+    - 2005-2017: EU ETS annual averages (ICE/EEX reference; EUR→GBP at
+      Bank of England annual-average rate)
+    - 2018-2020: EU ETS Phase III/IV spot (via EEX / ICE reference)
+    - 2021+: UK ETS via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK
   urls:
+    - https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices
+    - https://www.bankofengland.co.uk/boeapps/database/
+    - https://www.ice.com/products/197/EUA-Futures
     - https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/
     - https://www.gov.uk/government/publications/determinations-of-the-uk-ets-carbon-price/uk-ets-carbon-prices-for-use-in-civil-penalties-2024
-  basis:        Calendar-year annual average, £/tCO2
+  basis:        Calendar-year annual average carbon allowance price, £/tCO2
   retrieved_on: 2026-04-22
   next_audit:   2027-01-15  (OBR EFO published late-March; refresh for full 2026 + 2027 initial estimate)
 
 Notes:
+- 2002-2004 zeros reflect the absence of any UK or EU carbon-allowance
+  scheme; EU ETS Phase I did not start until 2005-01-01.
+- 2005-2017 values shipped via Phase 5 Plan 05-04 for RO scheme coverage
+  (RO launched 2002-04-01; counterfactual needs full 2002-present span).
+  Values carry [VERIFICATION-PENDING] inline comment flag — executor
+  accepted Plan 05-04 research seeds pending audit against primary EEA
+  + BoE sources before next_audit.
+- 2007 (£0.5) reflects EU ETS Phase I price crash; allowances were
+  non-bankable into Phase II and collapsed to ~€0.10 by September 2007.
+  Historically correct (see docs/schemes/ro.md methodology callout).
+- METHODOLOGY_VERSION stays "0.1.0" per D-06 — 2002-2017 extension is
+  additive (new year keys; no existing 2018-2026 values revised; no
+  formula-shape change). Bump to 1.0.0 reserved for Phase 6+ portal launch.
 - 2022 (73.0) is OBR-cited; UK ETS 2022 was volatile, peaking near
   £100 mid-year; OBR uses 73 as its calendar-year reference.
 - 2023 (45.0) and 2025 (42.0) are approximate — revisit before v1.0.0
