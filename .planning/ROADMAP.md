@@ -109,7 +109,7 @@ Plans:
 **Plans:** 12 plans
 Plans:
 - [x] 05-01-PLAN.md — Ofgem RER scraper investigation + ofgem_ro.py + roc_prices.py + seed raw/ofgem/ tree + sidecars + mocked scraper tests (RO-01)
-- [ ] 05-02-PLAN.md — ro_bandings.yaml ~60-row table + Pydantic RoBandingEntry/RoBandingTable loader + unit tests (RO-02)
+- [x] 05-02-PLAN.md — ro_bandings.yaml ~60-row table + Pydantic RoBandingEntry/RoBandingTable loader + unit tests (RO-02)
 - [ ] 05-03-PLAN.md — schemas/ro.py 5 Pydantic row models + emit_schema_json import from schemas.cfd + smoke tests (RO-03)
 - [ ] 05-04-PLAN.md — counterfactual.DEFAULT_CARBON_PRICES backward extension 2005-2017 + 22 new constants.yaml entries + _TRACKED completion + CHANGES.md (RO-02)
 - [ ] 05-05-PLAN.md — schemes/ro/ module (__init__ + _refresh + cost_model + aggregation + forward_projection) + smoke rebuild tests + §6.1 Protocol conformance (RO-02, RO-03)
