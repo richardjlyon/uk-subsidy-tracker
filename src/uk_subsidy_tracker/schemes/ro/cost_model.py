@@ -132,11 +132,15 @@ def _annual_counterfactual_gbp_per_mwh() -> dict[int, float]:
     """
     try:
         cf = compute_counterfactual(carbon_prices=DEFAULT_CARBON_PRICES)
-    except Exception:
-        # If gas SAP data is unavailable at build time (e.g. Wave-2 smoke on a
-        # fresh clone without the ONS sheet), return an empty lookup rather
-        # than raise — cost_model then produces zero gas_counterfactual_gbp
-        # which is a true sentinel the validate() check can surface.
+    except FileNotFoundError:
+        # Only tolerate the one expected bootstrap failure: ONS gas SAP XLSX
+        # not yet downloaded (Wave-2 smoke on a fresh clone). In that case
+        # return an empty lookup so cost_model emits zero
+        # gas_counterfactual_gbp, which validate() Check 2 surfaces via the
+        # REF-drift warner. Any other exception (pandera schema drift, missing
+        # columns from upstream refactors, arithmetic errors) is a real bug
+        # and MUST propagate — silencing it would mask a legitimate failure
+        # and silently inflate the subsidy-premium headline figure.
         return {}
     if cf is None or cf.empty:
         return {}
