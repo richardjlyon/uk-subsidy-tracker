@@ -24,24 +24,27 @@ ons_gas_schema = pa.DataFrameSchema(
 
 
 def download_dataset() -> Path:
-    """Download a file from a URL and save it to the data directory."""
+    """Download the latest ONS SAP gas dataset to the data directory.
+
+    Raises requests.exceptions.RequestException on any network failure
+    (D-17 fail-loud posture — the daily refresh workflow needs to see
+    the failure, not a silently un-downloaded path).
+    """
     # The official ONS file URI for the latest SAP gas dataset
     GAS_SAP_URL = "https://www.ons.gov.uk/file?uri=/economy/economicoutputandproductivity/output/datasets/systemaveragepricesapofgas/2026/systemaveragepriceofgasdataset160426.xlsx"
 
-    try:
-        response = requests.get(GAS_SAP_URL, headers=HEADERS, stream=True)
-        response.raise_for_status()
+    output_path = DATA_DIR / GAS_SAP_DATA_FILENAME  # BOUND BEFORE try (gap #2 fix)
 
-        output_path = DATA_DIR / GAS_SAP_DATA_FILENAME
+    try:
+        response = requests.get(GAS_SAP_URL, headers=HEADERS, stream=True, timeout=60)
+        response.raise_for_status()
         with open(output_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
-
         return output_path
-
     except requests.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
-        return output_path
+        print(f"An error occurred while downloading ons_gas: {e}")
+        raise  # fail loud per D-17 — no silent swallow
 
 
 def load_gas_price() -> pd.DataFrame:
