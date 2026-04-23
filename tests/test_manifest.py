@@ -260,3 +260,274 @@ def test_manifest_generated_at_stable_when_no_upstream_change(manifest_artifacts
         "Likely using datetime.now() somewhere — should be "
         "max(retrieved_at across sidecars)."
     )
+
+
+# ---------------------------------------------------------------------------
+# 9-11. Plan 05-06 — multi-scheme iteration (SCHEMES-parametric)
+#
+# These tests prove manifest.build iterates the `schemes` iterable rather than
+# hard-coding CfD. They underpin Plan 05-07's RO registration (`("ro", ro)`
+# appended to refresh_all.SCHEMES) — without SCHEMES iteration, RO Parquet
+# grains would silently fail to surface in site/data/manifest.json.
+#
+# Fixtures build a synthetic `derived_root` tree with two schemes × five
+# grains each (10 Parquet files). Sidecars in `raw_dir` satisfy the
+# `_latest_retrieved_at` walker. GRAIN_SOURCES/TITLES/DESCRIPTIONS are
+# extended via monkeypatch so RO entries surface through _build_dataset_entry
+# (the B-02 per-grain provenance contract is preserved).
+# ---------------------------------------------------------------------------
+
+_RO_GRAINS = (
+    "station_month",
+    "annual_summary",
+    "by_technology",
+    "by_allocation_round",
+    "forward_projection",
+)
+
+_FAKE_UPSTREAM_URL = "https://example.test/fake-raw"
+_FAKE_RETRIEVED_AT = "2026-04-22T19:11:17+00:00"
+
+
+def _write_fake_raw_with_sidecar(raw_dir: Path, publisher: str, filename: str) -> None:
+    """Write a fake raw file + matching *.meta.json sidecar.
+
+    Manifest._source_for_raw re-computes sha256 from the on-disk raw file
+    (W-05 mitigation), so the sidecar's sha256 need not match pre-computation —
+    but the sidecar MUST carry a 64-char hex SHA to satisfy the Pydantic
+    pattern validator. We compute the real sha256 so sidecar and raw match
+    from the first build.
+    """
+    publisher_dir = raw_dir / publisher
+    publisher_dir.mkdir(parents=True, exist_ok=True)
+    raw_path = publisher_dir / filename
+    raw_path.write_text("col_a,col_b\n1,2\n", encoding="utf-8")
+    digest = hashlib.sha256(raw_path.read_bytes()).hexdigest()
+    meta_path = raw_path.with_suffix(raw_path.suffix + ".meta.json")
+    meta_path.write_text(
+        json.dumps(
+            {
+                "sha256": digest,
+                "upstream_url": _FAKE_UPSTREAM_URL,
+                "retrieved_at": _FAKE_RETRIEVED_AT,
+            },
+            indent=2,
+            sort_keys=True,
+        ) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_fake_parquet(path: Path) -> None:
+    """Write a minimal valid Parquet file at `path`."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tbl = pa.table({"methodology_version": ["0.1.0"]})
+    pq.write_table(tbl, path)
+
+
+@pytest.fixture
+def two_scheme_tree(tmp_path, monkeypatch):
+    """Build a synthetic two-scheme derived_root + raw_dir.
+
+    Extends GRAIN_SOURCES/TITLES/DESCRIPTIONS (via monkeypatch so other tests
+    are unaffected) to register the five RO grains pointing at a fake
+    `ofgem/fake.csv` raw file. Returns a dict the per-test bodies use to
+    drive `manifest_mod.build`.
+    """
+    from uk_subsidy_tracker.publish import manifest as manifest_mod
+
+    derived_root = tmp_path / "data" / "derived"
+    raw_dir = tmp_path / "data" / "raw"
+    raw_dir.mkdir(parents=True)
+
+    # One fake raw file per scheme — satisfies the `sources[]` contract for
+    # every grain without exploding fixture size.
+    _write_fake_raw_with_sidecar(raw_dir, "lccc", "fake.csv")
+    _write_fake_raw_with_sidecar(raw_dir, "ofgem", "fake.csv")
+
+    for scheme in ("cfd", "ro"):
+        scheme_dir = derived_root / scheme
+        scheme_dir.mkdir(parents=True)
+        for grain in _RO_GRAINS:
+            _write_fake_parquet(scheme_dir / f"{grain}.parquet")
+
+    # Register minimal CfD overrides (pointing at fake raw) and a full RO
+    # block. Preserves B-02: every (scheme, grain) pair has explicit sources.
+    fake_cfd = {grain: ["lccc/fake.csv"] for grain in _RO_GRAINS}
+    fake_ro = {grain: ["ofgem/fake.csv"] for grain in _RO_GRAINS}
+
+    patched_sources = {"cfd": fake_cfd, "ro": fake_ro}
+    patched_titles = {
+        "cfd": {g: f"CfD {g}" for g in _RO_GRAINS},
+        "ro": {g: f"RO {g}" for g in _RO_GRAINS},
+    }
+    patched_descriptions = {
+        "cfd": {g: g for g in _RO_GRAINS},
+        "ro": {g: g for g in _RO_GRAINS},
+    }
+    monkeypatch.setattr(manifest_mod, "GRAIN_SOURCES", patched_sources)
+    monkeypatch.setattr(manifest_mod, "GRAIN_TITLES", patched_titles)
+    monkeypatch.setattr(manifest_mod, "GRAIN_DESCRIPTIONS", patched_descriptions)
+
+    class _FakeSchemeModule:
+        """Protocol-shaped placeholder; manifest discovers grains via filesystem."""
+
+        DERIVED_DIR = None
+
+    schemes = [("cfd", _FakeSchemeModule()), ("ro", _FakeSchemeModule())]
+
+    return {
+        "derived_root": derived_root,
+        "raw_dir": raw_dir,
+        "schemes": schemes,
+        "output_path": tmp_path / "site" / "data" / "manifest.json",
+    }
+
+
+def test_manifest_build_handles_two_schemes(two_scheme_tree):
+    """Plan 05-06: two schemes × five grains each → exactly 10 datasets.
+
+    IDs match `<scheme>.<grain>` for every (scheme, grain) pair — proves
+    the f"cfd.{grain}" hard-code is gone and the iteration surfaces every
+    registered scheme.
+    """
+    from uk_subsidy_tracker.publish import manifest as manifest_mod
+
+    manifest = manifest_mod.build(
+        version="v2026.04",
+        schemes=two_scheme_tree["schemes"],
+        derived_root=two_scheme_tree["derived_root"],
+        raw_dir=two_scheme_tree["raw_dir"],
+        output_path=two_scheme_tree["output_path"],
+    )
+
+    # 2 schemes × 5 grains = 10 datasets
+    assert len(manifest.datasets) == 10, (
+        f"expected 10 datasets (2 schemes × 5 grains), "
+        f"got {len(manifest.datasets)}"
+    )
+    ids = sorted(d.id for d in manifest.datasets)
+    expected = sorted(
+        f"{scheme}.{grain}"
+        for scheme in ("cfd", "ro")
+        for grain in _RO_GRAINS
+    )
+    assert ids == expected, f"id set drift: {ids} != {expected}"
+
+
+def test_manifest_urls_include_scheme_segment(two_scheme_tree):
+    """Plan 05-06: every Dataset URL carries `/data/latest/<scheme>/<grain>.*`.
+
+    Enforces that URLs route via the scheme segment — the contract external
+    consumers (R, Python, JS) rely on for scheme-parametric file resolution.
+    """
+    import re
+    from uk_subsidy_tracker.publish import manifest as manifest_mod
+
+    manifest = manifest_mod.build(
+        version="v2026.04",
+        schemes=two_scheme_tree["schemes"],
+        derived_root=two_scheme_tree["derived_root"],
+        raw_dir=two_scheme_tree["raw_dir"],
+        output_path=two_scheme_tree["output_path"],
+    )
+
+    # Site URL may carry a path prefix (e.g. GitHub Pages project subpath);
+    # match absolute URL up to `/data/<segment>/<scheme>/<grain>.<ext>`.
+    url_re = re.compile(r"^https?://\S+/data/latest/(cfd|ro)/[^/]+\.parquet$")
+    versioned_re = re.compile(
+        r"^https?://\S+/data/v2026\.04/(cfd|ro)/[^/]+\.parquet$"
+    )
+    schema_re = re.compile(
+        r"^https?://\S+/data/latest/(cfd|ro)/[^/]+\.schema\.json$"
+    )
+    csv_re = re.compile(r"^https?://\S+/data/latest/(cfd|ro)/[^/]+\.csv$")
+
+    for ds in manifest.datasets:
+        scheme, _, grain = ds.id.partition(".")
+        assert f"/data/latest/{scheme}/{grain}.parquet" in ds.parquet_url, (
+            f"{ds.id} parquet_url missing scheme segment: {ds.parquet_url}"
+        )
+        assert f"/data/latest/{scheme}/{grain}.csv" in ds.csv_url, (
+            f"{ds.id} csv_url missing scheme segment: {ds.csv_url}"
+        )
+        assert f"/data/latest/{scheme}/{grain}.schema.json" in ds.schema_url, (
+            f"{ds.id} schema_url missing scheme segment: {ds.schema_url}"
+        )
+        assert f"/data/v2026.04/{scheme}/{grain}.parquet" in ds.versioned_url, (
+            f"{ds.id} versioned_url missing scheme segment: {ds.versioned_url}"
+        )
+        assert url_re.match(ds.parquet_url), ds.parquet_url
+        assert versioned_re.match(ds.versioned_url), ds.versioned_url
+        assert schema_re.match(ds.schema_url), ds.schema_url
+        assert csv_re.match(ds.csv_url), ds.csv_url
+
+    # Both schemes must appear — proves iteration covers every registered
+    # scheme, not just the first.
+    all_urls = {ds.parquet_url for ds in manifest.datasets}
+    assert any("/data/latest/cfd/" in u for u in all_urls), (
+        "no CfD URL in manifest.datasets"
+    )
+    assert any("/data/latest/ro/" in u for u in all_urls), (
+        "no RO URL in manifest.datasets — iteration stopped at cfd"
+    )
+
+
+def test_manifest_empty_scheme_derived_is_skipped(tmp_path, monkeypatch):
+    """Plan 05-06: a scheme whose derived_root/<name>/ does not exist is skipped.
+
+    Valid pre-first-rebuild state: a scheme is registered in SCHEMES before
+    its first `rebuild_derived()` has run. manifest.build must not crash;
+    it emits zero Dataset entries for that scheme and continues with the
+    rest of the iteration.
+    """
+    from uk_subsidy_tracker.publish import manifest as manifest_mod
+
+    derived_root = tmp_path / "data" / "derived"
+    raw_dir = tmp_path / "data" / "raw"
+    raw_dir.mkdir(parents=True)
+    _write_fake_raw_with_sidecar(raw_dir, "lccc", "fake.csv")
+
+    # Create CfD scheme_derived dir + 1 grain; do NOT create ro/.
+    cfd_dir = derived_root / "cfd"
+    cfd_dir.mkdir(parents=True)
+    _write_fake_parquet(cfd_dir / "station_month.parquet")
+
+    # Monkeypatch scheme-keyed provenance to keep CfD grain registered.
+    monkeypatch.setattr(
+        manifest_mod, "GRAIN_SOURCES",
+        {"cfd": {"station_month": ["lccc/fake.csv"]}},
+    )
+    monkeypatch.setattr(
+        manifest_mod, "GRAIN_TITLES",
+        {"cfd": {"station_month": "CfD station-month"}},
+    )
+    monkeypatch.setattr(
+        manifest_mod, "GRAIN_DESCRIPTIONS",
+        {"cfd": {"station_month": "station × month"}},
+    )
+
+    class _FakeSchemeModule:
+        DERIVED_DIR = None
+
+    schemes = [
+        ("cfd", _FakeSchemeModule()),
+        ("ro", _FakeSchemeModule()),  # no derived/ro/ on disk — must skip
+    ]
+
+    manifest = manifest_mod.build(
+        version="v2026.04",
+        schemes=schemes,
+        derived_root=derived_root,
+        raw_dir=raw_dir,
+        output_path=tmp_path / "manifest.json",
+    )
+
+    # Only CfD's single grain surfaces; RO is silently skipped (not an error).
+    assert len(manifest.datasets) == 1
+    assert manifest.datasets[0].id == "cfd.station_month"
+    ro_ids = [d.id for d in manifest.datasets if d.id.startswith("ro.")]
+    assert not ro_ids, f"RO should be skipped (no derived dir), got: {ro_ids}"
