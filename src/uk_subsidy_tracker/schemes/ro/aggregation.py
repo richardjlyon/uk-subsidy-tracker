@@ -74,18 +74,26 @@ def build_annual_summary(output_dir: Path) -> pd.DataFrame:
                 gas_counterfactual_gbp=("gas_counterfactual_gbp", "sum"),
                 premium_gbp=("premium_gbp", "sum"),
                 # pandas sum treats all-NaN groups as 0.0; we convert 0 ->
-                # None below for D-11 semantic fidelity (non-null only on
+                # pd.NA below for D-11 semantic fidelity (non-null only on
                 # obligation-year overlap with 2021-22).
                 mutualisation_gbp=("mutualisation_gbp", "sum"),
             )
             .reset_index()
         )
+        # WR-02 — pin mutualisation_gbp dtype to the nullable extension dtype
+        # regardless of whether the upstream groupby emitted float64 (NumPy)
+        # or Float64 (pandas). The empty-frame branch above also uses Float64
+        # so the Parquet column logical type is stable across empty/non-empty
+        # rebuilds.
+        agg["mutualisation_gbp"] = agg["mutualisation_gbp"].astype("Float64")
         # D-11 — mutualisation null on rows with no mutualisation contribution.
         # Convert the post-sum 0.0 rows (which pandas produced because every
         # input was NaN) back to null; preserve positive sums.
         # The 0-exact-vs-all-null check below is robust because valid
         # mutualisation deltas are strictly positive (£/ROC * positive ROCs).
-        agg.loc[agg["mutualisation_gbp"].fillna(0) == 0, "mutualisation_gbp"] = None
+        agg.loc[
+            agg["mutualisation_gbp"].fillna(0) == 0, "mutualisation_gbp"
+        ] = pd.NA
         df = agg
 
     df["methodology_version"] = METHODOLOGY_VERSION
