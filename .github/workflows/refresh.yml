@@ -1,0 +1,89 @@
+# .github/workflows/refresh.yml
+# Daily data-refresh automation (Phase 4 GOV-03, D-16/D-17/D-18).
+#
+# Decisions:
+#   - PR-based commit-back (NOT direct commit to main) so a human reviews
+#     every day's diff before it goes live on Cloudflare Pages.
+#   - `peter-evans/create-pull-request@v8` — current stable major.
+#   - PAT for cascading ci.yml on the refresh PR: NOT configured — relies
+#     on in-workflow `pytest -v` + `mkdocs build --strict` before PR open.
+#     If a future maintainer wants full ci.yml to re-run on the PR, create
+#     a REFRESH_PAT secret with `contents: write` + `pull-requests: write`
+#     and substitute `${{ secrets.REFRESH_PAT }}` for the default token below.
+#   - Fail-loud on any step: the final `peter-evans/create-issue-from-file`
+#     step opens a `refresh-failure` issue with the template in
+#     `.github/refresh-failure-template.md`.
+name: Daily Refresh
+
+on:
+  schedule:
+    - cron: '0 6 * * *'          # 06:00 UTC
+  workflow_dispatch:               # manual trigger for smoke tests
+
+permissions:
+  contents: write                  # push the refresh branch
+  pull-requests: write             # peter-evans/create-pull-request@v8
+  issues: write                    # peter-evans/create-issue-from-file@v6
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0           # git log --follow for sidecar git ops
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Install deps
+        run: uv sync --frozen
+
+      - name: Refresh (per-scheme dirty-check)
+        id: refresh
+        run: uv run --frozen python -m uk_subsidy_tracker.refresh_all
+
+      - name: Benchmark floor (LCCC self-reconciliation)
+        run: uv run --frozen pytest tests/test_benchmarks.py -v
+
+      - name: Determinism + schema + aggregates gate
+        run: uv run --frozen pytest tests/test_determinism.py tests/test_schemas.py tests/test_aggregates.py tests/test_constants_provenance.py tests/test_manifest.py tests/test_csv_mirror.py -v
+
+      - name: Regenerate charts
+        run: uv run --frozen python -m uk_subsidy_tracker.plotting
+
+      - name: Build docs --strict
+        run: uv run --frozen mkdocs build --strict
+
+      - name: Open PR if anything changed
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore(refresh): daily data refresh ${{ github.run_id }}"
+          title: "Daily refresh ${{ github.run_id }}"
+          body: |
+            Automated daily refresh opened by refresh.yml.
+
+            **Run:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Review the Parquet / CSV / chart / manifest diffs below before merging. CI on this PR will NOT trigger automatically with the default `GITHUB_TOKEN` (Pitfall 2 — security feature); dispatch ci.yml manually on this branch if a full test re-run is needed before merge.
+          branch: refresh/${{ github.run_id }}
+          delete-branch: true
+          labels: daily-refresh
+          add-paths: |
+            data/raw/
+            data/derived/
+            docs/charts/html/
+            site/data/
+
+      - name: Open issue on any-step failure
+        if: failure()
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: "Refresh failure — run ${{ github.run_id }}"
+          content-filepath: ./.github/refresh-failure-template.md
+          labels: refresh-failure
