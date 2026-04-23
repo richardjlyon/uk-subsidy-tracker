@@ -121,6 +121,16 @@ Plans:
 - [x] 05-11-PLAN.md — docs/schemes/ro.md + schemes/index.md + mkdocs.yml Schemes nav + theme-page cross-links + homepage entry + mkdocs --strict gate (RO-05)
 - [x] 05-12-PLAN.md — CHANGES.md [Unreleased] + ## Methodology versions consolidation; phase-exit verify (RO-01..RO-06)
 
+### Phase 05.1: CfD Scheme Page Retrofit (INSERTED)
+
+**Goal**: Ship `docs/schemes/cfd.md` mirroring the `docs/schemes/ro.md` shape (adversarial-headline lead + 4 charts embedded + GOV-01 four-way coverage manifest + citation block); migrate the homepage "Module in focus: Contracts for Difference" section into it; convert the homepage to a scheme-grid listing CfD and RO as equal tiles. Phase-6 scheme-grid prerequisite — restores symmetry between CfD (historical prototype) and RO (first portal-pattern scheme).
+**Depends on**: Phase 5
+**Requirements**: TBD (new SCHEMEPAGE-* IDs likely added during planning)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 05.1 to break down)
+
 ### Phase 6: Flagship Cross-Scheme Charts
 **Goal**: The portal homepage renders with three headline numbers and the X1 stacked chart, making the full-scheme cost argument visible for the first time
 **Depends on**: Phase 5

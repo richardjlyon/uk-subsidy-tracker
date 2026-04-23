@@ -94,6 +94,10 @@ Progress: [█████████░] 94% (31/33 plans)
 
 ## Accumulated Context
 
+### Roadmap Evolution
+
+- Phase 05.1 inserted after Phase 5 (2026-04-23): CfD scheme page retrofit — ship `docs/schemes/cfd.md` mirroring `docs/schemes/ro.md` shape; migrate homepage "Module in focus: CfD" section into it; convert homepage to scheme-grid with CfD + RO as equal tiles. Driver: asymmetry spotted when observing Phase 5 output — CfD lacks a `/schemes/cfd/` overview page analogous to the new `/schemes/ro/`. Phase-6 scheme-grid prerequisite. (INSERTED)
+
 ### Key Decisions Made
 
 | Decision | Rationale |
