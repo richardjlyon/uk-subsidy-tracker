@@ -99,6 +99,43 @@ GRAIN_SOURCES: dict[str, dict[str, list[str]]] = {
             "lccc/cfd-contract-portfolio-status.csv",
         ],
     },
+    # RO — three Ofgem raw files per Plan 05-01 feed all five grains, with the
+    # gas counterfactual (ons/gas-sap.xlsx) + balancing prices (elexon/system-prices.csv)
+    # feeding the subsidy premium columns on the station-level + annual + technology grains.
+    # forward_projection is a pure extrapolation off station_month + register → no ONS/Elexon
+    # inputs. by_allocation_round drops gas/balancing inputs for the same reason as CfD
+    # (rollup is pure ROC-issuance + register).
+    "ro": {
+        "station_month": [
+            "ofgem/ro-register.xlsx",
+            "ofgem/ro-generation.csv",
+            "ofgem/roc-prices.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+        ],
+        "annual_summary": [
+            "ofgem/ro-register.xlsx",
+            "ofgem/ro-generation.csv",
+            "ofgem/roc-prices.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+        ],
+        "by_technology": [
+            "ofgem/ro-register.xlsx",
+            "ofgem/ro-generation.csv",
+            "ofgem/roc-prices.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+        ],
+        "by_allocation_round": [
+            "ofgem/ro-register.xlsx",
+            "ofgem/ro-generation.csv",
+            "ofgem/roc-prices.csv",
+        ],
+        "forward_projection": [
+            "ofgem/ro-register.xlsx",
+        ],
+    },
 }
 
 GRAIN_TITLES: dict[str, dict[str, str]] = {
@@ -109,10 +146,24 @@ GRAIN_TITLES: dict[str, dict[str, str]] = {
         "by_allocation_round": "CfD by Allocation Round",
         "forward_projection": "CfD Forward Projection",
     },
+    "ro": {
+        "station_month": "RO Station × Month",
+        "annual_summary": "RO Annual Summary",
+        "by_technology": "RO by Technology",
+        "by_allocation_round": "RO by Allocation Round",
+        "forward_projection": "RO Forward Projection",
+    },
 }
 
 GRAIN_DESCRIPTIONS: dict[str, dict[str, str]] = {
     "cfd": {
+        "station_month": "station × month",
+        "annual_summary": "year",
+        "by_technology": "year × technology",
+        "by_allocation_round": "year × allocation round",
+        "forward_projection": "year (forward)",
+    },
+    "ro": {
         "station_month": "station × month",
         "annual_summary": "year",
         "by_technology": "year × technology",
