@@ -68,7 +68,11 @@ def build_forward_projection(output_dir: Path) -> pd.DataFrame:
         df = _empty_forward_projection()
         df["methodology_version"] = METHODOLOGY_VERSION
         columns = list(RoForwardProjectionRow.model_fields.keys())
-        df = df[columns].reset_index(drop=True)
+        df = (
+            df[columns]
+            .sort_values(["year", "technology"], kind="mergesort")
+            .reset_index(drop=True)
+        )
         _write_parquet(df, output_dir / "forward_projection.parquet")
         emit_schema_json(
             RoForwardProjectionRow, output_dir / "forward_projection.schema.json"
