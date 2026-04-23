@@ -58,6 +58,13 @@ The charts are organised into five argument themes:
 4. **[Cannibalisation](themes/cannibalisation/index.md)** — why wind crashes its own price, and who tops the difference up.
 5. **[Reliability](themes/reliability/index.md)** — the drought periods no battery can cover.
 
+## Scheme detail pages
+
+- [**Renewables Obligation (RO)**](schemes/ro.md) — the £67 bn scheme you've never heard of, twice the size of Contracts for Difference. Cumulative since 2002; ~£6 bn/yr forward-committed to 2037.
+- Contracts for Difference (CfD) — currently documented via the [Cost theme gallery](themes/cost/index.md); a dedicated scheme page lands in a future release.
+
+The full per-scheme overview lives at [**Schemes → Overview**](schemes/index.md). New scheme detail pages will be added as each module ships (FiT in Phase 7, then constraints / capacity market / balancing / grid / SEG in Phases 8-12).
+
 ## For journalists and academics
 
 [**Use our data**](data/index.md) — pandas, DuckDB, and R snippets + citation templates + SHA-256 integrity verification. Start at [`manifest.json`](https://richardjlyon.github.io/uk-subsidy-tracker/data/manifest.json) and follow the URLs.

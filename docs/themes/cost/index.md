@@ -40,6 +40,22 @@ The CfD scheme was sold as consumer protection against volatile gas prices. What
 
     Offshore wind and Drax dominate the spend. Full page lives in the Recipients theme — linked here because technology breakdown is also a cost story.
 
+-   [![RO dynamics preview](../../charts/html/subsidy_ro_dynamics_twitter.png)](../../schemes/ro.md#cost-dynamics-chart-s2)
+
+    __[RO dynamics — the 2002-2037 RO bill](../../schemes/ro.md#cost-dynamics-chart-s2)__
+
+    ---
+
+    The legacy scheme twice the CfD's size. £67 bn cumulative, ~£6 bn/yr forward to 2037. Detailed page at **Schemes → RO**.
+
+-   [![RO by technology preview](../../charts/html/subsidy_ro_by_technology_twitter.png)](../../schemes/ro.md#by-technology-chart-s3)
+
+    __[RO by technology — onshore wind, offshore wind, biomass](../../schemes/ro.md#by-technology-chart-s3)__
+
+    ---
+
+    Cofiring-vs-dedicated biomass split, GB-only. The technology mix that drove the £67 bn legacy bill.
+
 </div>
 
 ## What to look at next

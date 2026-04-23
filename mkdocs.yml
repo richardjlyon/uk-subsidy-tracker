@@ -80,6 +80,9 @@ nav:
       - Generation heatmap: themes/reliability/generation-heatmap.md
       - Rolling minimum: themes/reliability/rolling-minimum.md
       - Methodology: themes/reliability/methodology.md
+  - Schemes:
+      - Overview: schemes/index.md
+      - Renewables Obligation (RO): schemes/ro.md
   - Data: data/index.md
   - Methodology:
       - Gas counterfactual: methodology/gas-counterfactual.md

@@ -24,6 +24,14 @@ CfD spending is not spread broadly across a decarbonising energy system. It is c
 
     Monthly and cumulative CfD cost stacked by Offshore Wind, Onshore Wind, Biomass, and Other. Offshore and Drax biomass are the two dominant categories.
 
+-   [![RO concentration preview](../../charts/html/subsidy_ro_concentration_twitter.png)](../../schemes/ro.md#concentration-chart-s4)
+
+    __[RO cost concentration — GB-only Lorenz curve](../../schemes/ro.md#concentration-chart-s4)__
+
+    ---
+
+    Top-3 stations (Drax, Lynemouth, offshore wind farms) account for ~25-30% of cumulative cost. Detailed page at **Schemes → RO**.
+
 </div>
 
 ## What to look at next
