@@ -41,7 +41,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 ### Renewables Obligation (RO) Module
 
 - [x] **RO-01**: Ofgem RO scraper populates `data/raw/ofgem/{ro-register,ro-generation,roc-prices}.csv` with sidecar meta.json
-- [ ] **RO-02**: `src/uk_subsidy_tracker/schemes/ro/` module conforms to §6.1 contract (`upstream_changed`, `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`)  <!-- Partial: 05-02 bandings loader + 05-04 carbon-price substrate shipped; §6.1 five-function contract lands in Plan 05-05 -->
+- [x] **RO-02**: `src/uk_subsidy_tracker/schemes/ro/` module conforms to §6.1 contract (`upstream_changed`, `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`)  <!-- Partial: 05-02 bandings loader + 05-04 carbon-price substrate shipped; §6.1 five-function contract lands in Plan 05-05 -->
 
 - [x] **RO-03**: RO derived Parquet tables: `station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`
 - [ ] **RO-04**: RO S2 dynamics chart (4-panel), S3 cost by technology, S4 concentration/Lorenz, S5 forward commitment published
