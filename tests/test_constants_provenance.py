@@ -41,10 +41,38 @@ _TRACKED = {
     "CCGT_EFFICIENCY",
     "GAS_CO2_INTENSITY_THERMAL",
     "DEFAULT_NON_FUEL_OPEX",
+    # Every DEFAULT_CARBON_PRICES year key (2002-2026) is tracked so the
+    # drift tripwire fires on any silent edit. Phase 5 Plan 05-04 extended
+    # the live dict backward to 2002 for RO scheme coverage AND closed the
+    # Phase 4 SEED-001 partial-coverage gap where 2018-2020 + 2024-2026
+    # year keys lived on the module but were not tracked by this fixture.
+    "DEFAULT_CARBON_PRICES_2002",
+    "DEFAULT_CARBON_PRICES_2003",
+    "DEFAULT_CARBON_PRICES_2004",
+    "DEFAULT_CARBON_PRICES_2005",
+    "DEFAULT_CARBON_PRICES_2006",
+    "DEFAULT_CARBON_PRICES_2007",
+    "DEFAULT_CARBON_PRICES_2008",
+    "DEFAULT_CARBON_PRICES_2009",
+    "DEFAULT_CARBON_PRICES_2010",
+    "DEFAULT_CARBON_PRICES_2011",
+    "DEFAULT_CARBON_PRICES_2012",
+    "DEFAULT_CARBON_PRICES_2013",
+    "DEFAULT_CARBON_PRICES_2014",
+    "DEFAULT_CARBON_PRICES_2015",
+    "DEFAULT_CARBON_PRICES_2016",
+    "DEFAULT_CARBON_PRICES_2017",
+    "DEFAULT_CARBON_PRICES_2018",
+    "DEFAULT_CARBON_PRICES_2019",
+    "DEFAULT_CARBON_PRICES_2020",
     "DEFAULT_CARBON_PRICES_2021",
     "DEFAULT_CARBON_PRICES_2022",
     "DEFAULT_CARBON_PRICES_2023",
+    "DEFAULT_CARBON_PRICES_2024",
+    "DEFAULT_CARBON_PRICES_2025",
+    "DEFAULT_CARBON_PRICES_2026",
 }
+# 3 base + 25 DEFAULT_CARBON_PRICES_YYYY year keys = 28 tracked constants.
 
 
 def _live_constants() -> dict[str, float]:

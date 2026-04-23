@@ -48,6 +48,196 @@ DEFAULT_NON_FUEL_OPEX:
   unit: "£/MWh electricity"
   notes: "Default counterfactual opex: UK CCGT fleet was largely built 1995-2012 with capital paid off by the CfD era (2015). Alias of CCGT_EXISTING_FLEET_OPEX_PER_MWH on the live module."
 
+DEFAULT_CARBON_PRICES_2002:
+  source: "No carbon scheme pre-EU-ETS Phase I (2005-01-01 start)"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Zero by construction; no UK or EU carbon-allowance scheme operated in 2002. RO launched 2002-04-01."
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 0.0
+  unit: "£/tCO2"
+  notes: "Pre-EU-ETS anchor; zero-carbon counterfactual for RO pre-EU-ETS years per D-05 Phase 5 Plan 05-04 extension."
+
+DEFAULT_CARBON_PRICES_2003:
+  source: "No carbon scheme pre-EU-ETS Phase I (2005-01-01 start)"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Zero by construction; no UK or EU carbon-allowance scheme operated in 2003."
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 0.0
+  unit: "£/tCO2"
+  notes: "Pre-EU-ETS; zero-carbon counterfactual for RO per D-05 Phase 5 Plan 05-04 extension."
+
+DEFAULT_CARBON_PRICES_2004:
+  source: "No carbon scheme pre-EU-ETS Phase I (2005-01-01 start)"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Zero by construction; no UK or EU carbon-allowance scheme operated in 2004."
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 0.0
+  unit: "£/tCO2"
+  notes: "Final pre-EU-ETS year; zero-carbon counterfactual for RO per D-05 Phase 5 Plan 05-04 extension."
+
+DEFAULT_CARBON_PRICES_2005:
+  source: "EU ETS Phase I annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase I spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 12.3
+  unit: "£/tCO2"
+  notes: "EU ETS Phase I pilot year (started 2005-01-01). Free-allocation surplus caused the 2007 crash."
+
+DEFAULT_CARBON_PRICES_2006:
+  source: "EU ETS Phase I annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase I spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 11.9
+  unit: "£/tCO2"
+  notes: "EU ETS Phase I second year; prices still elevated before the late-2007 surplus-driven collapse."
+
+DEFAULT_CARBON_PRICES_2007:
+  source: "EU ETS Phase I annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase I spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 0.5
+  unit: "£/tCO2"
+  notes: "EU ETS Phase I price crash — allowances were non-bankable into Phase II and collapsed to ~€0.10 by September 2007. Historically correct; see docs/schemes/ro.md methodology callout for the visualisation artefact explanation."
+
+DEFAULT_CARBON_PRICES_2008:
+  source: "EU ETS Phase II annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase II spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 17.7
+  unit: "£/tCO2"
+  notes: "EU ETS Phase II opening year (2008-2012); bankable allowances stabilised the market relative to Phase I."
+
+DEFAULT_CARBON_PRICES_2009:
+  source: "EU ETS Phase II annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase II spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 11.7
+  unit: "£/tCO2"
+  notes: "Post-2008 financial-crisis price softening; industrial demand collapse reduced emission demand."
+
+DEFAULT_CARBON_PRICES_2010:
+  source: "EU ETS Phase II annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase II spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 12.3
+  unit: "£/tCO2"
+  notes: "EU ETS Phase II middle year; modest price recovery relative to 2009 trough."
+
+DEFAULT_CARBON_PRICES_2011:
+  source: "EU ETS Phase II annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase II spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 11.3
+  unit: "£/tCO2"
+  notes: "EU ETS Phase II; prices slipping ahead of the 2012-2013 surplus overhang."
+
+DEFAULT_CARBON_PRICES_2012:
+  source: "EU ETS Phase II annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase II spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 6.0
+  unit: "£/tCO2"
+  notes: "Final Phase II year; structural surplus from over-allocation + financial-crisis demand collapse bore down on prices."
+
+DEFAULT_CARBON_PRICES_2013:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 3.8
+  unit: "£/tCO2"
+  notes: "EU ETS Phase III opening year (2013-2020); auctioning replaced free allocation but surplus overhang kept prices low."
+
+DEFAULT_CARBON_PRICES_2014:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 4.8
+  unit: "£/tCO2"
+  notes: "EU ETS Phase III; backloading announcement triggered modest recovery."
+
+DEFAULT_CARBON_PRICES_2015:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 5.6
+  unit: "£/tCO2"
+  notes: "EU ETS Phase III; Market Stability Reserve (MSR) approved, signalling structural tightening from 2019."
+
+DEFAULT_CARBON_PRICES_2016:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 4.3
+  unit: "£/tCO2"
+  notes: "EU ETS Phase III; Brexit-referendum year saw GBP weakness against EUR, compressing the £/tCO2 conversion."
+
+DEFAULT_CARBON_PRICES_2017:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE/EEX reference; EUR→GBP at BoE contemporary annual-average rate"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III spot average, GBP-converted. [VERIFICATION-PENDING: executor-accepted Plan 05-04 research seed value; audit against primary EEA + BoE sources before next_audit]"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 5.1
+  unit: "£/tCO2"
+  notes: "Final transition year before MSR activation (2019); prices began climbing ahead of the structural tightening."
+
+DEFAULT_CARBON_PRICES_2018:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE EUA historical"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III annual average, £/tCO2 (UK still in EU ETS pre-Brexit carbon-scheme divergence)"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 13.0
+  unit: "£/tCO2"
+  notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04 (closes Phase 4 SEED-001 partial-coverage gap)."
+
+DEFAULT_CARBON_PRICES_2019:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE EUA historical"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III annual average, £/tCO2 (UK still in EU ETS)"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 22.0
+  unit: "£/tCO2"
+  notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04. MSR activation (Jan 2019) drove the step-up from 2018."
+
+DEFAULT_CARBON_PRICES_2020:
+  source: "EU ETS Phase III annual average via EEA viewer + ICE EUA historical"
+  url: "https://www.eea.europa.eu/en/analysis/maps-and-charts/emissions-allowances-surplus-and-prices"
+  basis: "Calendar-year EU ETS Phase III annual average, £/tCO2 (final full UK year in EU ETS; UK left 2021-01-01)"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 22.0
+  unit: "£/tCO2"
+  notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04. Final full UK year in EU ETS before Brexit carbon-scheme divergence."
+
 DEFAULT_CARBON_PRICES_2021:
   source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
   url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
@@ -77,3 +267,33 @@ DEFAULT_CARBON_PRICES_2023:
   value: 45.0
   unit: "£/tCO2"
   notes: "Approximate; revisit before v1.0.0 public release per counterfactual.py DEFAULT_CARBON_PRICES docstring notes."
+
+DEFAULT_CARBON_PRICES_2024:
+  source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
+  url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
+  basis: "Calendar-year annual average UK ETS allowance price, £/tCO2"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 36.0
+  unit: "£/tCO2"
+  notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04 (closes Phase 4 SEED-001 partial-coverage gap)."
+
+DEFAULT_CARBON_PRICES_2025:
+  source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
+  url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
+  basis: "Calendar-year annual average UK ETS allowance price, £/tCO2"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 42.0
+  unit: "£/tCO2"
+  notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04. Approximate per counterfactual.py docstring — revisit before v1.0.0."
+
+DEFAULT_CARBON_PRICES_2026:
+  source: "UK ETS annual average via OBR Economic & Fiscal Outlook + DESNZ/GOV.UK"
+  url: "https://obr.uk/forecasts-in-depth/tax-by-tax-spend-by-spend/emissions-trading-scheme-uk-ets/"
+  basis: "Calendar-year annual average UK ETS allowance price, £/tCO2"
+  retrieved_on: 2026-04-22
+  next_audit: 2027-01-15
+  value: 40.0
+  unit: "£/tCO2"
+  notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04. Forward-year OBR reference estimate."
