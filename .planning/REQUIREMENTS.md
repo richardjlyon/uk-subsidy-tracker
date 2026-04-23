@@ -34,7 +34,7 @@ Requirements for the portal's first public release: expansion from single-scheme
 - [x] **PUB-01**: `src/uk_subsidy_tracker/publish/manifest.py` builds `site/data/manifest.json` with provenance (retrieval timestamp, SHA-256, upstream URL, pipeline version) per dataset
 - [x] **PUB-02**: `publish/csv_mirror.py` writes CSV alongside every published Parquet (journalist convenience)
 - [x] **PUB-03**: `publish/snapshot.py` creates versioned snapshot (`site/data/v<date>/`) on tagged release; immutable
-- [ ] **PUB-04**: `docs/data/index.md` documents how journalists and academics use the published datasets
+- [x] **PUB-04**: `docs/data/index.md` documents how journalists and academics use the published datasets
 - [x] **PUB-05**: Three-layer data pipeline (`data/raw/` → `data/derived/` → `site/data/`) operational end-to-end for CfD scheme
 - [x] **PUB-06**: External consumer can fetch `manifest.json`, follow a URL, and retrieve Parquet/CSV with provenance metadata
 
@@ -179,7 +179,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | PUB-01 | Phase 4 | Complete |
 | PUB-02 | Phase 4 | Complete |
 | PUB-03 | Phase 4 | Complete |
-| PUB-04 | Phase 4 | Pending |
+| PUB-04 | Phase 4 | Complete |
 | PUB-05 | Phase 4 | Complete |
 | PUB-06 | Phase 4 | Complete |
 | GOV-02 | Phase 4 | Complete |
