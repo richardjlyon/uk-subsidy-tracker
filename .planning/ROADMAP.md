@@ -106,14 +106,14 @@ Plans:
   3. `tests/test_benchmarks.py` passes with RO 2011–2022 aggregate within 3% of REF Constable 2025 Table 1 per-year figures; any divergence is documented (per CONTEXT D-13 post-research amendment)
   4. `docs/schemes/ro.md` scheme page exists with S2–S5 chart embeds and links to Cost and Recipients theme pages
   5. RO derived Parquet tables (`station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`) are present in `data/derived/ro/` after a build
-**Plans:** 12 plans
+**Plans:** 5/13 plans executed
 Plans:
 - [x] 05-01-PLAN.md — Ofgem RER scraper investigation + ofgem_ro.py + roc_prices.py + seed raw/ofgem/ tree + sidecars + mocked scraper tests (RO-01)
 - [x] 05-02-PLAN.md — ro_bandings.yaml ~60-row table + Pydantic RoBandingEntry/RoBandingTable loader + unit tests (RO-02)
 - [x] 05-03-PLAN.md — schemas/ro.py 5 Pydantic row models + emit_schema_json import from schemas.cfd + smoke tests (RO-03)
 - [x] 05-04-PLAN.md — counterfactual.DEFAULT_CARBON_PRICES backward extension 2005-2017 + 22 new constants.yaml entries + _TRACKED completion + CHANGES.md (RO-02)
 - [ ] 05-05-PLAN.md — schemes/ro/ module (__init__ + _refresh + cost_model + aggregation + forward_projection) + smoke rebuild tests + §6.1 Protocol conformance (RO-02, RO-03)
-- [ ] 05-06-PLAN.md — publish/manifest.py scheme-parametric refactor + refresh_all.publish_latest update + multi-scheme manifest tests (RO-03)
+- [x] 05-06-PLAN.md — publish/manifest.py scheme-parametric refactor + refresh_all.publish_latest update + multi-scheme manifest tests (RO-03)
 - [ ] 05-07-PLAN.md — refresh_all.SCHEMES RO registration (one-line append) + test_refresh_loop RO invariant tests (RO-02, RO-03)
 - [ ] 05-08-PLAN.md — 4 RO charts ro_dynamics + ro_by_technology + ro_concentration + ro_forward_projection + plotting/__main__ wiring (RO-04)
 - [ ] 05-09-PLAN.md — REF Constable 2025 Table 1 → benchmarks.yaml + Benchmarks.ref_constable Pydantic field + test_benchmarks.py::test_ref_constable_ro_reconciliation parametrised D-14 hard-block test (RO-06)
@@ -207,7 +207,7 @@ Plans:
 | 2. Test & Benchmark Scaffolding | 5/5 | Complete | 2026-04-22 |
 | 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
 | 4. Publishing Layer | 0/6 | Not started | - |
-| 5. RO Module | 4/12 | In Progress | - |
+| 5. RO Module | 5/13 | In Progress|  |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
 | 8. Constraint Payments Module | 0/0 | Not started | - |

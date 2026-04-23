@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-04-PLAN.md
-last_updated: "2026-04-23T05:14:27.196Z"
+stopped_at: Completed 05-06-PLAN.md
+last_updated: "2026-04-23T05:25:47.923Z"
 progress:
   total_phases: 12
   completed_phases: 4
   total_plans: 33
-  completed_plans: 24
-  percent: 73
+  completed_plans: 25
+  percent: 76
 ---
 
 # Project State: UK Renewable Subsidy Tracker
@@ -39,14 +39,14 @@ progress:
 ## Current Position
 
 Phase: 05 (ro-module) — EXECUTING
-Plan: 5 of 13
+Plan: 6 of 13
 **Phase:** 5
-**Plan:** 05-04 COMPLETE; 05-05 next
+**Plan:** 05-06 COMPLETE (Wave 1 final); 05-05 pending (parallel track); 05-07 unblocked
 **Status:** Executing Phase 05
-**Focus:** DEFAULT_CARBON_PRICES extended backward to 2002 (25 consecutive years); constants.yaml + _TRACKED now cover all 25 year keys (drift tripwire completeness restored); METHODOLOGY_VERSION unchanged at "0.1.0" (additive change per D-06). RO scheme counterfactual substrate ready — Plan 05-05 cost_model.py can call compute_counterfactual() for every RO obligation year 2002-present.
+**Focus:** `publish/manifest.py` now scheme-parametric: `build()` iterates `schemes: Iterable[tuple[str, Any]]` + `derived_root: Path` rather than hard-coding `"cfd."` prefixes and `/cfd/` URL segments. `GRAIN_SOURCES/TITLES/DESCRIPTIONS` become nested dicts keyed by scheme (outer) × grain (inner). `refresh_all.publish_latest()` passes `schemes=SCHEMES + derived_root=DERIVED_DIR`. CfD path preserved byte-identical — all 8 pre-existing `test_manifest.py` tests pass unchanged. 3 new multi-scheme tests added (2-scheme × 5-grain → 10 Dataset entries; every URL carries scheme segment; missing scheme_derived dir silently skipped). **Wave 3 Plan 05-07 now unblocked** — it can append `("ro", ro)` to `refresh_all.SCHEMES` in one line; RO Parquet grains auto-surface in `site/data/manifest.json` once `schemes/ro/__init__.py::rebuild_derived()` writes them. Phase 7 (FiT) + Phases 8-12 inherit the same hookup.
 
 ```
-Progress: [███████░░░] 73% (24/33 plans)
+Progress: [████████░░] 76% (25/33 plans)
 ```
 
 ---
@@ -80,6 +80,7 @@ Progress: [███████░░░] 73% (24/33 plans)
 | Phase 05 P02 (ro_bandings YAML + Pydantic loader) | 5min | 2 tasks | 4 files (3 created, 1 modified) |
 | Phase 05 P03 (RO Pydantic row schemas) | 3min | 1 TDD task (RED + GREEN) | 3 files (2 created, 1 modified) |
 | Phase 05-ro-module P04 | 4min | 3 tasks | 4 files |
+| Phase 05 P06 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -144,6 +145,8 @@ Progress: [███████░░░] 73% (24/33 plans)
 | Plan 05-04 2005-2017 values carry [VERIFICATION-PENDING] inline flag rather than blocking plan on primary-source fetch | Plan explicitly authorised: "For any value that cannot be verified within Task budget, use the RESEARCH §5 seed value and flag the Provenance.basis with [VERIFICATION-PENDING: executor-accepted research seed value]". EEA interactive viewer + BoE historical series are not simple URL fetches during autonomous execution; deferring verification to Plan 05-13 post-execution human review preserves plan velocity without sacrificing audit trail. Grep-discoverable via `grep -n "VERIFICATION-PENDING" tests/fixtures/constants.yaml`. |
 | Plan 05-04 used live DEFAULT_CARBON_PRICES values not plan <interfaces> snapshot | Plan interfaces block showed 2022=78.0, 2023=56.0, 2024=39.0, 2025=39.0, 2026=39.0 but live counterfactual.py has 2022=73.0, 2023=45.0, 2024=36.0, 2025=42.0, 2026=40.0. Plan frontmatter directive "Existing 2018-2026 values unchanged" forced preserving live values — the live counterfactual.py source defines "existing". Plan's interfaces block was stale; accepting its snapshot would have tripped the drift tripwire on the same commit it was introduced. |
 | Plan 05-04 closed Phase 4 SEED-001 partial-coverage gap in same plan (2018-2020 + 2024-2026 YAML + _TRACKED additions) rather than scope-split | Plan Task 2 Step 1 explicitly authorised co-extension ("Also add the 6 missing existing-year entries — drift-test completion per Phase 4 STATE note"). Cleaner to close Phase-4 debt in the same commit boundary that introduces Phase-5 additions. Drift tripwire now enumerates all 25 DEFAULT_CARBON_PRICES year keys (was only 3: 2021-2023); any future silent edit to any year key fails test_yaml_value_matches_live. |
+| Plan 05-06 manifest.py refactor via Option 3 (scheme-awareness inside one manifest) | Option 1 (scheme_name kwarg) forces N invocations and wouldn't surface multi-scheme datasets in one file; Option 2 (per-scheme manifest files) breaks ARCHITECTURE §4.3 one-manifest contract. Option 3 iterates `schemes: Iterable[tuple[str, Any]]` + `derived_root: Path`; `GRAIN_SOURCES/TITLES/DESCRIPTIONS` become nested dicts keyed by scheme × grain. Filesystem-driven grain discovery via `derived_root/<scheme>/*.parquet` glob; per-grain B-02 provenance contract preserved. Plan 05-07 now needs only one-line `("ro", ro)` SCHEMES append; Phase 7+ schemes inherit multi-scheme publishing for free. All 8 pre-existing test_manifest.py tests pass byte-identical (CfD URL pattern `/data/latest/cfd/*.parquet` unchanged). |
+| Plan 05-06 test_manifest fixture migrated to new signature rather than back-compat wrapper | The fixture is test infrastructure (not a public contract); the 8 CfD tests assert behaviour on manifest output (round-trip identity, absolute URLs, sha256, methodology_version D-12 chain, generated_at stability Pitfall 3) — not call-signature. All 8 pass unchanged. Keeping a deprecated `derived_dir=` kwarg overload would have forced maintaining parallel code paths through Phase 7+. |
 
 ### Blockers
 
@@ -220,7 +223,7 @@ None currently.
 
 **Next command:** `/gsd-execute-phase 5 --auto --plan 03` (Phase 5 Plan 02 COMPLETE — partial RO-02 progress, bandings foundation shipped). Plan 05-02 shipped 2 atomic commits (`92a4a65`, `7f53bd0`), 3 created files + 1 modified, ~5 min duration. 89 passed + 4 skipped (+7 new). Phase 5 progress: 2/13 plans. `src/uk_subsidy_tracker/data/ro_bandings.yaml` (85 entries with full Provenance per row) + `ro_bandings.py` (Pydantic loader + lookup resolver) + barrel re-export are ready for Plan 05-05 `schemes/ro/cost_model.py` consumption. One Plan 05-13 follow-up added (NIROC primary-source verification to replace 12 [ASSUMED] entries). Earlier: `/gsd-execute-phase 5 --auto --plan 02` (Phase 5 Plan 01 COMPLETE — RO-01 closed via Option-D fallback). Plan 05-01 shipped 2 atomic commits (8c71cde, 5729d02), 11 created files, 1 modified, 12-file file count, 7-min duration. 82 passed + 4 skipped (+8 new from `tests/data/test_ofgem_ro.py`). Phase 5 progress: 1/13 plans. RO-01 closed; remaining requirements (RO-02..RO-06) routed to Plans 05-02 through 05-13. Plan 05-13 will pick up the 6 Plan 05-01 follow-ups during post-execution review (replace 3 ofgem stubs with real exports, plumb `OFGEM_RER_*` secrets if Playwright path approved, transcribe `roc-prices.csv`, decide on `pdfplumber` middle-ground, re-examine RESEARCH §2 stale URLs). | Earlier: Phase 4 closed 7/7 plans: 04-01 (wave-0 deps + SEED-001 Tier-2 drift tripwire), 04-02 (raw-layer migration), 04-03 (derived layer + schemes/cfd/), 04-04 (publishing layer manifest + csv_mirror + snapshot), 04-05 (refresh.yml + deploy.yml + refresh-failure-template.md), 04-06 (docs/data/index.md + nav tab + citation versioned-snapshot pattern + D-11 lccc_self audit note Disposition C), 04-07 (refresh-loop closure: sidecar.write_sidecar + refresh() wires all 3 downloaders + rewrites all 5 sidecars + ons_gas fail-loud fix + refresh-loop invariant test + backfill script refactor). All five ROADMAP Phase-4 success criteria delivered. PUB-04 closed by 04-06; PUB-01/02/03/05/06 + GOV-02/03/06 closed by 04-04/05; GOV-03 robustness + PUB-05 end-to-end loop locked by 04-07. D-11 fallback preserved with explicit 2026-04-22 audit evidence per user-selected Disposition C (ARA 2024/25 FY-only limitation, RESEARCH Pitfall 7). 74 passed + 4 skipped; `mkdocs build --strict` green; METHODOLOGY_VERSION stays "0.1.0" (bump is Phase 6+). Phase 5 is unblocked: schemes/cfd/ is the §6.1 Protocol template for schemes/ro/ (now including a complete refresh-loop reference implementation that writes sidecars via the shared `sidecar.write_sidecar()` helper); `refresh_all.SCHEMES` is a one-line append; manifest iteration is SCHEMES-driven; docs/data/index.md works unchanged for new schemes. Outstanding user setup (deferred to user, dashboard-only, does not block Phase 5 planning): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation + (from 04-06 follow-up) LCCC ARA CY-aggregate transcription when a future quarterly publication surfaces.
 
-**Stopped at:** Completed 05-03-PLAN.md
+**Stopped at:** Completed 05-06-PLAN.md
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
