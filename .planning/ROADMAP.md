@@ -97,16 +97,29 @@ Plans:
 - [x] 04-07-refresh-loop-closure-PLAN.md — Gap closure from 04-VERIFICATION.md: sidecar.write_sidecar() atomic helper + ons_gas UnboundLocalError fix + refresh() wires LCCC+Elexon+ONS + refresh-loop invariant test (GOV-03; PUB-05 robustness)
 
 ### Phase 5: RO Module
-**Goal**: The Renewables Obligation scheme is fully tracked from raw Ofgem data through to published charts, benchmarked against Turver's totals, and integrated into the site as the second scheme module
+**Goal**: The Renewables Obligation scheme is fully tracked from raw Ofgem data through to published charts, benchmarked against REF Constable 2025 Table 1 (Turver retained as peer cross-check), and integrated into the site as the second scheme module
 **Depends on**: Phase 4
 **Requirements**: RO-01, RO-02, RO-03, RO-04, RO-05, RO-06
 **Success Criteria** (what must be TRUE):
   1. `schemes/ro/` module exposes all five §6.1 contract functions (`upstream_changed`, `refresh`, `rebuild_derived`, `regenerate_charts`, `validate`)
   2. RO S2 dynamics, S3 cost-by-technology, S4 concentration/Lorenz, and S5 forward-commitment charts are published and reachable from the site
-  3. `tests/test_benchmarks.py` passes with RO 2011–2022 aggregate within 3% of Turver's published totals; any divergence is documented
+  3. `tests/test_benchmarks.py` passes with RO 2011–2022 aggregate within 3% of REF Constable 2025 Table 1 per-year figures; any divergence is documented (per CONTEXT D-13 post-research amendment)
   4. `docs/schemes/ro.md` scheme page exists with S2–S5 chart embeds and links to Cost and Recipients theme pages
   5. RO derived Parquet tables (`station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`) are present in `data/derived/ro/` after a build
-**Plans**: TBD
+**Plans:** 12 plans
+Plans:
+- [ ] 05-01-PLAN.md — Ofgem RER scraper investigation + ofgem_ro.py + roc_prices.py + seed raw/ofgem/ tree + sidecars + mocked scraper tests (RO-01)
+- [ ] 05-02-PLAN.md — ro_bandings.yaml ~60-row table + Pydantic RoBandingEntry/RoBandingTable loader + unit tests (RO-02)
+- [ ] 05-03-PLAN.md — schemas/ro.py 5 Pydantic row models + emit_schema_json import from schemas.cfd + smoke tests (RO-03)
+- [ ] 05-04-PLAN.md — counterfactual.DEFAULT_CARBON_PRICES backward extension 2005-2017 + 22 new constants.yaml entries + _TRACKED completion + CHANGES.md (RO-02)
+- [ ] 05-05-PLAN.md — schemes/ro/ module (__init__ + _refresh + cost_model + aggregation + forward_projection) + smoke rebuild tests + §6.1 Protocol conformance (RO-02, RO-03)
+- [ ] 05-06-PLAN.md — publish/manifest.py scheme-parametric refactor + refresh_all.publish_latest update + multi-scheme manifest tests (RO-03)
+- [ ] 05-07-PLAN.md — refresh_all.SCHEMES RO registration (one-line append) + test_refresh_loop RO invariant tests (RO-02, RO-03)
+- [ ] 05-08-PLAN.md — 4 RO charts ro_dynamics + ro_by_technology + ro_concentration + ro_forward_projection + plotting/__main__ wiring (RO-04)
+- [ ] 05-09-PLAN.md — REF Constable 2025 Table 1 → benchmarks.yaml + Benchmarks.ref_constable Pydantic field + test_benchmarks.py::test_ref_constable_ro_reconciliation parametrised D-14 hard-block test (RO-06)
+- [ ] 05-10-PLAN.md — test_schemas + test_aggregates + test_determinism RO grain parametrisations (RO-03)
+- [ ] 05-11-PLAN.md — docs/schemes/ro.md + schemes/index.md + mkdocs.yml Schemes nav + theme-page cross-links + homepage entry + mkdocs --strict gate (RO-05)
+- [ ] 05-12-PLAN.md — CHANGES.md [Unreleased] + ## Methodology versions consolidation; phase-exit verify (RO-01..RO-06)
 
 ### Phase 6: Flagship Cross-Scheme Charts
 **Goal**: The portal homepage renders with three headline numbers and the X1 stacked chart, making the full-scheme cost argument visible for the first time
@@ -194,7 +207,7 @@ Plans:
 | 2. Test & Benchmark Scaffolding | 5/5 | Complete | 2026-04-22 |
 | 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
 | 4. Publishing Layer | 0/6 | Not started | - |
-| 5. RO Module | 0/0 | Not started | - |
+| 5. RO Module | 0/12 | Not started | - |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
 | 8. Constraint Payments Module | 0/0 | Not started | - |
