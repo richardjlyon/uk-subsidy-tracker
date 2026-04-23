@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: "Completed 04-07-refresh-loop-closure-PLAN.md (gap closure: GOV-03 + PUB-05 fully satisfied; Phase 4 remains complete at 7/7)"
-last_updated: "2026-04-23T02:03:58.570Z"
+stopped_at: Phase 5 context gathered
+last_updated: "2026-04-23T02:34:49.182Z"
 progress:
   total_phases: 12
   completed_phases: 4
@@ -198,7 +198,7 @@ None currently.
 
 **Next command:** `/gsd-plan-phase 5` (Phase 4 COMPLETE with 04-07 gap-closure landed — begin Phase 5 planning for the Renewables Obligation scheme module). Phase 4 closed 7/7 plans: 04-01 (wave-0 deps + SEED-001 Tier-2 drift tripwire), 04-02 (raw-layer migration), 04-03 (derived layer + schemes/cfd/), 04-04 (publishing layer manifest + csv_mirror + snapshot), 04-05 (refresh.yml + deploy.yml + refresh-failure-template.md), 04-06 (docs/data/index.md + nav tab + citation versioned-snapshot pattern + D-11 lccc_self audit note Disposition C), 04-07 (refresh-loop closure: sidecar.write_sidecar + refresh() wires all 3 downloaders + rewrites all 5 sidecars + ons_gas fail-loud fix + refresh-loop invariant test + backfill script refactor). All five ROADMAP Phase-4 success criteria delivered. PUB-04 closed by 04-06; PUB-01/02/03/05/06 + GOV-02/03/06 closed by 04-04/05; GOV-03 robustness + PUB-05 end-to-end loop locked by 04-07. D-11 fallback preserved with explicit 2026-04-22 audit evidence per user-selected Disposition C (ARA 2024/25 FY-only limitation, RESEARCH Pitfall 7). 74 passed + 4 skipped; `mkdocs build --strict` green; METHODOLOGY_VERSION stays "0.1.0" (bump is Phase 6+). Phase 5 is unblocked: schemes/cfd/ is the §6.1 Protocol template for schemes/ro/ (now including a complete refresh-loop reference implementation that writes sidecars via the shared `sidecar.write_sidecar()` helper); `refresh_all.SCHEMES` is a one-line append; manifest iteration is SCHEMES-driven; docs/data/index.md works unchanged for new schemes. Outstanding user setup (deferred to user, dashboard-only, does not block Phase 5 planning): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation + (from 04-06 follow-up) LCCC ARA CY-aggregate transcription when a future quarterly publication surfaces.
 
-**Stopped at:** Completed 04-07-refresh-loop-closure-PLAN.md (gap closure: GOV-03 + PUB-05 fully satisfied; Phase 4 remains complete at 7/7)
+**Stopped at:** Phase 5 context gathered
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
