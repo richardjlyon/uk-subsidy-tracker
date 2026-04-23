@@ -119,7 +119,7 @@ Plans:
 - [x] 05-09-PLAN.md — REF Constable 2025 Table 1 → benchmarks.yaml + Benchmarks.ref_constable Pydantic field + test_benchmarks.py::test_ref_constable_ro_reconciliation parametrised D-14 hard-block test (RO-06)
 - [x] 05-10-PLAN.md — test_schemas + test_aggregates + test_determinism RO grain parametrisations (RO-03)
 - [x] 05-11-PLAN.md — docs/schemes/ro.md + schemes/index.md + mkdocs.yml Schemes nav + theme-page cross-links + homepage entry + mkdocs --strict gate (RO-05)
-- [ ] 05-12-PLAN.md — CHANGES.md [Unreleased] + ## Methodology versions consolidation; phase-exit verify (RO-01..RO-06)
+- [x] 05-12-PLAN.md — CHANGES.md [Unreleased] + ## Methodology versions consolidation; phase-exit verify (RO-01..RO-06)
 
 ### Phase 6: Flagship Cross-Scheme Charts
 **Goal**: The portal homepage renders with three headline numbers and the X1 stacked chart, making the full-scheme cost argument visible for the first time
