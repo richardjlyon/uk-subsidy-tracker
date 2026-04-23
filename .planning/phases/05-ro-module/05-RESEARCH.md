@@ -728,29 +728,34 @@ def build_forward_projection(output_dir: Path) -> pd.DataFrame:
 
 **Assumptions-to-verify-before-planning:** A1 (most load-bearing — different scraper strategies drive different plan structures). A2 (second most load-bearing — changes the benchmarks.yaml structure). A5 (affects scraper count).
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Is Option D manual-refresh acceptable for Phase 5 Ofgem ingest?**
+   - **RESOLVED:** User rejected Option D manual-refresh at plan-phase gate (2026-04-22); Plan 05-01 attempts programmatic RER with checkpoint:human-verify escalation. See CONTEXT post-research amendment #3.
    - What we know: RER disruption forces a decision; alternatives are Playwright/SharePoint-auth (heavy) or static-PDF extraction (manual, but preserves reproducibility).
    - What's unclear: User preference on acceptable refresh cadence for Ofgem data. Option D implies human-triggered refresh (monthly manually), which contrasts with daily CI cron for CfD.
    - Recommendation: Planner asks user at plan-time. If rejected, pivot to annual-report-PDF extraction (parse PDF tables for year-by-year totals; accept FY-only granularity not station-level). Annual-report fallback is less granular but guaranteed-reproducible.
 
 2. **Should REF Constable fully replace Turver in `benchmarks.yaml::turver` section key name, or should the key stay `turver` for continuity?**
+   - **RESOLVED:** Key = 'ref_constable' per CONTEXT post-research amendment #1; Plan 05-09 uses REF_TOLERANCE_PCT = 3.0. Turver substack retained as peer cross-check in docs/schemes/ro.md methodology prose only.
    - What we know: D-13 says researcher picks; but the section-key name in YAML affects test IDs and audit-header documentation.
    - What's unclear: Does user want "REF Constable" as the key or "turver" with a note in the audit header that the actual source is REF?
    - Recommendation: Name the section `turver_or_equivalent` with audit header saying "Primary: REF Constable 2025-05-01; secondary cross-check: Turver substack 2024 single-points". Preserves CONTEXT D-13's "Turver" mental model.
 
 3. **How should banding-factor YAML handle the 2017 "closure to new generation" rule?**
+   - **RESOLVED:** ro_bandings.yaml carries banding factors only; scheme closure is implicit via commissioning-window end dates (Plan 05-02). No closure column.
    - What we know: RO closed to new accreditations between March 2015 and March 2017 with grace periods; post-March 2017 no new stations can enter. Stations accredited pre-close get 20 years of support.
    - What's unclear: Does the banding YAML need to encode the closure itself, or only the banding factors for accredited stations?
    - Recommendation: YAML carries only banding factors (not closure rules). The closure is implicit: no station accredited after 2017-03-31 exists in the Ofgem register, so the lookup never needs a banding for such stations.
 
 4. **How should forward-projection handle stations with zero historical generation (e.g. accredited but never operated)?**
+   - **RESOLVED:** Zero/null historical-generation stations drop out of forward projection via avg_annual_mwh.fillna(0) then clip in Plan 05-05 forward_projection.py. Deterministic; 0-contribution stations contribute 0 to total.
    - What we know: CfD pattern uses `avg_annual_generation_mwh = historical_sum / n_years`; stations with zero generation get NaN.
    - What's unclear: Should these be included in forward_projection.parquet with zero remaining-committed-mwh, or dropped?
    - Recommendation: Drop them (mirrors CfD pattern lines 102-109 in `forward_projection.py`). Document in `forward_projection.py` docstring.
 
 5. **Does `mkdocs.yml` get a new top-level "Schemes" tab, or does RO fold under existing Cost theme?**
+   - **RESOLVED:** New top-level 'Schemes' tab holding cfd.md + ro.md (Plan 05-11 per D-15). Future scheme pages (FiT Phase 7, Capacity Phase 9+) append to same tab.
    - What we know: `docs/schemes/` does not exist yet; Phase 5 creates it per D-15.
    - What's unclear: Navigation structure — new tab vs fold under Cost theme.
    - Recommendation: New top-level "Schemes" tab holding `cfd.md` + `ro.md`. Phase 6 portal homepage will need a "Schemes" tab anyway (portal grid with 2x4 scheme tiles links into scheme detail pages). Creating it now saves a second restructure. Fold the existing scheme-specific pages under the new tab: move `docs/themes/cost/cfd-dynamics.md` remains where it is as a per-chart deep-dive; `docs/schemes/cfd.md` is a new summary page. This is out of Phase 5 scope though — per Phase 4 D-02, CfD docs remain untouched. Only create `docs/schemes/ro.md` in Phase 5.
