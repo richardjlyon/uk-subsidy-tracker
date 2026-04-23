@@ -8,6 +8,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `.github/workflows/refresh.yml` (Plan 04-05) — daily 06:00 UTC cron
+  automation. PR-based posture (D-16): scheme dirty-check
+  (`refresh_all.py`) runs on a scheduled trigger; if any raw file's
+  SHA-256 drifted, workflow regenerates Parquet + charts + manifest +
+  rebuilds docs, then opens a PR on `refresh/<run_id>` via
+  `peter-evans/create-pull-request@v8` with label `daily-refresh`.
+  In-workflow test gates (benchmark floor, determinism, schema,
+  aggregates, constants drift, manifest round-trip, CSV mirror) run
+  BEFORE the PR is opened — catches issues upstream of the reviewer.
+  On any step failure, `peter-evans/create-issue-from-file@v6` opens an
+  Issue with label `refresh-failure` using the new
+  `.github/refresh-failure-template.md` (distinct from the `correction`
+  label — automation-breakage vs published-corrections are different
+  concerns, D-17). Permissions least-privilege: `contents: write` +
+  `pull-requests: write` + `issues: write`. Default `GITHUB_TOKEN`
+  does not cascade to `ci.yml` on the refresh PR (Pitfall 2 — a GitHub
+  security feature); reviewers dispatch ci.yml manually if they want a
+  pre-merge test run. Adding `REFRESH_PAT` is a future Phase-4.1 option
+  documented in the workflow file. Closes part of GOV-03.
+- `.github/workflows/deploy.yml` (Plan 04-05) — on `git push --tags`
+  matching `v*`, validates the calendar tag format `v<YYYY.MM>(-rc<N>)?`
+  (D-14), assembles a self-contained versioned snapshot via
+  `uk_subsidy_tracker.publish.snapshot` (PUB-03) and uploads the
+  manifest + per-table parquet/csv/schema.json as release assets via
+  `softprops/action-gh-release@v2`. Permissions are `contents: write`
+  only. The `manifest.json::versioned_url` fields resolve to these
+  release-asset URLs — academic citations are durable because GitHub
+  releases are retention-guaranteed (D-13, D-14, GOV-06).
+- `.github/refresh-failure-template.md` (Plan 04-05) — GitHub Issue
+  body template referenced by `refresh.yml`'s fail-loud step; lists
+  the four common failure modes (upstream schema drift, benchmark
+  floor trip, mkdocs --strict breakage, determinism/schema gate
+  failure) and the `refresh-failure` vs `correction` label distinction.
 - `src/uk_subsidy_tracker/publish/` package (Plan 04-04) — the publishing
   layer that makes the project citable. Three module-level callables:
   - `publish/manifest.py` — Pydantic `Manifest` / `Dataset` / `Source`
