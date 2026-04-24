@@ -1,0 +1,25 @@
+# Provenance: SY17–SY23 annual aggregate transcription from Ofgem annual-report PDFs.
+# Per-row source PDF URL is recorded in the source_pdf_url column; full per-PDF
+# sha256 + retrieved_on chain lives in the sibling .meta.json sources[] array (D-03).
+#
+# Source PDFs (one per scheme year — GB rows mandatory, NI rows optional under
+# aggregate-grain D-09 NIRO discipline):
+#   SY17: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-17
+#   SY18: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-18
+#   SY19: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-19
+#   SY20: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-20
+#   SY21: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-21
+#         (D-11 mutualisation event — record mutualisation_gbp_total in roc-prices.csv)
+#   SY22: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-22
+#   SY23: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-23-1-april-2024-31-march-2025
+#
+# Schema (pinned in src/uk_subsidy_tracker/data/ofgem_aggregate.py::ofgem_annual_aggregate_schema):
+#   scheme_year       : ^SY\d{2}$  (label of the scheme year — SY17 = April 2017–March 2018)
+#   year              : int64      (calendar year of the SY end)
+#   country           : GB | NI
+#   technology        : string from Ofgem's published table
+#   generation_gwh    : float64 nullable
+#   rocs_issued       : float64 nullable
+#   ro_cost_gbp_nominal : float64 nullable
+#   source_pdf_url    : string (one of the URLs listed above)
+scheme_year,year,country,technology,generation_gwh,rocs_issued,ro_cost_gbp_nominal,source_pdf_url

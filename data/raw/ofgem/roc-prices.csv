@@ -1,1 +1,20 @@
-obligation_year,buyout_gbp_per_roc,recycle_gbp_per_roc,eroc_clearing_gbp_per_roc,mutualisation_gbp_per_roc
+# Provenance: 22 obligation-year ROC-price rows transcribed from Ofgem transparency-document PDFs.
+# Buyout + recycle + e-ROC clearing + mutualisation totals per scheme year SY02-03 through SY23-24.
+#
+# Primary discovery URL:
+#   https://www.ofgem.gov.uk/renewables-obligation-ro/contacts-guidance-and-resources/public-reports-and-data-ro
+#
+# Per-PDF sha256 + retrieved_on chain lives in the sibling .meta.json sources[] array (D-03).
+# REF Constable 2025 Table 1 (transcribed in tests/fixtures/benchmarks.yaml::ref_constable) is
+# the cross-check anchor — values here must reconcile within ±3% per scheme year (D-14 hard block).
+#
+# D-11: mutualisation_gbp_total is non-zero ONLY for SY 2021-22 (one-off ROC supplier-default event).
+# All other obligation years carry mutualisation_gbp_total=0.
+#
+# Schema (pinned in src/uk_subsidy_tracker/data/ofgem_aggregate.py::ofgem_roc_prices_schema):
+#   obligation_year        : ^\d{4}-\d{2}$ (e.g. 2022-23) OR ^SY\d{2}$ (e.g. SY21)
+#   buyout_gbp_per_roc     : float64
+#   recycle_gbp_per_roc    : float64 nullable
+#   eroc_gbp_per_roc       : float64 nullable
+#   mutualisation_gbp_total: float64 nullable (total GBP, not per-ROC)
+obligation_year,buyout_gbp_per_roc,recycle_gbp_per_roc,eroc_gbp_per_roc,mutualisation_gbp_total
