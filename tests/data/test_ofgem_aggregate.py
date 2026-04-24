@@ -1,0 +1,180 @@
+"""Mocked-network tests for ``data/ofgem_aggregate.py`` (Phase 05.2 Plan 01).
+
+No live network; every test patches ``requests.get``. Pattern mirrors
+``tests/data/test_ofgem_ro.py`` which mirrors ``tests/test_ons_gas_download.py``.
+
+6 tests:
+  1. test_imports_succeed                            — public API surface intact
+  2. test_download_twelve_year_xlsx_fail_loud        — D-17 bare raise on net failure
+  3. test_download_twelve_year_xlsx_writes_xlsx      — happy-path returns path + writes bytes
+  4. test_load_annual_aggregate_csv_skips_comments   — `#` Provenance: header lines skipped
+  5. test_load_roc_prices_csv_validates_schema       — pandera validation on load
+  6. test_parse_xlsx_to_monthly_deterministic        — SKIPPED until Wave 2 commits XLSX
+"""
+from __future__ import annotations
+
+import inspect
+from unittest.mock import MagicMock, patch
+
+import pandas as pd
+import pytest
+import requests
+
+
+# ---------------------------------------------------------------------------
+# 1. Public API surface (import smoke test)
+# ---------------------------------------------------------------------------
+def test_imports_succeed():
+    """All four public functions + module constants importable."""
+    from uk_subsidy_tracker.data.ofgem_aggregate import (
+        XLSX_FILENAME,
+        XLSX_URL,
+        download_twelve_year_xlsx,
+        load_annual_aggregate_csv,
+        load_roc_prices_csv,
+        ofgem_annual_aggregate_schema,
+        ofgem_monthly_schema,
+        ofgem_roc_prices_schema,
+        parse_xlsx_to_monthly,
+    )
+
+    assert callable(download_twelve_year_xlsx)
+    assert callable(parse_xlsx_to_monthly)
+    assert callable(load_annual_aggregate_csv)
+    assert callable(load_roc_prices_csv)
+    assert "rocs_report_2006_to_2018_20250410081520.xlsx" in XLSX_URL
+    assert XLSX_FILENAME == "rocs_report_2006_to_2018_20250410081520.xlsx"
+    assert ofgem_annual_aggregate_schema is not None
+    assert ofgem_roc_prices_schema is not None
+    assert ofgem_monthly_schema is not None
+
+
+# ---------------------------------------------------------------------------
+# 2. download_twelve_year_xlsx — D-17 fail-loud on network failure
+# ---------------------------------------------------------------------------
+def test_download_twelve_year_xlsx_fail_loud(tmp_path, monkeypatch):
+    """Network failure must propagate as RequestException (D-17 fail-loud)."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+
+    monkeypatch.setattr(ofgem_aggregate, "DATA_DIR", tmp_path)
+    (tmp_path / "raw" / "ofgem").mkdir(parents=True, exist_ok=True)
+    with patch(
+        "uk_subsidy_tracker.data.ofgem_aggregate.requests.get",
+        side_effect=requests.exceptions.ConnectionError("boom"),
+    ):
+        with pytest.raises(requests.exceptions.RequestException):
+            ofgem_aggregate.download_twelve_year_xlsx()
+
+
+# ---------------------------------------------------------------------------
+# 3. download_twelve_year_xlsx — happy path writes bytes + returns path
+# ---------------------------------------------------------------------------
+def test_download_twelve_year_xlsx_writes_xlsx(tmp_path, monkeypatch):
+    """Happy-path returns DATA_DIR/raw/ofgem/<XLSX_FILENAME>; file contains the streamed bytes."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+
+    monkeypatch.setattr(ofgem_aggregate, "DATA_DIR", tmp_path)
+    (tmp_path / "raw" / "ofgem").mkdir(parents=True, exist_ok=True)
+
+    mock_response = MagicMock()
+    mock_response.iter_content.return_value = [b"xlsx-bytes-stub"]
+    mock_response.raise_for_status.return_value = None
+
+    with patch(
+        "uk_subsidy_tracker.data.ofgem_aggregate.requests.get",
+        return_value=mock_response,
+    ) as mock_get:
+        path = ofgem_aggregate.download_twelve_year_xlsx()
+
+    assert path == tmp_path / "raw" / "ofgem" / ofgem_aggregate.XLSX_FILENAME
+    assert path.exists()
+    assert path.read_bytes() == b"xlsx-bytes-stub"
+    # Phase 4 D-17 timeout discipline.
+    call_kwargs = mock_get.call_args.kwargs
+    assert call_kwargs.get("timeout") == 60
+
+
+# ---------------------------------------------------------------------------
+# 3b. Source-grep guard: output_path bound BEFORE try (D-17 gap #2 fix)
+# ---------------------------------------------------------------------------
+def test_download_twelve_year_xlsx_output_path_bound_before_try():
+    """Source-grep guard: `output_path =` must appear BEFORE `try:` block."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+
+    src = inspect.getsource(ofgem_aggregate.download_twelve_year_xlsx)
+    assert "output_path" in src
+    assert "try:" in src
+    output_idx = src.index("output_path")
+    try_idx = src.index("try:")
+    assert output_idx < try_idx, (
+        f"output_path must be bound BEFORE try: block "
+        f"(output at {output_idx}, try at {try_idx})"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 4. load_annual_aggregate_csv — Provenance comment lines skipped + schema validates
+# ---------------------------------------------------------------------------
+def test_load_annual_aggregate_csv_skips_comments(tmp_path, monkeypatch):
+    """A `# Provenance:` header block is skipped; the remaining rows pass schema validation."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+
+    monkeypatch.setattr(ofgem_aggregate, "DATA_DIR", tmp_path)
+    csv_dir = tmp_path / "raw" / "ofgem"
+    csv_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = csv_dir / "ro-annual-aggregate.csv"
+    csv_path.write_text(
+        "# Provenance:\n"
+        "# - SY17 https://www.ofgem.gov.uk/example/sy17.pdf sha256=abc retrieved_on=2026-04-24\n"
+        "scheme_year,year,country,technology,generation_gwh,rocs_issued,ro_cost_gbp_nominal,source_pdf_url\n"
+        "SY17,2017,GB,Onshore Wind,12345.6,18000000.0,2300000000.0,https://www.ofgem.gov.uk/example/sy17.pdf\n",
+        encoding="utf-8",
+    )
+    df = ofgem_aggregate.load_annual_aggregate_csv()
+    assert len(df) == 1
+    assert df.iloc[0]["scheme_year"] == "SY17"
+    assert df.iloc[0]["country"] == "GB"
+
+
+# ---------------------------------------------------------------------------
+# 5. load_roc_prices_csv — schema validation on load
+# ---------------------------------------------------------------------------
+def test_load_roc_prices_csv_validates_schema(tmp_path, monkeypatch):
+    """A header-comment-prefixed CSV with valid roc_prices rows loads + validates."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+
+    monkeypatch.setattr(ofgem_aggregate, "DATA_DIR", tmp_path)
+    csv_dir = tmp_path / "raw" / "ofgem"
+    csv_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = csv_dir / "roc-prices.csv"
+    csv_path.write_text(
+        "# Provenance:\n"
+        "# - https://www.ofgem.gov.uk/example/buyout.pdf retrieved_on=2026-04-24\n"
+        "obligation_year,buyout_gbp_per_roc,recycle_gbp_per_roc,eroc_gbp_per_roc,mutualisation_gbp_total\n"
+        "2021-22,50.80,12.34,5.67,1234567.89\n",
+        encoding="utf-8",
+    )
+    df = ofgem_aggregate.load_roc_prices_csv()
+    assert len(df) == 1
+    assert df.iloc[0]["obligation_year"] == "2021-22"
+    assert df.iloc[0]["buyout_gbp_per_roc"] == pytest.approx(50.80)
+
+
+# ---------------------------------------------------------------------------
+# 6. parse_xlsx_to_monthly — determinism placeholder, dormant until Wave 3 lands
+# ---------------------------------------------------------------------------
+@pytest.mark.skip(
+    reason="requires committed XLSX + parsing strategy from Wave 3 aggregate_model.py"
+)
+def test_parse_xlsx_to_monthly_deterministic():
+    """Two calls on the same XLSX must return byte-identical DataFrames (D-21).
+
+    Filled in once Wave 2 commits the XLSX file and Wave 3 lands the parsing
+    strategy in `schemes/ro/aggregate_model.py`. Until then, marked SKIP so
+    the placeholder shape stays in tree as a re-activation marker.
+    """
+    from uk_subsidy_tracker.data.ofgem_aggregate import parse_xlsx_to_monthly
+
+    df1 = parse_xlsx_to_monthly()
+    df2 = parse_xlsx_to_monthly()
+    pd.testing.assert_frame_equal(df1, df2)
