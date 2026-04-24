@@ -122,6 +122,27 @@ Plans:
 - [x] 05-11-PLAN.md — docs/schemes/ro.md + schemes/index.md + mkdocs.yml Schemes nav + theme-page cross-links + homepage entry + mkdocs --strict gate (RO-05)
 - [x] 05-12-PLAN.md — CHANGES.md [Unreleased] + ## Methodology versions consolidation; phase-exit verify (RO-01..RO-06)
 
+### Phase 05.2: RO Data Reconstruction (Aggregate-Grain) (INSERTED)
+
+**Goal**: Ship `docs/schemes/ro.md` with real S2 (cost dynamics) + S3 (by technology) charts and a £67bn headline reconciled against REF Constable 2025 ±3% per scheme year, sourced primarily from publicly-downloadable Ofgem aggregates. Phase-6 portal-launch prerequisite — replaces the zero-row stubs left by Phase 5 with real numbers, while transparently documenting Ofgem's Public Reports Dashboard withdrawal (2025-05-14) and deferring station-level S4 (concentration) + S5 (forward projection) chart slots to a future credentialed-access phase OR a REF-collaboration unlock (see SEED-002).
+**Depends on**: Phase 5, Phase 5.1
+**Requirements**: RO-03, RO-04 (partial — S2/S3 only; S4/S5 deferred), RO-05, RO-06
+**Success Criteria** (what must be TRUE):
+  1. `docs/schemes/ro.md` renders with real S2 + S3 charts driven by reconstructed annual-grain data, and the £67bn headline is reconciled against REF Constable 2025 within ±3% per scheme year
+  2. `tests/test_benchmarks.py::test_ref_constable_ro_reconciliation` passes as a HARD CI block (no xfail) — the `05-09-DIVERGENCE.md` sentinel is deleted as part of this phase
+  3. S4 (concentration / Lorenz) and S5 (forward projection) chart slots are visibly marked `DEFERRED: data-gated by Ofgem Public Reports Dashboard withdrawal (2025-05-14)` on `docs/schemes/ro.md`, with prose linking to a new `### Data access` methodology section explaining the situation as part of the published analysis
+  4. The publicly-downloadable Ofgem 12-year XLSX (`rocs_report_2006_to_2018_*.xlsx`, last modified 2025-05-21) is loaded into `data/raw/ofgem/` with a sidecar carrying the Ofgem URL + sha256 + retrieved_at, and `ro-generation.csv` is regenerated from it as a derived monthly-aggregate file
+  5. SY17–SY23 annual totals (7 scheme years filling the 2018–present gap) are transcribed from Ofgem annual report PDFs into `data/raw/ofgem/ro-annual-aggregate.csv` with full Provenance: docstrings citing each source PDF
+  6. `data/raw/ofgem/roc-prices.csv` is transcribed from Ofgem transparency-document PDFs (22 rows: obligation_year + buyout + recycle + eroc + mutualisation), replacing the current header-only stub
+  7. `src/uk_subsidy_tracker/schemes/ro/` is refactored: new `aggregate_model.py` produces `annual_summary.parquet` and `by_technology.parquet` from aggregate sources; the existing station-level `cost_model.py` + `forward_projection.py` + per-station Lorenz aggregation become dormant code paths (kept in tree for future credentialed-access re-activation, marked with module-level `dormant: true` flag and docstring)
+  8. `docs/schemes/ro.md` gains a `### Data access` section in §7 Methodology documenting Ofgem's Public Reports Dashboard withdrawal, RER SharePoint-OIDC gating, what's publicly available, what's reconstructed, and how REF Constable serves as independent cross-check
+  9. REQUIREMENTS.md is updated to mark RO-04's S4/S5 components as `deferred-data-gated` (NOT invalidated) with cross-reference to backlog 999.x and SEED-002
+  10. CHANGES.md [Unreleased] documents the full audit trail of what shipped + what was deferred + why
+  11. `mkdocs build --strict` passes with zero warnings post-commit
+  12. Phase 6 portal can populate the RO grid tile with a real headline number drawn from `data/derived/ro/annual_summary.parquet`
+**Plans**: TBD
+**UI hint**: yes (visible page changes to docs/schemes/ro.md)
+
 ### Phase 05.1: CfD Scheme Page Retrofit (INSERTED)
 
 **Goal**: Ship `docs/schemes/cfd.md` mirroring the `docs/schemes/ro.md` shape (adversarial-headline lead + 4 charts embedded + GOV-01 four-way coverage manifest + citation block); migrate the homepage "Module in focus: Contracts for Difference" section into it; convert the homepage to a scheme-grid listing CfD and RO as equal tiles. Phase-6 scheme-grid prerequisite — restores symmetry between CfD (historical prototype) and RO (first portal-pattern scheme).
@@ -231,6 +252,51 @@ Plans:
 | 11. Grid Socialisation Module | 0/0 | Not started | - |
 | 12. SEG + REGOs Completion | 0/0 | Not started | - |
 
+## Backlog
+
+Backlog items live outside the active milestone sequence. Promote with `/gsd-review-backlog` when ready.
+
+### Phase 999.1: Credentialed RER Access Automation (Playwright + GitHub Secrets) (BACKLOG)
+
+**Goal**: Unblock station-level RO charts S4 (concentration / Lorenz) and S5 (forward projection) — currently `DEFERRED: data-gated` per Phase 5.2 — by automating SharePoint-OIDC-authenticated access to Ofgem's Renewable Electricity Register (`rer.ofgem.gov.uk`). Alternative unlock path to a REF-collaboration data-share (see SEED-002). Re-activates the dormant station-level code paths preserved in `src/uk_subsidy_tracker/schemes/ro/` by Phase 5.2.
+
+**Setup steps** (from Plan 05-13 Follow-Up #4):
+1. Register Ofgem RER account at `rer.ofgem.gov.uk` (1–2 day email turnaround)
+2. Capture session cookie from authenticated browser session (manual; refresh ~every 30 days, no programmatic refresh available)
+3. Add `OFGEM_RER_EMAIL` + `OFGEM_RER_SESSION_COOKIE` to repo Settings → Secrets → Actions
+4. Add `playwright>=1.4.0` to `pyproject.toml`
+5. Add `npx playwright install chromium` to `.github/workflows/refresh.yml` (~150 MB Chromium runtime in CI)
+6. Write ~200 LOC SharePoint-OIDC click path: login, MFA prompt handling, file-tree navigation, station-register + monthly-issuance download
+7. Populate `_REGISTER_URL` + `_GENERATION_URL` constants in `src/uk_subsidy_tracker/data/ofgem_ro.py` with real RER URLs
+8. Re-activate the dormant station-level code paths in `src/uk_subsidy_tracker/schemes/ro/` (`cost_model.py` + `forward_projection.py` + per-station Lorenz aggregation)
+9. Restore S4 + S5 chart slots on `docs/schemes/ro.md` (un-defer them)
+10. Update REQUIREMENTS.md to mark RO-04 fully validated (drop `deferred-data-gated` qualifier)
+
+**Trigger conditions** (any of):
+- REF collaboration falls through (SEED-002 outreach yields no data-share path)
+- Station-level RO analysis becomes a v1.x business priority
+- A future maintainer wants to invest in the long-term automated path
+
+**Risks**:
+- Brittle SharePoint UI surface — every Ofgem revision breaks the scraper silently
+- Session-cookie refresh cadence requires manual maintainer attention every ~30 days
+- Secrets rotation discipline (cookie expiry surfaces as CI failure, not silently)
+- Chromium runtime adds ~150 MB to CI cold-start
+
+**Estimated scope**: medium-large — its own milestone. Probably warrants its own STRIDE threat model around the credential surface (T-X.Y: cookie exfiltration via CI logs, repo-fork credential exposure, etc.).
+
+**See also**:
+- `.planning/notes/ro-data-strategy-option-a1.md` — why this path was deprioritised in favour of public-aggregate reconstruction
+- `.planning/seeds/SEED-002-ref-collaboration-followup.md` — REF-collaboration alternative that could obviate this entirely
+- `.planning/phases/05-ro-module/05-01-TASK-1-INVESTIGATION.md` — original Ofgem URL probe + Option A/B/C/D assessment
+- `.planning/phases/05-ro-module/05-13-SUMMARY.md` Follow-Up #4 — original parking of this work
+
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (promote with `/gsd-review-backlog` when trigger fires)
+
 ---
 *Roadmap defined: 2026-04-21*
 *Maps 1:1 to ARCHITECTURE.md §11 phases P0–P11*
+*Backlog section added: 2026-04-24*
