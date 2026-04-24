@@ -222,7 +222,7 @@ Plans:
 | 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
 | 4. Publishing Layer | 0/6 | Not started | - |
 | 5. RO Module | 5/13 | In Progress|  |
-| 05.1. CfD Scheme Page Retrofit | 4/4 | Complete   | 2026-04-24 |
+| 05.1. CfD Scheme Page Retrofit | 4/4 | Complete    | 2026-04-24 |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
 | 8. Constraint Payments Module | 0/0 | Not started | - |
