@@ -72,6 +72,7 @@ Currently a single-scheme prototype (`cfd-payment`) covering only Contracts for 
 - [ ] **X4**: Cost per MWh of subsidised generation by scheme
 - [ ] **X5**: 2022 crisis comparison across schemes
 - [ ] **PORTAL-01**: Portal homepage — three headline cards + X1 chart with time-horizon tabs + 2×4 scheme grid + theme nav (iamkate.com/grid pattern)
+- [x] **SCHEMEPAGE-01**: Cross-scheme page-template symmetry — `docs/schemes/cfd.md` mirrors `docs/schemes/ro.md` (8-section structure + adversarial lead + 4 chart embeds + GOV-01 four-way coverage + Headline FAQ); homepage pivoted to 2×4 scheme grid (CfD + RO populated, Phases 7–12 placeholder) — Validated in Phase 05.1
 
 **Governance (cross-cutting):**
 - [x] **GOV-01**: Every PRODUCTION chart has narrative page, methodology page, test, and linked source file — Validated in Phase 3
@@ -176,4 +177,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-22 — Phase 3 (Chart Triage Execution) complete. TRIAGE-01/02/03 + GOV-01 validated; 5-theme docs structure live; `mkdocs build --strict` is now a permanent CI gate.*
+*Last updated: 2026-04-23 — Phase 05.1 (CfD Scheme Page Retrofit) complete. SCHEMEPAGE-01 validated; `docs/schemes/cfd.md` mirrors `docs/schemes/ro.md`; homepage pivoted to 2×4 scheme grid; 4 overlap CfD theme pages deleted; cross-scheme page-template symmetry restored ahead of Phase 6 PORTAL-01.*
