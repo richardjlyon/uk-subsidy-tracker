@@ -8,17 +8,17 @@ CfD spending is not spread broadly across a decarbonising energy system. It is c
 
 <div class="grid cards" markdown>
 
--   [![Lorenz curve preview](../../charts/html/subsidy_lorenz_twitter.png)](./lorenz.md)
+-   [![Lorenz curve preview](../../charts/html/subsidy_lorenz_twitter.png)](../../schemes/cfd.md#concentration-chart-s4)
 
-    __[Lorenz curve — 6 projects = 50%](./lorenz.md)__
+    __[Lorenz curve — 6 projects = 50%](../../schemes/cfd.md#concentration-chart-s4)__
 
     ---
 
     The inequality curve applied to CfD payments. Six projects receive half the £29bn spent; eleven receive 80%. Drax + Hornsea + Beatrice + Walney dominate.
 
--   [![Payments by technology preview](../../charts/html/subsidy_cfd_payments_by_category_twitter.png)](./cfd-payments-by-category.md)
+-   [![Payments by technology preview](../../charts/html/subsidy_cfd_payments_by_category_twitter.png)](../../schemes/cfd.md#by-technology-chart-s3)
 
-    __[Payments by technology category](./cfd-payments-by-category.md)__
+    __[Payments by technology category](../../schemes/cfd.md#by-technology-chart-s3)__
 
     ---
 

@@ -150,5 +150,5 @@ uv run python -m uk_subsidy_tracker.plotting.intermittency.rolling_minimum
 
 - [Generation heatmap](./generation-heatmap.md) — the same droughts visible as blue stripes in a year × day grid.
 - [Seasonal capacity factor](./capacity-factor-seasonal.md) — the monthly aggregation of the daily CF input.
-- [Cost / remaining obligations](../cost/remaining-obligations.md) — the forward commitment these reliability caveats apply to.
+- [CfD forward commitment](../../schemes/cfd.md#forward-commitment-chart-s5) — the forward commitment these reliability caveats apply to.
 - [Reliability methodology](./methodology.md) — full prominence-tuning rationale.

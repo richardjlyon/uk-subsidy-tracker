@@ -6,11 +6,11 @@ Each scheme page follows the same eight-section structure (headline / what is it
 
 **Currently published:**
 
+- [**Contracts for Difference (CfD)**](cfd.md) — £29bn since 2015; £14bn premium over gas counterfactual; 15-year strike-price commitments running to the late 2030s (plus Hinkley Point C at 35 years).
 - [**Renewables Obligation (RO)**](ro.md) — £67 bn all-in GB total since 2002; 2002-2037 span; the largest legacy renewables subsidy in the UK.
 
 **Coming soon:**
 
-- Contracts for Difference (CfD) — currently documented via the [Cost theme](../themes/cost/index.md) chart gallery; a dedicated scheme page will land in a future release.
 - Feed-in Tariff (FiT) — Phase 7.
 - Constraint Payments, Capacity Market, Balancing Services, Grid Socialisation, Smart Export Guarantee — Phases 8-12.
 

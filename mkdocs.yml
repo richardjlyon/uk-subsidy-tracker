@@ -57,14 +57,10 @@ nav:
   - Home: index.md
   - Cost:
       - themes/cost/index.md
-      - CfD dynamics: themes/cost/cfd-dynamics.md
       - CfD vs gas cost: themes/cost/cfd-vs-gas-cost.md
-      - Remaining obligations: themes/cost/remaining-obligations.md
       - Methodology: themes/cost/methodology.md
   - Recipients:
       - themes/recipients/index.md
-      - Lorenz curve: themes/recipients/lorenz.md
-      - Payments by technology: themes/recipients/cfd-payments-by-category.md
       - Methodology: themes/recipients/methodology.md
   - Efficiency:
       - themes/efficiency/index.md
@@ -82,6 +78,7 @@ nav:
       - Methodology: themes/reliability/methodology.md
   - Schemes:
       - Overview: schemes/index.md
+      - Contracts for Difference (CfD): schemes/cfd.md
       - Renewables Obligation (RO): schemes/ro.md
   - Data: data/index.md
   - Methodology:

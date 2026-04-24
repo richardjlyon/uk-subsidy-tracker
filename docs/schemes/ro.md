@@ -80,7 +80,7 @@ The pre-2013 vs post-2013 distinction also matters. Before the 2013 banding revi
 
 RO payments are more concentrated than CfD payments because the scheme has been running for 20+ years and rewards the largest accredited stations year after year. The top 3 stations typically account for ~25-30% of cumulative cost — Drax (coal-to-biomass conversion, three accredited units), Lynemouth (dedicated biomass), and the largest offshore wind farms (Hornsea, Walney, Beatrice).
 
-The Lorenz curve plotted here is the same inequality diagnostic used on the [CfD Recipients page](../themes/recipients/lorenz.md), applied to lifetime per-station RO cost. The curvature is steeper than CfD's because the RO fleet includes a small number of very large biomass converters; CfD has more uniformly-large offshore wind farms. The political reading: when politicians celebrate "the renewables transition", they are in large part celebrating a transfer to a specific shortlist of biomass operators and a few major offshore wind developers, not a broad-based change in the energy system.
+The Lorenz curve plotted here is the same inequality diagnostic used on the [CfD Concentration chart](cfd.md#concentration-chart-s4), applied to lifetime per-station RO cost. The curvature is steeper than CfD's because the RO fleet includes a small number of very large biomass converters; CfD has more uniformly-large offshore wind farms. The political reading: when politicians celebrate "the renewables transition", they are in large part celebrating a transfer to a specific shortlist of biomass operators and a few major offshore wind developers, not a broad-based change in the energy system.
 
 Two interpretive cautions:
 

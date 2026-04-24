@@ -8,9 +8,9 @@ The CfD scheme was sold as consumer protection against volatile gas prices. What
 
 <div class="grid cards" markdown>
 
--   [![CfD dynamics preview](../../charts/html/subsidy_cfd_dynamics_twitter.png)](./cfd-dynamics.md)
+-   [![CfD dynamics preview](../../charts/html/subsidy_cfd_dynamics_twitter.png)](../../schemes/cfd.md#cost-dynamics-chart-s2)
 
-    __[CfD dynamics — the full mechanism in four panels](./cfd-dynamics.md)__
+    __[CfD dynamics — the full mechanism in four panels](../../schemes/cfd.md#cost-dynamics-chart-s2)__
 
     ---
 
@@ -24,17 +24,17 @@ The CfD scheme was sold as consumer protection against volatile gas prices. What
 
     The same £14bn premium decomposed into the two real cash-flow channels consumers pay through: wholesale and levy.
 
--   [![Remaining obligations preview](../../charts/html/subsidy_remaining_obligations_twitter.png)](./remaining-obligations.md)
+-   [![Remaining obligations preview](../../charts/html/subsidy_remaining_obligations_twitter.png)](../../schemes/cfd.md#forward-commitment-chart-s5)
 
-    __[Remaining obligations — what we've already signed for](./remaining-obligations.md)__
+    __[Remaining obligations — what we've already signed for](../../schemes/cfd.md#forward-commitment-chart-s5)__
 
     ---
 
     The contracts already signed will cost another £33bn+. The scheme's bill is largely a forward commitment, not a current choice.
 
--   [![Payments by technology preview](../../charts/html/subsidy_cfd_payments_by_category_twitter.png)](../recipients/cfd-payments-by-category.md)
+-   [![Payments by technology preview](../../charts/html/subsidy_cfd_payments_by_category_twitter.png)](../../schemes/cfd.md#by-technology-chart-s3)
 
-    __[Payments by technology category](../recipients/cfd-payments-by-category.md)__
+    __[Payments by technology category](../../schemes/cfd.md#by-technology-chart-s3)__
 
     ---
 
