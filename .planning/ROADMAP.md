@@ -140,7 +140,15 @@ Plans:
   10. CHANGES.md [Unreleased] documents the full audit trail of what shipped + what was deferred + why
   11. `mkdocs build --strict` passes with zero warnings post-commit
   12. Phase 6 portal can populate the RO grid tile with a real headline number drawn from `data/derived/ro/annual_summary.parquet`
-**Plans**: TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 05.2-01-PLAN.md — Sidecar sources[] extension + data/ofgem_aggregate.py loader skeleton + tests/conftest.py pytest.mark.dormant registration (RO-03)
+- [ ] 05.2-02-PLAN.md — Ofgem 12-year XLSX download + SY17-SY23 annual-aggregate CSV transcription (checkpoint) + 22-row roc-prices CSV transcription + multi-source sidecars + ro-generation.csv regeneration + ro-register.xlsx dormant-stub deletion (RO-03)
+- [ ] 05.2-03-PLAN.md — schemas/ro.py aggregate-grain nullability + schemes/ro/aggregate_model.py pipeline + DORMANT_STATION_LEVEL short-circuit + test_benchmarks.py fixture adaptation (RO-03, RO-06)
+- [ ] 05.2-04-PLAN.md — Dormancy discipline: `# dormant: true` line-1 markers on 5 src/ modules + plotting/__main__.py dormant-skip logic + `@pytest.mark.dormant` applied across station-level tests + dormant Parquet + chart artefacts removed (RO-04)
+- [ ] 05.2-05-PLAN.md — docs/schemes/ro.md rewrite with real S2+S3 charts + DEFERRED S4/S5 admonitions + §7 Data access subsection + headline-sync regression test + theme-page link updates + mkdocs --strict (RO-04, RO-05)
+- [ ] 05.2-06-PLAN.md — 05-09-DIVERGENCE.md sentinel delete + REF reconciliation un-xfail + REQUIREMENTS.md deferred-data-gated update + CHANGES.md audit trail + ROADMAP.md bookkeeping + phase-exit gate (RO-04, RO-05, RO-06)
 **UI hint**: yes (visible page changes to docs/schemes/ro.md)
 
 ### Phase 05.1: CfD Scheme Page Retrofit (INSERTED)
