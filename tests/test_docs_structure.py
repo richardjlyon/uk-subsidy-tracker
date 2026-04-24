@@ -3,7 +3,9 @@
 These tests guard against accidental regressions of the Phase-3 restructure:
 - CUT files remain absent
 - 5 theme directories exist with index + methodology
-- 7 PROMOTE pages exist at correct theme paths
+- 5 PROMOTE pages exist at correct theme paths (Phase 05.1: 2 CfD overlap
+  pages — lorenz.md + cfd-payments-by-category.md — deleted; their content
+  migrated into docs/schemes/cfd.md §§5/4 respectively)
 - Each PROMOTE page carries the 6 D-01 section headers
 - GOV-01 four-way coverage is grep-verifiable on every PROMOTE page
 - mkdocs.yml keeps the validation: block active
@@ -13,8 +15,10 @@ from pathlib import Path
 DOCS = Path("docs")
 THEMES = ["cost", "recipients", "efficiency", "cannibalisation", "reliability"]
 PROMOTE_PAGES = [
-    "themes/recipients/lorenz.md",
-    "themes/recipients/cfd-payments-by-category.md",
+    # themes/recipients/lorenz.md — deleted Phase 05.1; content migrated to
+    #   docs/schemes/cfd.md#concentration-chart-s4
+    # themes/recipients/cfd-payments-by-category.md — deleted Phase 05.1;
+    #   content migrated to docs/schemes/cfd.md#by-technology-chart-s3
     "themes/efficiency/subsidy-per-avoided-co2-tonne.md",
     "themes/cannibalisation/capture-ratio.md",
     "themes/reliability/capacity-factor-seasonal.md",
@@ -22,9 +26,11 @@ PROMOTE_PAGES = [
     "themes/reliability/rolling-minimum.md",
 ]
 EXISTING_COST_PAGES = [
-    "themes/cost/cfd-dynamics.md",
+    # themes/cost/cfd-dynamics.md — deleted Phase 05.1; content migrated to
+    #   docs/schemes/cfd.md#cost-dynamics-chart-s2
+    # themes/cost/remaining-obligations.md — deleted Phase 05.1; content
+    #   migrated to docs/schemes/cfd.md#forward-commitment-chart-s5
     "themes/cost/cfd-vs-gas-cost.md",
-    "themes/cost/remaining-obligations.md",
 ]
 D01_SECTIONS = [
     "## What the chart shows",
@@ -52,13 +58,21 @@ def test_all_themes_have_index_and_methodology():
 
 
 def test_promote_chart_pages_exist():
-    """TRIAGE-02: 7 PROMOTE chart pages at their theme paths."""
+    """TRIAGE-02: 5 PROMOTE chart pages at their theme paths.
+
+    Phase 05.1: lorenz.md + cfd-payments-by-category.md removed from this list
+    (content migrated to docs/schemes/cfd.md §§5/4; pages deleted per D-06).
+    """
     for p in PROMOTE_PAGES:
         assert (DOCS / p).exists(), f"Missing PROMOTE page: {p}"
 
 
 def test_existing_cost_pages_moved():
-    """TRIAGE-03: existing 3 CfD pages live under docs/themes/cost/ (git-mv'd)."""
+    """TRIAGE-03: non-overlap CfD pages live under docs/themes/cost/ (git-mv'd).
+
+    Phase 05.1: cfd-dynamics.md + remaining-obligations.md removed from this
+    list (content migrated to docs/schemes/cfd.md §§3/6; pages deleted per D-06).
+    """
     for p in EXISTING_COST_PAGES:
         assert (DOCS / p).exists(), f"Missing Cost page: {p}"
     assert not (DOCS / "charts" / "subsidy" / "cfd-dynamics.md").exists()
