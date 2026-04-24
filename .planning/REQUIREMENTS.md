@@ -48,6 +48,10 @@ Requirements for the portal's first public release: expansion from single-scheme
 - [x] **RO-05**: RO scheme docs page (`docs/schemes/ro.md`) + theme-page integration for Cost and Recipients themes
 - [x] **RO-06**: RO aggregate 2011-2022 benchmarks within 3% of Turver's published totals
 
+### Scheme Page Template
+
+- [x] **SCHEMEPAGE-01**: Every scheme page mirrors `docs/schemes/ro.md` 8-section structure (headline + adversarial lead / what is the scheme / cost dynamics S2 / by technology S3 / concentration S4 / forward commitment S5 / methodology / data & code GOV-01 four-way coverage) + Headline FAQ section. Closed by Phase 05.1: both `docs/schemes/cfd.md` and `docs/schemes/ro.md` match the template. Phases 7-12 inherit as the acceptance criterion for each new scheme detail page.
+
 ### Feed-in Tariff (FiT) Module
 
 - [ ] **FIT-01**: Ofgem FiT scraper populates `data/raw/ofgem/{fit-register,fit-generation}.csv` with sidecar meta.json
@@ -191,6 +195,7 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | RO-04 | Phase 5 | Complete |
 | RO-05 | Phase 5 | Complete |
 | RO-06 | Phase 5 | Complete |
+| SCHEMEPAGE-01 | Phase 05.1 | Complete |
 | X-01 | Phase 6 | Pending |
 | X-02 | Phase 6 | Pending |
 | X-03 | Phase 6 | Pending |
@@ -223,8 +228,8 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | SEG-03 | Phase 12 | Pending |
 
 **Coverage:**
-- v1 requirements: 61
-- Mapped to phases: 61
+- v1 requirements: 62
+- Mapped to phases: 62
 - Unmapped: 0
 
 ---

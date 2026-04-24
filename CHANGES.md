@@ -9,6 +9,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Phase 05.1 — CfD Scheme Page Retrofit
+
+- **CfD scheme-detail page** (Plan 05.1-01). `docs/schemes/cfd.md` (~250
+  lines, 9 H2 sections) mirrors `docs/schemes/ro.md` 8-section template
+  verbatim per 05.1 D-01/D-02: Headline (both £29bn paid + £14bn
+  premium visible per D-13) / What is the CfD / Cost dynamics (Chart
+  S2) / By technology (Chart S3) / Concentration (Chart S4) / Forward
+  commitment (Chart S5) / Methodology / Data & code (GOV-01) + Headline
+  FAQ (4 CfD-specific D-14 questions) + See-also. Prose migrated
+  wholesale from the four overlap theme pages (Phase 3 adversarial
+  prose preserved, not rewritten). All 4 chart embeds wired with PNG +
+  interactive HTML link; GOV-01 four-way coverage manifest at §8
+  cites LCCC + ONS + UK ETS + NESO sources, 4 chart-source permalinks
+  (cfd_dynamics.py + cfd_payments_by_category.py + lorenz.py +
+  remaining_obligations.py), `schemes/cfd/` pipeline + `counterfactual.py`
+  permalinks, test_counterfactual.py + test_benchmarks.py test
+  permalinks, reproduce-from-`git clone` bash block. `uv run mkdocs
+  build --strict` green.
+
+- **Deleted 4 overlap theme pages** (Plan 05.1-02). `docs/themes/cost/cfd-dynamics.md`,
+  `docs/themes/cost/remaining-obligations.md`,
+  `docs/themes/recipients/cfd-payments-by-category.md`,
+  `docs/themes/recipients/lorenz.md` removed via `git rm`. Their
+  content overlapped 1:1 with `cfd.md` §§S2/S5/S3/S4 respectively per
+  05.1 D-06; prose migrated to cfd.md in Plan 01 so nothing lost.
+
+- **Inbound-link migration + nav update** (Plan 05.1-02). Theme-
+  gallery cards on `docs/themes/cost/index.md` (3 CfD cards) and
+  `docs/themes/recipients/index.md` (2 CfD cards) retargeted from the
+  deleted pages to `schemes/cfd.md#<anchor>`. Outside-the-gallery
+  cases: `docs/themes/reliability/rolling-minimum.md:153` See-also
+  bullet and `docs/schemes/ro.md:83` reciprocal cross-link both
+  retargeted. `docs/schemes/index.md` promotes CfD from Coming-soon
+  to Currently-published (alphabetical: CfD before RO). `mkdocs.yml`
+  nav updated: Schemes tab gains `Contracts for Difference (CfD):
+  schemes/cfd.md` between Overview and RO; Cost and Recipients tabs
+  lose the 4 deleted-page entries. Six non-overlap CfD theme pages
+  preserved in Phase 3 D-01 six-section form per 05.1 D-08.
+
+- **Homepage pivoted to 2×4 scheme grid** (Plan 05.1-03). `docs/index.md`
+  restructured per 05.1 D-10: hero + Schemes grid (8 Material `grid
+  cards` tiles: 2 populated with CfD + RO thumbnails + headline
+  figures + links, 6 placeholders labelled "Coming in Phase 7-12"
+  for FiT / Constraints / CM / Balancing / Grid / SEG) + Explore-
+  by-theme five-card nav (preserved) + For-journalists Use-our-data
+  card (preserved) + Status (edited to drop per-scheme enumeration
+  — that state moved onto the grid tiles). Sections removed from
+  the old homepage: "Module in focus: Contracts for Difference"
+  (migrated to cfd.md), "Data sources" bullets (migrated to per-
+  scheme GOV-01 §8 blocks), "Code & reproducibility" bash block
+  (migrated to `docs/data/index.md` + each scheme page's §8 Reproduce
+  block), "Scheme detail pages" prose (replaced by the grid). Pre-
+  stages Phase 6 PORTAL-01 layout — same 8-cell grid, Phase 6 wires
+  in headline-figure data-binding + X1 stacked chart + Latest/
+  Last-5/All-time tabs.
+
+- **REQUIREMENTS bookkeeping — SCHEMEPAGE-01 closed** (Plan 05.1-04).
+  New `SCHEMEPAGE-01` requirement ID added to `.planning/REQUIREMENTS.md`
+  formalising the cross-scheme page-template contract: "Every scheme
+  page mirrors `docs/schemes/ro.md` 8-section structure + 4-chart
+  embeds + GOV-01 four-way coverage manifest + Headline FAQ". Closed
+  by Phase 05.1 via both `cfd.md` and `ro.md` matching the template.
+  Phases 7-12 inherit SCHEMEPAGE-01 as an acceptance criterion for
+  each new scheme page. Traceability row inserted between RO-06
+  (Phase 5 Complete) and X-01 (Phase 6 Pending). Coverage counters
+  bumped 61 → 62 / all mapped.
+
 #### Phase 5 — Renewables Obligation Module
 
 - **Ofgem RO scrapers + raw seed** (Plan 05-01). `src/uk_subsidy_tracker/data/ofgem_ro.py`
