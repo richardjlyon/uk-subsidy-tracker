@@ -47,12 +47,12 @@ def test_write_sidecar_sources_none_byte_parity_with_no_kwarg(tmp_path):
     it must omit the key entirely so existing single-URL sidecars stay
     byte-identical regardless of whether the caller passes the kwarg.
     """
-    raw_a = _make_raw_file(tmp_path / "a", "probe.bin")
-    raw_b = _make_raw_file(tmp_path / "b", "probe.bin")
-    (tmp_path / "a").mkdir(exist_ok=True)
-    (tmp_path / "b").mkdir(exist_ok=True)
-    raw_a = tmp_path / "a" / "probe.bin"
-    raw_b = tmp_path / "b" / "probe.bin"
+    dir_a = tmp_path / "a"
+    dir_b = tmp_path / "b"
+    dir_a.mkdir()
+    dir_b.mkdir()
+    raw_a = dir_a / "probe.bin"
+    raw_b = dir_b / "probe.bin"
     raw_a.write_bytes(b"hello-sidecar")
     raw_b.write_bytes(b"hello-sidecar")
 
