@@ -127,7 +127,7 @@ Plans:
 **Goal**: Ship `docs/schemes/cfd.md` mirroring the `docs/schemes/ro.md` shape (adversarial-headline lead + 4 charts embedded + GOV-01 four-way coverage manifest + citation block); migrate the homepage "Module in focus: Contracts for Difference" section into it; convert the homepage to a scheme-grid listing CfD and RO as equal tiles. Phase-6 scheme-grid prerequisite — restores symmetry between CfD (historical prototype) and RO (first portal-pattern scheme).
 **Depends on**: Phase 5
 **Requirements**: SCHEMEPAGE-01
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 - [x] 05.1-01-PLAN.md — Create docs/schemes/cfd.md with migrated prose + 4 chart embeds + GOV-01 + Headline FAQ (SCHEMEPAGE-01)
@@ -222,7 +222,7 @@ Plans:
 | 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
 | 4. Publishing Layer | 0/6 | Not started | - |
 | 5. RO Module | 5/13 | In Progress|  |
-| 05.1. CfD Scheme Page Retrofit | 4/4 | Complete | 2026-04-23 |
+| 05.1. CfD Scheme Page Retrofit | 4/4 | Complete   | 2026-04-24 |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
 | 8. Constraint Payments Module | 0/0 | Not started | - |
