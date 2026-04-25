@@ -152,16 +152,16 @@ def ro_derived_dir(tmp_path_factory) -> Path:
     return out
 
 
-_RO_GRAIN_MODELS = {
-    "station_month": RoStationMonthRow,
-    "annual_summary": RoAnnualSummaryRow,
-    "by_technology": RoByTechnologyRow,
-    "by_allocation_round": RoByAllocationRoundRow,
-    "forward_projection": RoForwardProjectionRow,
-}
+_RO_GRAIN_MODELS = [
+    pytest.param("station_month", RoStationMonthRow, marks=pytest.mark.dormant),
+    pytest.param("annual_summary", RoAnnualSummaryRow),
+    pytest.param("by_technology", RoByTechnologyRow),
+    pytest.param("by_allocation_round", RoByAllocationRoundRow, marks=pytest.mark.dormant),
+    pytest.param("forward_projection", RoForwardProjectionRow, marks=pytest.mark.dormant),
+]
 
 
-@pytest.mark.parametrize("grain, model", list(_RO_GRAIN_MODELS.items()))
+@pytest.mark.parametrize("grain, model", _RO_GRAIN_MODELS)
 def test_ro_parquet_grain_schema(grain, model, ro_derived_dir):
     """RO-03 / TEST-02: every RO Parquet grain conforms to its Pydantic row model.
 

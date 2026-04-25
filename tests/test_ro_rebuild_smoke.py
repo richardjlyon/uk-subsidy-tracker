@@ -14,6 +14,10 @@ Six tests (per Plan 05-05 <behavior>):
      Option-D stubs because sidecars were backfilled separately; the
      assertion is a type check, with a note that False will hold once
      Plan 05-13 review lands real URLs + matching sidecars).
+
+DORMANT: This entire module is dormant (Plan 05.2-02 audit cleanup, 2026-04-25).
+All tests require ``ro.rebuild_derived()`` which reads ``ro-register.xlsx``
+(station-level data, Option-D deferred). Re-activate on backlog 999.1.
 """
 from pathlib import Path
 
@@ -22,6 +26,10 @@ import pytest
 
 from uk_subsidy_tracker.counterfactual import METHODOLOGY_VERSION
 from uk_subsidy_tracker.schemes import SchemeModule, ro
+
+# All tests in this module are dormant — station-level RO path is Option-D deferred.
+# Re-activate on backlog 999.1 (credentialed RER access) or 999.2 (SY1-SY4 prices).
+pytestmark = pytest.mark.dormant
 
 
 _GRAINS = [

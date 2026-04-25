@@ -84,11 +84,11 @@ def test_file_metadata_created_by_is_pyarrow(grain, derived_once):
 from uk_subsidy_tracker.schemes import ro  # noqa: E402
 
 RO_GRAINS = (
-    "station_month",
+    pytest.param("station_month", marks=pytest.mark.dormant),
     "annual_summary",
     "by_technology",
-    "by_allocation_round",
-    "forward_projection",
+    pytest.param("by_allocation_round", marks=pytest.mark.dormant),
+    pytest.param("forward_projection", marks=pytest.mark.dormant),
 )
 
 

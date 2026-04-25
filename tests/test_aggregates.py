@@ -187,11 +187,15 @@ def _skip_if_empty_ro_station_month(df: pd.DataFrame) -> None:
         )
 
 
+@pytest.mark.dormant
 def test_ro_annual_vs_station_month_parquet(ro_station_month, ro_annual_summary):
     """RO-03 / TEST-03: annual_summary.ro_cost_gbp = sum(station_month) per (year, country).
 
     D-09: annual_summary emits one row per (year, country) tuple, so the
     row-conservation invariant is groupby year+country (NOT year alone).
+
+    DORMANT: requires station_month.parquet from ro-register.xlsx (Option-D deferred).
+    Re-activate on backlog 999.1.
     """
     _skip_if_empty_ro_station_month(ro_station_month)
     from_sm = (
@@ -205,8 +209,13 @@ def test_ro_annual_vs_station_month_parquet(ro_station_month, ro_annual_summary)
     pd.testing.assert_series_equal(from_sm, from_annual, check_names=False)
 
 
+@pytest.mark.dormant
 def test_ro_by_technology_vs_station_month_parquet(ro_station_month, ro_by_technology):
-    """TEST-03: by_technology.ro_cost_gbp = sum(station_month) per (year, technology)."""
+    """TEST-03: by_technology.ro_cost_gbp = sum(station_month) per (year, technology).
+
+    DORMANT: requires station_month.parquet from ro-register.xlsx (Option-D deferred).
+    Re-activate on backlog 999.1.
+    """
     _skip_if_empty_ro_station_month(ro_station_month)
     from_sm = (
         ro_station_month.groupby(["year", "technology"], observed=True)["ro_cost_gbp"]
@@ -219,6 +228,7 @@ def test_ro_by_technology_vs_station_month_parquet(ro_station_month, ro_by_techn
     pd.testing.assert_series_equal(from_sm, from_by_tech, check_names=False)
 
 
+@pytest.mark.dormant
 def test_ro_by_allocation_round_vs_station_month_parquet(
     ro_station_month, ro_by_allocation_round
 ):
@@ -226,6 +236,9 @@ def test_ro_by_allocation_round_vs_station_month_parquet(
 
     RO has no allocation-round axis (unlike CfD); ``commissioning_window``
     serves as the banding-cohort axis per RESEARCH §5.
+
+    DORMANT: requires station_month.parquet from ro-register.xlsx (Option-D deferred).
+    Re-activate on backlog 999.1.
     """
     _skip_if_empty_ro_station_month(ro_station_month)
     from_sm = (
