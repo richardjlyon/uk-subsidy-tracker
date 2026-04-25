@@ -3,7 +3,10 @@
 #
 # Obligation years SY9-SY22 (2010-11 to 2023-24): exact values from SY22 XLSX Figure A4.1
 # Obligation years SY5-SY8 (2006-07 to 2009-10): derived from SY18 XLSX Table 4.5 + 12-year XLSX
-# Obligation years SY1-SY4 (2002-03 to 2005-06): algebraic estimate from SY18 XLSX scheme values
+# Obligation years SY1-SY4 (2002-03 to 2005-06): DEFERRED — no Ofgem-published recycle value
+#   found; pipeline carries NaN per backlog 999.2. SY1-SY4 manifest entries below preserved as
+#   audit trail of the search (XLSX inspected, no SY1-SY4 prices located within); they do not
+#   imply any value was extracted.
 #
 # Primary source: Ofgem RO Annual Report SY22 Dataset Companion XLSX
 #   (covers Figure A4.1: Determination of ROC recycle value since SY9)
