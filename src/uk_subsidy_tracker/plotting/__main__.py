@@ -9,6 +9,9 @@ The module body is guarded by ``if __name__ == "__main__":`` so that
 accidental imports (e.g. ``from uk_subsidy_tracker.plotting.__main__ import
 capture_ratio``) do not trigger a full chart regeneration as a side effect.
 """
+import inspect
+from pathlib import Path
+from typing import Callable
 
 from uk_subsidy_tracker.plotting.cannibalisation.capture_ratio import main as capture_ratio
 from uk_subsidy_tracker.plotting.cannibalisation.price_vs_wind import main as price_vs_wind
@@ -42,9 +45,25 @@ from uk_subsidy_tracker.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
 )
 
 
+def _is_dormant_module(path: Path | str) -> bool:
+    """True iff the source file at ``path`` carries '# dormant: true' as literal line 1.
+
+    Grep-discoverable dormancy discipline per Phase 05.2 D-08. Dormant chart
+    modules are skipped by the regeneration loop; their output artefacts
+    stay absent from docs/charts/html/ until DORMANT_STATION_LEVEL lifts on
+    backlog 999.1.
+    """
+    p = Path(path)
+    if not p.exists():
+        return False
+    with p.open("r", encoding="utf-8") as fh:
+        first_line = fh.readline().rstrip("\n")
+    return first_line == "# dormant: true"
+
+
 def main() -> None:
     """Regenerate every published chart, collecting failures for a summary."""
-    charts = [
+    charts: list[tuple[str, Callable[[], None]]] = [
         # Subsidy economics
         ("cfd_vs_gas_total", cfd_vs_gas_total),
         ("cfd_dynamics", cfd_dynamics),
@@ -72,6 +91,10 @@ def main() -> None:
 
     failures: list[tuple[str, Exception]] = []
     for name, fn in charts:
+        source_path = inspect.getfile(fn)
+        if _is_dormant_module(source_path):
+            print(f"SKIP {name}: dormant chart module (# dormant: true on line 1)")
+            continue
         try:
             fn()
             print(f"OK  {name}")
