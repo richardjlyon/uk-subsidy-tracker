@@ -1,3 +1,4 @@
+# dormant: true
 """RO concentration — S4 Lorenz curve on station-level lifetime RO cost.
 
 Mirrors ``plotting/subsidy/lorenz.py`` (CfD). GB-only per D-12 / D-09;
@@ -13,6 +14,16 @@ concentration story; top-3 station callouts land the "a handful of plants
 account for most of the bill" narrative in the Lorenz convention.
 
 Filename: ``subsidy_ro_concentration`` per RO-MODULE-SPEC Appendix A.
+
+Dormancy:
+    This module is dormant per Phase 05.2 (RO Data Reconstruction — Aggregate
+    Grain). Station-level code paths are preserved in-tree but not exercised
+    by the aggregate pipeline (schemes.ro.DORMANT_STATION_LEVEL = True).
+    Re-activated on backlog 999.1 (Credentialed RER Access Automation) by
+    flipping DORMANT_STATION_LEVEL to False and removing the per-test
+    @pytest.mark.dormant marks.
+
+    Design note: .planning/notes/ro-data-strategy-option-a1.md
 """
 from __future__ import annotations
 

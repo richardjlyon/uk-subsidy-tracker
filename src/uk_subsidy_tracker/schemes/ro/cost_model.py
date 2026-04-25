@@ -1,3 +1,4 @@
+# dormant: true
 """RO cost model — raw Ofgem data → station_month.parquet (Plan 05-05 Task 2).
 
 Mirrors ``schemes/cfd/cost_model.py`` with RO-specific join logic. Writes
@@ -41,6 +42,16 @@ in-memory DataFrame argument.
 Determinism discipline (D-21): no ``datetime.now()``, no ``time.time()``, no
 randomness; every ``groupby(sort=True)`` explicit; final sort on
 ``(station_id, month_end)``.
+
+Dormancy:
+    This module is dormant per Phase 05.2 (RO Data Reconstruction — Aggregate
+    Grain). Station-level code paths are preserved in-tree but not exercised
+    by the aggregate pipeline (schemes.ro.DORMANT_STATION_LEVEL = True).
+    Re-activated on backlog 999.1 (Credentialed RER Access Automation) by
+    flipping DORMANT_STATION_LEVEL to False and removing the per-test
+    @pytest.mark.dormant marks.
+
+    Design note: .planning/notes/ro-data-strategy-option-a1.md
 """
 from __future__ import annotations
 

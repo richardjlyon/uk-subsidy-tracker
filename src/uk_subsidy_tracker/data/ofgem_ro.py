@@ -25,6 +25,16 @@ Loader-owned pandera validation (Phase 2 pattern): `load_*` functions
 validate the DataFrame against the module-level pandera schema before
 returning. `strict=False` permits the empty-DataFrame case the Option-D
 stubs produce.
+
+Dormancy:
+    This module is dormant per Phase 05.2 (RO Data Reconstruction — Aggregate
+    Grain). Station-level code paths are preserved in-tree but not exercised
+    by the aggregate pipeline (schemes.ro.DORMANT_STATION_LEVEL = True).
+    Re-activated on backlog 999.1 (Credentialed RER Access Automation) by
+    flipping DORMANT_STATION_LEVEL to False and removing the per-test
+    @pytest.mark.dormant marks.
+
+    Design note: .planning/notes/ro-data-strategy-option-a1.md
 """
 from __future__ import annotations
 

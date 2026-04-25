@@ -1,3 +1,4 @@
+# dormant: true
 """RO rollups — re-read station_month.parquet → 3 grain Parquets (Plan 05-05 Task 3).
 
 Three builders: ``build_annual_summary``, ``build_by_technology``,
@@ -12,6 +13,16 @@ Determinism discipline (D-21):
 - ``year`` cast to ``int64`` to match ``Ro*Row.year`` declared dtype (D-10;
   Phase 4 Plan 03 Rule-1 int32 auto-fix carried forward).
 - Column order = each Row model's field-declaration order (D-10).
+
+Dormancy:
+    This module is dormant per Phase 05.2 (RO Data Reconstruction — Aggregate
+    Grain). Station-level code paths are preserved in-tree but not exercised
+    by the aggregate pipeline (schemes.ro.DORMANT_STATION_LEVEL = True).
+    Re-activated on backlog 999.1 (Credentialed RER Access Automation) by
+    flipping DORMANT_STATION_LEVEL to False and removing the per-test
+    @pytest.mark.dormant marks.
+
+    Design note: .planning/notes/ro-data-strategy-option-a1.md
 """
 from __future__ import annotations
 

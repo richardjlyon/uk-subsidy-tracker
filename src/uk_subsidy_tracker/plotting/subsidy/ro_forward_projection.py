@@ -1,3 +1,4 @@
+# dormant: true
 """RO forward projection — S5 drawdown to 2037.
 
 Mirrors ``plotting/subsidy/remaining_obligations.py`` (CfD) but simpler:
@@ -17,6 +18,16 @@ Filename: ``subsidy_ro_forward_projection`` per RO-MODULE-SPEC Appendix A.
 
 Data source: ``data/derived/ro/forward_projection.parquet`` (Plan 05-05).
 Robust to empty upstream — emits a titled placeholder.
+
+Dormancy:
+    This module is dormant per Phase 05.2 (RO Data Reconstruction — Aggregate
+    Grain). Station-level code paths are preserved in-tree but not exercised
+    by the aggregate pipeline (schemes.ro.DORMANT_STATION_LEVEL = True).
+    Re-activated on backlog 999.1 (Credentialed RER Access Automation) by
+    flipping DORMANT_STATION_LEVEL to False and removing the per-test
+    @pytest.mark.dormant marks.
+
+    Design note: .planning/notes/ro-data-strategy-option-a1.md
 """
 from __future__ import annotations
 
