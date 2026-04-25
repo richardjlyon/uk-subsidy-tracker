@@ -1,15 +1,17 @@
-"""Mocked-network tests for ``data/ofgem_aggregate.py`` (Phase 05.2 Plan 01).
+"""Mocked-network tests for ``data/ofgem_aggregate.py`` (Phase 05.2 Plans 01–02).
 
 No live network; every test patches ``requests.get``. Pattern mirrors
 ``tests/data/test_ofgem_ro.py`` which mirrors ``tests/test_ons_gas_download.py``.
 
-6 tests:
-  1. test_imports_succeed                            — public API surface intact
-  2. test_download_twelve_year_xlsx_fail_loud        — D-17 bare raise on net failure
-  3. test_download_twelve_year_xlsx_writes_xlsx      — happy-path returns path + writes bytes
-  4. test_load_annual_aggregate_csv_skips_comments   — `#` Provenance: header lines skipped
-  5. test_load_roc_prices_csv_validates_schema       — pandera validation on load
-  6. test_parse_xlsx_to_monthly_deterministic        — SKIPPED until Wave 2 commits XLSX
+Tests (expanded in Plan 02 to cover real XLSX parsing + determinism):
+  1.  test_imports_succeed                            — public API surface intact
+  2.  test_download_twelve_year_xlsx_fail_loud        — D-17 bare raise on net failure
+  3.  test_download_twelve_year_xlsx_writes_xlsx      — happy-path returns path + writes bytes
+  3b. test_download_twelve_year_xlsx_output_path_bound_before_try — D-17 gap #2
+  4.  test_load_annual_aggregate_csv_skips_comments   — `#` Provenance: header lines skipped
+  5.  test_load_roc_prices_csv_validates_schema       — pandera validation on load
+  6.  test_xlsx_to_monthly_determinism               — 12-yr XLSX → parse_xlsx_to_monthly() D-21
+  7–12. test_annual_xlsx_determinism[SY18..SY23]     — per-year openpyxl CSV-emission D-21 (6 tests)
 """
 from __future__ import annotations
 
@@ -161,23 +163,49 @@ def test_load_roc_prices_csv_validates_schema(tmp_path, monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# 6. parse_xlsx_to_monthly — determinism placeholder, dormant until Wave 3 lands
+# 6. parse_xlsx_to_monthly — 12-year XLSX determinism (D-21)
 # ---------------------------------------------------------------------------
-@pytest.mark.skip(
-    reason="requires committed XLSX + parsing strategy from Wave 3 aggregate_model.py"
-)
-def test_parse_xlsx_to_monthly_deterministic():
-    """Two calls on the same XLSX must return byte-identical DataFrames (D-21).
+def test_xlsx_to_monthly_determinism():
+    """Two calls on the committed 12-year XLSX must return byte-identical DataFrames (D-21).
 
-    Filled in once Wave 2 commits the XLSX file and Wave 3 lands the parsing
-    strategy in `schemes/ro/aggregate_model.py`. Until then, marked SKIP so
-    the placeholder shape stays in tree as a re-activation marker.
+    Validates that parse_xlsx_to_monthly() is purely deterministic: same
+    XLSX bytes → identical year/month/technology/rocs_issued values, same
+    row order. No clock or randomness may influence the output.
+
+    Plan 02 replacement for the Plan 01 SKIP-marked placeholder (the XLSX
+    is now committed at data/raw/ofgem/rocs_report_2006_to_2018_*.xlsx).
     """
     from uk_subsidy_tracker.data.ofgem_aggregate import parse_xlsx_to_monthly
 
     df1 = parse_xlsx_to_monthly()
     df2 = parse_xlsx_to_monthly()
-    pd.testing.assert_frame_equal(df1, df2)
+
+    assert len(df1) > 0, "parse_xlsx_to_monthly() returned empty DataFrame"
+    pd.testing.assert_frame_equal(df1, df2, check_exact=True)
+
+
+# ---------------------------------------------------------------------------
+# 7–12. parse_annual_xlsx_to_aggregate_rows — per-year determinism (D-21)
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("scheme_year", ["SY18", "SY19", "SY20", "SY21", "SY22", "SY23"])
+def test_annual_xlsx_determinism(scheme_year: str):
+    """Two calls on the same committed XLSX must return byte-identical DataFrames (D-21).
+
+    Validates that parse_annual_xlsx_to_aggregate_rows(scheme_year) is
+    purely deterministic: same XLSX bytes → identical scheme_year/year/
+    country/technology/generation_gwh/rocs_issued values, same row order.
+
+    Covers SY18 (2019-20) through SY23 (2024-25) — all six scheme years
+    for which an XLSX dataset companion is committed to data/raw/ofgem/.
+    SY17 is absent (deferred per frontmatter revision_decisions.sy17_disposition).
+    """
+    from uk_subsidy_tracker.data.ofgem_aggregate import parse_annual_xlsx_to_aggregate_rows
+
+    df1 = parse_annual_xlsx_to_aggregate_rows(scheme_year)
+    df2 = parse_annual_xlsx_to_aggregate_rows(scheme_year)
+
+    assert len(df1) > 0, f"parse_annual_xlsx_to_aggregate_rows({scheme_year!r}) returned empty DataFrame"
+    pd.testing.assert_frame_equal(df1, df2, check_exact=True)
 
 
 # ---------------------------------------------------------------------------

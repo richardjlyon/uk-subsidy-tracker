@@ -31,6 +31,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import openpyxl
+import openpyxl.workbook
 import pandas as pd
 import pandera.pandas as pa
 import requests
@@ -170,8 +172,6 @@ def parse_xlsx_to_monthly() -> pd.DataFrame:
         If the sheet structure cannot be parsed (year-header not found or
         unexpected column count).
     """
-    import openpyxl
-
     xlsx_path = DATA_DIR / "raw" / "ofgem" / XLSX_FILENAME
     if not xlsx_path.exists():
         raise FileNotFoundError(
@@ -481,7 +481,7 @@ def _clean_roc_value(v: object) -> float | None:
         return None
 
 
-def _parse_sy18(wb: object, entry_url: str, cal_year: int) -> list[dict]:
+def _parse_sy18(wb: openpyxl.workbook.Workbook, entry_url: str, cal_year: int) -> list[dict]:
     """SY18 (2019-20): Only aggregate totals available — no per-technology breakdown.
 
     Sheet: '2. ROCs issued and generation'
@@ -492,8 +492,6 @@ def _parse_sy18(wb: object, entry_url: str, cal_year: int) -> list[dict]:
     This is the sole year for which technology disaggregation is not available
     in the published XLSX dataset companion.
     """
-    import openpyxl
-
     ws = wb["2. ROCs issued and generation"]
     rocs_total = None
     gen_mwh_total = None
@@ -517,7 +515,7 @@ def _parse_sy18(wb: object, entry_url: str, cal_year: int) -> list[dict]:
     }]
 
 
-def _parse_sy19(wb: object, entry_url: str, cal_year: int) -> list[dict]:
+def _parse_sy19(wb: openpyxl.workbook.Workbook, entry_url: str, cal_year: int) -> list[dict]:
     """SY19 (2020-21): Technology × total-UK ROC data from 'Table 2.2'.
 
     Header row: ['Technology', 'England', 'Scotland', 'Wales', 'Northern Ireland', 'Total']
@@ -555,7 +553,7 @@ def _parse_sy19(wb: object, entry_url: str, cal_year: int) -> list[dict]:
     return rows
 
 
-def _parse_sy20_sy23(wb: object, entry_url: str, scheme_year: str, cal_year: int) -> list[dict]:
+def _parse_sy20_sy23(wb: openpyxl.workbook.Workbook, entry_url: str, scheme_year: str, cal_year: int) -> list[dict]:
     """SY20-SY23: Technology × Country from 'Figure 3.2' (ROCs) + 'Figure 3.3' (MWh).
 
     Sheet 'Figure 3.2': header at row 8 (0-indexed):
@@ -647,8 +645,6 @@ def parse_annual_xlsx_to_aggregate_rows(scheme_year: str) -> pd.DataFrame:
 
     Pure function: same XLSX bytes → byte-identical DataFrame (D-21).
     """
-    import openpyxl
-
     cfg = load_ofgem_annual_reports_config()
     entry = cfg.by_scheme_year(scheme_year)
     xlsx_path = DATA_DIR / "raw" / "ofgem" / entry.local_filename

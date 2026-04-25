@@ -4,7 +4,6 @@ from __future__ import annotations
 import pytest
 
 from uk_subsidy_tracker.data.ofgem_aggregate import (
-    OfgemAnnualReportConfig,
     OfgemAnnualReportsConfig,
     load_ofgem_annual_reports_config,
 )
