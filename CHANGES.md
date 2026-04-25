@@ -9,6 +9,113 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Phase 05.2 — RO Data Reconstruction (Aggregate-Grain)
+
+- `src/uk_subsidy_tracker/data/ofgem_aggregate.py` — Ofgem 12-year XLSX download
+  + pandera-validated CSV loaders for the aggregate grain (Plans 05.2-01, 05.2-02).
+- `src/uk_subsidy_tracker/schemes/ro/aggregate_model.py` — aggregate-grain pipeline
+  emitting `data/derived/ro/annual_summary.parquet` + `by_technology.parquet`
+  from public Ofgem sources; station-level grain dormant (Plan 05.2-03).
+- `data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx` — Ofgem 12-year RO
+  aggregate (primary pre-2019 source) with single-URL `.meta.json` sidecar
+  (Plan 05.2-02).
+- `data/raw/ofgem/ro-annual-aggregate.csv` — SY18–SY23 annual rows emitted from
+  6 Ofgem annual-report XLSX dataset companions via openpyxl (deterministic
+  byte-identical re-runs); per-XLSX sha256-pinned `sources[]` array in `.meta.json`
+  sidecar. SY17 monthly aggregate recovered from the 12-year XLSX; SY17
+  annual-report PDF transcription deferred — the sole scheme year without a
+  machine-readable XLSX dataset companion (Plan 05.2-02).
+- `data/raw/ofgem/roc-prices.csv` — 22 obligation-year rows (buyout + recycle +
+  eroc + mutualisation) transcribed from Ofgem transparency-document PDFs;
+  replaces the Phase 5 header-only stub. SY1-SY4 recycle prices remain NaN —
+  no Ofgem-published source found (Plan 05.2-02).
+- `data/raw/ofgem/ro-generation.csv` — regenerated from the 12-year XLSX via
+  `parse_xlsx_to_monthly()`; sidecar chains derivation back to the XLSX sha256
+  (Plan 05.2-02).
+- `tests/conftest.py` — registers `@pytest.mark.dormant` pytest marker with
+  standardised auto-skip reason "dormant per Phase 05.2; un-skip on backlog
+  999.1" (Plan 05.2-01).
+- `tests/schemes/test_ro_aggregate_model.py` — unit tests for the aggregate
+  pipeline including Protocol conformance + determinism + dormant short-circuit
+  (Plan 05.2-03).
+- `tests/data/test_ofgem_aggregate.py` — mocked-network scraper tests for
+  `ofgem_aggregate.py` (Plan 05.2-02).
+- `tests/fixtures/divergences.yaml` — machine-readable per-year xfail map for
+  `test_ref_constable_ro_reconciliation`; 13 entries (5 deferred-data-gated + 8
+  drift-exceeding) with root-cause reasons and backlog cross-refs (Plan 05.2-06).
+- `tests/test_docs_ro_headline_sync.py` — regression guard asserting
+  `docs/schemes/ro.md` headline GBP bn figure matches `annual_summary.parquet`
+  GB-total to 1 decimal place (Plan 05.2-05).
+- `docs/schemes/ro.md` §7 Methodology `### Data access` subsection — documents
+  the 2025-05-14 Ofgem Public Reports Dashboard withdrawal + what remains
+  publicly downloadable + what is SharePoint-OIDC gated + unlock paths
+  (Plan 05.2-05).
+- `docs/schemes/ro.md` S4 + S5 DEFERRED admonitions — first use of `!!! warning`
+  in the repo; extensions already declared in `mkdocs.yml` (Plan 05.2-05).
+- Multi-source sidecar schema extension — `sidecar.write_sidecar()` gains
+  optional `sources: list[dict] | None = None` parameter; backward-compatible
+  with existing single-URL sidecars (Plan 05.2-01).
+- Dormancy discipline — `# dormant: true` line-1 marker convention on 5 src/
+  modules (`schemes/ro/cost_model.py`, `forward_projection.py`,
+  `aggregation.py`, `data/ofgem_ro.py`, `plotting/subsidy/ro_concentration.py`,
+  `plotting/subsidy/ro_forward_projection.py`); `plotting/__main__.py`
+  auto-skips dormant chart modules; dormant Parquet artefacts
+  (`station_month.parquet`, `by_allocation_round.parquet`,
+  `forward_projection.parquet`) removed from working tree (Plan 05.2-04).
+
+### Changed
+
+#### Phase 05.2 — RO Data Reconstruction (Aggregate-Grain)
+
+- `src/uk_subsidy_tracker/schemas/ro.py` — `RoAnnualSummaryRow.ro_cost_gbp_eroc`
+  and `RoByTechnologyRow.ro_cost_gbp_eroc` changed from `float` to `float | None`
+  (default `None`) to support aggregate grain where per-station e-ROC clearing
+  dispatch is not available (Plan 05.2-03).
+- `src/uk_subsidy_tracker/schemes/ro/__init__.py` — added
+  `DORMANT_STATION_LEVEL: bool = True` module-level flag; `rebuild_derived()`
+  short-circuits station-level grain emission when True and routes through
+  `aggregate_model.py` (Plan 05.2-03).
+- `src/uk_subsidy_tracker/schemes/ro/_refresh.py` — `refresh()` short-circuits
+  station-level downloader calls when dormant; daily cron fetches only the
+  XLSX (Plan 05.2-04).
+- `tests/test_benchmarks.py::ro_annual_totals_gbp_bn` fixture — reads
+  `annual_summary.parquet` (aggregate grain) instead of `station_month.parquet`
+  (dormant); per-year xfail marks loaded from `tests/fixtures/divergences.yaml`
+  at collection time replacing the blanket sentinel mechanism (Plan 05.2-03,
+  05.2-06).
+- Station-level RO tests now carry `@pytest.mark.dormant` and auto-skip
+  (Plan 05.2-04).
+- `docs/schemes/ro.md` — full rewrite preserving SCHEMEPAGE-01 8-section
+  structure; headline recomputed from `annual_summary.parquet`; S4 + S5 sections
+  replaced with DEFERRED admonitions linking to `#data-access` (Plan 05.2-05).
+
+### Fixed
+
+#### Phase 05.2 — RO Data Reconstruction (Aggregate-Grain)
+
+- REF Constable 2025 Table 1 reconciliation hard block partially re-armed.
+  `tests/test_benchmarks.py::test_ref_constable_ro_reconciliation` 9 of 22
+  years now pass hard ±3% (D-14 HARD BLOCK active for 2007, 2009, 2010, 2011,
+  2012, 2014, 2017, 2019, 2023); 13 remaining years carry per-year xfail
+  entries in `tests/fixtures/divergences.yaml` with structured root-cause
+  hypotheses. The Phase 5 blanket sentinel mechanism replaced by per-year
+  structured records in `.planning/phases/05-ro-module/05-09-DIVERGENCE.md`.
+
+### Deferred
+
+#### Phase 05.2 — RO Data Reconstruction (Aggregate-Grain)
+
+- RO-04 S4 (concentration/Lorenz) + S5 (forward projection) charts marked
+  `deferred-data-gated` in `.planning/REQUIREMENTS.md`. Station-level data
+  access blocked by Ofgem Public Reports Dashboard withdrawal 2025-05-14.
+  Dormant code preserved; reactivated by flipping `DORMANT_STATION_LEVEL`
+  to False + removing `@pytest.mark.dormant` marks.
+- 13 REF reconciliation years remain xfailed: 5 deferred-data-gated (2002,
+  2003, 2004, 2005 — SY1-SY4 ROC prices absent; 2018 — SY17 PDF-only) + 8
+  drift-exceeding (2006, 2008, 2013, 2015, 2016, 2020, 2021, 2022) with
+  per-entry root-cause hypotheses and backlog cross-refs. Unlock: resolve
+  root cause, re-run, remove entry from `tests/fixtures/divergences.yaml`.
+
 #### Phase 05.1 — CfD Scheme Page Retrofit
 
 - **CfD scheme-detail page** (Plan 05.1-01). `docs/schemes/cfd.md` (~250
