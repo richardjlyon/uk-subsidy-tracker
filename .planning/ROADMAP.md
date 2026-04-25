@@ -140,7 +140,7 @@ Plans:
   10. CHANGES.md [Unreleased] documents the full audit trail of what shipped + what was deferred + why
   11. `mkdocs build --strict` passes with zero warnings post-commit
   12. Phase 6 portal can populate the RO grid tile with a real headline number drawn from `data/derived/ro/annual_summary.parquet`
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 - [x] 05.2-01-PLAN.md — Sidecar sources[] extension + data/ofgem_aggregate.py loader skeleton + tests/conftest.py pytest.mark.dormant registration (RO-03)
@@ -148,7 +148,7 @@ Plans:
 - [x] 05.2-03-PLAN.md — schemas/ro.py aggregate-grain nullability + schemes/ro/aggregate_model.py pipeline + DORMANT_STATION_LEVEL short-circuit + test_benchmarks.py fixture adaptation (RO-03, RO-06)
 - [x] 05.2-04-PLAN.md — Dormancy discipline: `# dormant: true` line-1 markers on 5 src/ modules + plotting/__main__.py dormant-skip logic + `@pytest.mark.dormant` applied across station-level tests + dormant Parquet + chart artefacts removed (RO-04)
 - [x] 05.2-05-PLAN.md — docs/schemes/ro.md rewrite with real S2+S3 charts + DEFERRED S4/S5 admonitions + §7 Data access subsection + headline-sync regression test + theme-page link updates + mkdocs --strict (RO-04, RO-05)
-- [ ] 05.2-06-PLAN.md — 05-09-DIVERGENCE.md sentinel delete + REF reconciliation un-xfail + REQUIREMENTS.md deferred-data-gated update + CHANGES.md audit trail + ROADMAP.md bookkeeping + phase-exit gate (RO-04, RO-05, RO-06)
+- [x] 05.2-06-PLAN.md — 05-09-DIVERGENCE.md narrowed to per-year structured entries + divergences.yaml machine-readable xfail map + per-year xfail wiring in test_benchmarks.py + REQUIREMENTS.md S4/S5 deferred-data-gated update + CHANGES.md Phase 05.2 audit trail + ROADMAP.md bookkeeping + phase-exit gate (RO-04, RO-05, RO-06)
 **UI hint**: yes (visible page changes to docs/schemes/ro.md)
 
 ### Phase 05.1: CfD Scheme Page Retrofit (INSERTED)
@@ -252,6 +252,7 @@ Plans:
 | 4. Publishing Layer | 0/6 | Not started | - |
 | 5. RO Module | 13/13 | Complete   | 2026-04-25 |
 | 05.1. CfD Scheme Page Retrofit | 4/4 | Complete    | 2026-04-24 |
+| 05.2. RO Data Reconstruction (Aggregate-Grain) | 6/6 | Complete    | 2026-04-25 |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
 | 8. Constraint Payments Module | 0/0 | Not started | - |
@@ -328,8 +329,77 @@ Plans:
 Plans:
 - [ ] TBD (promote with `/gsd-review-backlog` when primary source located)
 
+### Phase 999.3: SY17 RO Annual Report PDF Transcription (BACKLOG)
+
+**Goal**: Populate `data/raw/ofgem/ro-annual-aggregate.csv` SY17 (scheme year 2018-19)
+row from the Ofgem annual report PDF, replacing the current deferred entry. SY17 is the
+sole scheme year without a machine-readable XLSX dataset companion; all other SY18-SY23
+rows are emitted from XLSX companions via openpyxl (Plan 05.2-02).
+
+**Impact**: ~£5.9bn scheme year (REF Table 1 value); closes the
+`ref_constable[2018]` xfail entry in `tests/fixtures/divergences.yaml` and the
+corresponding row in `.planning/phases/05-ro-module/05-09-DIVERGENCE.md`.
+
+**Resolution steps**:
+1. Locate the Ofgem RO Annual Report for SY 2018-19 (the report covering
+   April 2018 – March 2019). Likely at `https://www.ofgem.gov.uk/publications/`
+   or archived at Wayback Machine.
+2. HEAD-verify the URL (require HTTP 200).
+3. Extract total obligation cost + per-technology breakdown for SY17.
+4. Transcribe into `ro-annual-aggregate.csv` SY17 row with Provenance block.
+5. Update `ro-annual-aggregate.csv.meta.json` `sources[]` with the PDF URL +
+   sha256 + retrieved_at.
+6. Re-run `uv run pytest tests/test_benchmarks.py -q -k ref_constable-2018`.
+7. If drift < 3%: remove year 2018 from `tests/fixtures/divergences.yaml`
+   AND the corresponding row from DIVERGENCE.md.
+
+**Cross-ref**: DIVERGENCE.md deferred-data-gated table (year=2018);
+`tests/fixtures/divergences.yaml` entry year=2018; Plan 05.2-02 frontmatter
+`sy17_disposition` deferral; `data/raw/ofgem/ro-annual-aggregate.csv` SY17 row.
+
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (promote with `/gsd-review-backlog` when SY17 annual report PDF located)
+
+### Phase 999.4: RO ref_constable Per-Year Drift Tightening (BACKLOG)
+
+**Goal**: Resolve root causes for the 8 REF reconciliation years currently
+exceeding ±3% tolerance, promoting each from xfailed to hard-assertion as
+fixes land. Years affected: 2006, 2008, 2013, 2015, 2016, 2020, 2021, 2022.
+
+**Per-year root-cause hypotheses** (from DIVERGENCE.md drift-exceeding table):
+- 2006 (SY5, +6.8%): 12-year XLSX GB/NI scope vs REF GB-only — early NIRO inclusion
+- 2008 (SY7, +6.1%): same GB/NI scope issue as 2006
+- 2013 (SY12, +3.5%): borderline — likely rounding at 2013 banding-review boundary
+- 2015 (SY14, +8.5%): 2013 banding transition — possible double-count under old+new banding
+- 2016 (SY15, -4.0%): possibly related to 2013 banding transition tail
+- 2020 (SY19, +4.4%): SY19 year-semantics; no per-tech MWh in source XLSX
+- 2021 (SY20, -9.6%): mutualisation single-row attribution vs REF scope
+- 2022 (SY21, -4.6%): mutualisation tail / SY21 specific
+
+**Resolution approach**:
+For each year, investigate the root-cause hypothesis, fix the aggregate model or
+parser, re-measure drift, and if drift < 3%: remove from `divergences.yaml` and
+DIVERGENCE.md. D-14 policy unchanged — do NOT widen `REF_TOLERANCE_PCT`.
+
+**Unlock procedure**: per DIVERGENCE.md §"Unlock procedure" (remove entry from
+`tests/fixtures/divergences.yaml` + DIVERGENCE.md row + verify promoted year
+shows as `passed` + `test_divergences_yaml_sync` still passes).
+
+**Cross-ref**: `.planning/phases/05-ro-module/05-09-DIVERGENCE.md`
+drift-exceeding table; `tests/fixtures/divergences.yaml` entries for years
+2006, 2008, 2013, 2015, 2016, 2020, 2021, 2022; `REF_TOLERANCE_PCT = 3.0`
+in `tests/test_benchmarks.py`.
+
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (promote with `/gsd-review-backlog` when prioritised)
+
 ---
 *Roadmap defined: 2026-04-21*
 *Maps 1:1 to ARCHITECTURE.md §11 phases P0–P11*
 *Backlog section added: 2026-04-24*
 *Backlog 999.2 added: 2026-04-25*
+*Backlog 999.3 + 999.4 added: 2026-04-25 (Phase 05.2 close-out)*
