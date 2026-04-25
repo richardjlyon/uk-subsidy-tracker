@@ -11,7 +11,7 @@
 - [x] **Phase 2: Test & Benchmark Scaffolding** — Four test classes, CI green on main; counterfactual formula pinned
 - [ ] **Phase 3: Chart Triage Execution** — CUT files deleted, seven PROMOTE charts documented, five-theme docs structure built
 - [x] **Phase 4: Publishing Layer** — manifest.json, CSV mirror, snapshot, data how-to; three-layer pipeline operational for CfD (completed 2026-04-23)
-- [ ] **Phase 5: RO Module** — Full Renewables Obligation scheme module, S2–S5 charts, benchmarks within 3% of Turver
+- [x] **Phase 5: RO Module** — Full Renewables Obligation scheme module, S2–S5 charts, benchmarks within 3% of Turver (completed 2026-04-25)
 - [x] **Phase 05.1: CfD Scheme Page Retrofit** — cfd.md scheme page mirroring ro.md; homepage pivoted to 2×4 scheme grid; 4 overlap theme pages removed
 - [ ] **Phase 6: Flagship Cross-Scheme Charts** — X1/X2/X3 portal charts, portal homepage with scheme grid
 - [ ] **Phase 7: FiT Module** — Feed-in Tariff scheme module, S2/S3/S5 charts, scheme grid tile
@@ -107,7 +107,7 @@ Plans:
   3. `tests/test_benchmarks.py` passes with RO 2011–2022 aggregate within 3% of REF Constable 2025 Table 1 per-year figures; any divergence is documented (per CONTEXT D-13 post-research amendment)
   4. `docs/schemes/ro.md` scheme page exists with S2–S5 chart embeds and links to Cost and Recipients theme pages
   5. RO derived Parquet tables (`station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`) are present in `data/derived/ro/` after a build
-**Plans:** 5/13 plans executed
+**Plans:** 13/13 plans complete
 Plans:
 - [x] 05-01-PLAN.md — Ofgem RER scraper investigation + ofgem_ro.py + roc_prices.py + seed raw/ofgem/ tree + sidecars + mocked scraper tests (RO-01)
 - [x] 05-02-PLAN.md — ro_bandings.yaml ~60-row table + Pydantic RoBandingEntry/RoBandingTable loader + unit tests (RO-02)
@@ -250,7 +250,7 @@ Plans:
 | 2. Test & Benchmark Scaffolding | 5/5 | Complete | 2026-04-22 |
 | 3. Chart Triage Execution | 4/4 | Complete | 2026-04-22 |
 | 4. Publishing Layer | 0/6 | Not started | - |
-| 5. RO Module | 5/13 | In Progress|  |
+| 5. RO Module | 13/13 | Complete   | 2026-04-25 |
 | 05.1. CfD Scheme Page Retrofit | 4/4 | Complete    | 2026-04-24 |
 | 6. Flagship Cross-Scheme Charts | 0/0 | Not started | - |
 | 7. FiT Module | 0/0 | Not started | - |
