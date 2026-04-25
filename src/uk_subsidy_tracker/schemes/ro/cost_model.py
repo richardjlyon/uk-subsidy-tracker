@@ -269,37 +269,50 @@ def build_station_month(output_dir: Path) -> pd.DataFrame:
 
     # Zero-fill null price columns so downstream arithmetic is safe. Nullable
     # mutualisation is preserved as NaN → null on the final row (D-11).
+    # Column names match roc-prices.csv header verbatim (D-03):
+    #   eroc_gbp_per_roc       — e-ROC clearing price per ROC (nullable)
+    #   mutualisation_gbp_total — total GBP mutualisation (not per-ROC); D-11 SY20 only
     for col in ["buyout_gbp_per_roc", "recycle_gbp_per_roc"]:
         if col not in df.columns:
             df[col] = 0.0
         df[col] = df[col].fillna(0.0)
-    if "eroc_clearing_gbp_per_roc" not in df.columns:
-        df["eroc_clearing_gbp_per_roc"] = pd.Series([pd.NA] * len(df), dtype="Float64")
-    if "mutualisation_gbp_per_roc" not in df.columns:
-        df["mutualisation_gbp_per_roc"] = pd.Series(
+    if "eroc_gbp_per_roc" not in df.columns:
+        df["eroc_gbp_per_roc"] = pd.Series([pd.NA] * len(df), dtype="Float64")
+    if "mutualisation_gbp_total" not in df.columns:
+        df["mutualisation_gbp_total"] = pd.Series(
             [pd.NA] * len(df), dtype="Float64"
         )
 
     # --------------------------------------------------------------
     # 8. Compute cost columns (D-02, D-05, D-11).
     # --------------------------------------------------------------
-    mutualisation_per_roc = df["mutualisation_gbp_per_roc"].fillna(0.0).astype(float)
+    # mutualisation_gbp_total is the TOTAL GBP amount for the obligation year (D-11),
+    # not a per-ROC figure. For a given station×month row we apportion it proportionally
+    # as: station_mutualisation = (station_rocs / total_oy_rocs) * total_mutualisation.
+    # However, since cost_model.py builds a per-row view, use the total directly as
+    # the denominator-free additive term per obligation year (spread across all rows
+    # in the rollup). For per-station-month precision: store the raw total in
+    # mutualisation_gbp so aggregation.py can roll up correctly without double-counting.
+    # The ro_cost_gbp formula adds the full total only once by relying on the
+    # aggregation layer to sum across all station-month rows in the OY.
+    #
+    # Per-station per-ROC contribution: buyout + recycle (D-02 primary, no carbon D-05).
     rocs = df["rocs_issued"].fillna(0.0).astype(float)
     buyout = df["buyout_gbp_per_roc"].astype(float)
     recycle = df["recycle_gbp_per_roc"].astype(float)
 
-    df["ro_cost_gbp"] = rocs * (buyout + recycle + mutualisation_per_roc)
+    df["ro_cost_gbp"] = rocs * (buyout + recycle)
     # eROC sensitivity: if clearing price absent for an OY, fall back to
     # (buyout + recycle) so the sensitivity column is always populated.
-    eroc = df["eroc_clearing_gbp_per_roc"].astype(float).fillna(buyout + recycle)
+    eroc = df["eroc_gbp_per_roc"].astype(float).fillna(buyout + recycle)
     df["ro_cost_gbp_eroc"] = rocs * eroc
     # RO carries no embedded carbon component (ROC price is legislatively fixed,
     # buyout + recycle). Column kept for schema parity per D-05 docstring above.
     df["ro_cost_gbp_nocarbon"] = df["ro_cost_gbp"]
-    # Per-row mutualisation £ — null iff no mutualisation price for that OY.
-    df["mutualisation_gbp"] = (
-        rocs * df["mutualisation_gbp_per_roc"].astype("Float64")
-    )
+    # Per-row mutualisation £ total — null iff no mutualisation for that OY.
+    # Stored as the raw total (not per-station); aggregation.py picks the first
+    # non-null value per OY (all rows in same OY carry identical total).
+    df["mutualisation_gbp"] = df["mutualisation_gbp_total"].astype("Float64")
 
     # --------------------------------------------------------------
     # 9. Gas counterfactual — annual-average lookup by calendar year.

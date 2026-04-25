@@ -1,0 +1,37 @@
+# ROC-prices source manifest (Plan 05.2-02 Task 6)
+# Format: <obligation_year> <source_file_or_url> <sha256> <retrieved_on>
+#
+# Obligation years SY9-SY22 (2010-11 to 2023-24): exact values from SY22 XLSX Figure A4.1
+# Obligation years SY5-SY8 (2006-07 to 2009-10): derived from SY18 XLSX Table 4.5 + 12-year XLSX
+# Obligation years SY1-SY4 (2002-03 to 2005-06): algebraic estimate from SY18 XLSX scheme values
+#
+# Primary source: Ofgem RO Annual Report SY22 Dataset Companion XLSX
+#   (covers Figure A4.1: Determination of ROC recycle value since SY9)
+2010-11 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2011-12 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2012-13 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2013-14 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2014-15 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2015-16 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2016-17 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2017-18 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2018-19 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2019-20 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2020-21 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2021-22 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2022-23 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+2023-24 data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx 8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63 2026-04-24
+# SY5-SY8: derived from redistribution amounts (SY18 XLSX) divided by annual ROC issues (12-yr XLSX)
+2006-07 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2007-08 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2008-09 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2009-10 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2006-07 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
+2007-08 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
+2008-09 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
+2009-10 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
+# SY1-SY4: algebraic estimate from scheme values + statutory buyout prices (SY18 XLSX Figure 4.5)
+2002-03 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2003-04 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2004-05 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+2005-06 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24

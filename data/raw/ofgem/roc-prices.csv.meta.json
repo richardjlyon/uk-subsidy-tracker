@@ -1,8 +1,31 @@
 {
-  "backfilled_at": "2026-04-22",
   "http_status": null,
+  "notes": "ROC price transcription from Ofgem XLSX annual-report companions. SY9-SY22 exact from Figure A4.1 in SY22 dataset XLSX. SY5-SY8 derived: redistributed / rocs_issued (12-year XLSX + SY18 XLSX Table 4.5). SY1-SY4 algebraically estimated from scheme values and statutory buyout prices. eroc_gbp_per_roc deferred (e-ROC market data not yet transcribed). mutualisation_gbp_total: SY20 (2021-22) = \u00a3119,668,290 from SY22 XLSX Figures A3.3+A3.4.",
   "publisher_last_modified": null,
-  "retrieved_at": "2026-04-22T00:00:00+00:00",
-  "sha256": "6e7383713b4052bd0d271d04143609a8501d4e59bc4d80104fc80a3ff3832611",
-  "upstream_url": "option-d-stub:ofgem-rer-manual"
+  "retrieved_at": "2026-04-24T00:00:00+00:00",
+  "sha256": "709e75134cfad44600435020e67ec6060e676148f7aa55cef335daac26ac5f57",
+  "sources": [
+    {
+      "local_file": "data/raw/ofgem/ro_annual_report_sy22_dataset.xlsx",
+      "notes": "SY22 annual report XLSX \u2014 Figure A4.1 provides exact recycle_gbp_per_roc and worth_of_roc (= buyout + recycle) for SY9 (2010-11) through SY22 (2023-24). Used as primary source for all SY9-SY22 values.",
+      "retrieved_on": "2026-04-24",
+      "sha256": "8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2024-11/RO_Annual_Report_SY22_Dataset_20241119113128.xlsx"
+    },
+    {
+      "local_file": "data/raw/ofgem/ro_annual_report_data_2019-20.xlsx",
+      "notes": "SY18 annual report XLSX \u2014 '4. Supplier Compliance' sheet Table 4.5 provides redistribution amounts 2002-03 to 2019-20, and Figure 4.5 provides scheme values 2002-03 to 2019-20. Used to derive recycle estimates for SY1-SY8.",
+      "retrieved_on": "2026-04-24",
+      "sha256": "ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/docs/2021/03/ro_annual_report_data_2019-20.xlsx"
+    },
+    {
+      "local_file": "data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx",
+      "notes": "12-year XLSX (2006-2018) \u2014 'ROCs by Tech & Country' annual-section TOTAL rows provide annual ROC issue counts for SY5-SY8 (2006-07 to 2009-10). Used as denominator in recycle computation: recycle = redistributed / rocs_issued.",
+      "retrieved_on": "2026-04-24",
+      "sha256": "76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2025-05/rocs_report_2006_to_2018_20250410081520.xlsx"
+    }
+  ],
+  "upstream_url": "transcribed-from-ofgem-xlsx-annual-report-companions"
 }

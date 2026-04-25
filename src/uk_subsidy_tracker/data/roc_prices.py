@@ -55,6 +55,10 @@ _OPTION_D_MSG = (
 
 # Pandera schema — loader-owned validation per Phase 2 D-04.
 # `strict=False` permits the Option-D header-only stub (0 data rows).
+# Column names match roc-prices.csv header verbatim:
+#   eroc_gbp_per_roc       — e-ROC clearing price per ROC (nullable)
+#   mutualisation_gbp_total — total mutualisation payment in GBP (NOT per-ROC; nullable)
+#                             non-zero only for SY20 2021-22 (D-11 event)
 roc_prices_schema = pa.DataFrameSchema(
     {
         "obligation_year": pa.Column(
@@ -63,8 +67,8 @@ roc_prices_schema = pa.DataFrameSchema(
         ),
         "buyout_gbp_per_roc": pa.Column(float, coerce=True),
         "recycle_gbp_per_roc": pa.Column(float, coerce=True),
-        "eroc_clearing_gbp_per_roc": pa.Column(float, nullable=True, coerce=True),
-        "mutualisation_gbp_per_roc": pa.Column(float, nullable=True, coerce=True),
+        "eroc_gbp_per_roc": pa.Column(float, nullable=True, coerce=True),
+        "mutualisation_gbp_total": pa.Column(float, nullable=True, coerce=True),
     },
     strict=False,
     coerce=True,
@@ -110,7 +114,7 @@ def load_roc_prices() -> pd.DataFrame:
     schema catches column-name / dtype / regex drift at read time.
     """
     path = DATA_DIR / "raw" / "ofgem" / "roc-prices.csv"
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, comment="#")  # skip Provenance header block (D-03)
     df = roc_prices_schema.validate(df)
     return df
 
