@@ -25,6 +25,11 @@ import requests
 
 from uk_subsidy_tracker.data import ofgem_ro, roc_prices
 
+# Dormant per Phase 05.2 (D-06). Station-level Ofgem RER scraper tests
+# are preserved in-tree but auto-skipped while DORMANT_STATION_LEVEL is True.
+# Un-skip on backlog 999.1 by removing this pytestmark line.
+pytestmark = pytest.mark.dormant
+
 
 # ---------------------------------------------------------------------------
 # ofgem_ro.download_ofgem_ro_register
