@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-04-25T00:46:07.484Z",
+  "phase": "05.2",
+  "phase_name": "ro-data-reconstruction-aggregate-grain",
+  "phase_dir": ".planning/phases/05.2-ro-data-reconstruction-aggregate-grain",
+  "plan": 2,
+  "task": 2,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "05.2-01", "name": "Foundations — sidecar sources[] + ofgem_aggregate skeleton + conftest dormant hook", "status": "done", "commit": "66934f0"},
+    {"id": "05.2-02 task 1", "name": "Download Ofgem 12-year XLSX + sidecar; delete dormant ro-register stub", "status": "done", "commit": "d224044"},
+    {"id": "05.2-02 task 2 prep", "name": "Land transcription-skeleton CSVs (ro-annual-aggregate.csv + roc-prices.csv) — SUPERSEDED by re-plan", "status": "superseded", "commit": "a720ae7"}
+  ],
+  "remaining_tasks": [
+    {"id": "05.2-02 task 2 (revised)", "name": "Download SY18-SY23 XLSX dataset companions + sidecars (6 years)", "status": "needs_replan"},
+    {"id": "05.2-02 task 2 (revised)", "name": "Decide SY17 fate — PDF transcription or defer entirely", "status": "needs_replan"},
+    {"id": "05.2-02 task 3 (revised)", "name": "Implement parse_xlsx_to_monthly() + per-year openpyxl-driven CSV emission", "status": "needs_replan"},
+    {"id": "05.2-03", "name": "Aggregate-grain pipeline → annual_summary.parquet + by_technology.parquet", "status": "not_started"},
+    {"id": "05.2-04", "name": "Dormancy discipline — # dormant: true marker propagation", "status": "not_started"},
+    {"id": "05.2-05", "name": "docs/schemes/ro.md rewrite with S4/S5 deferred admonitions", "status": "not_started"},
+    {"id": "05.2-06", "name": "Phase close-out — DIVERGENCE sentinel deletion + REQUIREMENTS/CHANGES/ROADMAP", "status": "not_started"}
+  ],
+  "blockers": [
+    {
+      "description": "Plan 05.2-02 transcription premise invalidated. Original plan scoped 7 SY17-SY23 PDF transcriptions; discovery during execution: (a) the executor's prepared URLs used wrong Ofgem URL stem (transparency-document/ vs publications/) and were fabricated slugs that 404, (b) Ofgem actually publishes machine-readable XLSX dataset companions for 6 of 7 reports, materially stronger provenance posture than transcription. Plan needs revision before continuation.",
+      "type": "technical",
+      "workaround": "/gsd-plan-phase 05.2 --revise (or recreate Plan 05.2-02 manually around XLSX downloads)"
+    }
+  ],
+  "human_actions_pending": [
+    {
+      "action": "Run /gsd-plan-phase 05.2 to regenerate Plan 05.2-02 around XLSX downloads (or manually edit the plan file to swap transcription tasks for XLSX download + parse tasks)",
+      "context": "CONTEXT.md commit b934492 captures the full URL inventory + re-plan implications. Re-plan should consume that section directly.",
+      "blocking": true
+    },
+    {
+      "action": "Decide SY17 fate (PDF-only — transcribe vs defer)",
+      "context": "SY17 is the only year without an XLSX companion. Either keep manual transcription for that one year, or defer SY17 alongside the deferred station-level data (REF Constable benchmark covers SY17 implicitly — its £bn total is in tests/fixtures/benchmarks.yaml). Re-plan must record the choice.",
+      "blocking": false
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Pause Plan 05.2-02 mid-execution and re-plan around XLSX downloads",
+      "rationale": "Original plan's transcription premise is invalidated by discovery that 6 of 7 Ofgem RO annual reports ship machine-readable XLSX dataset companions. Continuing with manual transcription would (a) be wasted effort vs available canonical data, (b) introduce transcription error risk vs sha256-pinned XLSX, (c) leave Plan/code drift if the plan is silently revised inline.",
+      "phase": "05.2"
+    },
+    {
+      "decision": "Keep Wave 1 (Plan 05.2-01) commits as final — they are not affected",
+      "rationale": "Plan 05.2-01 outputs (sidecar sources[] kwarg, ofgem_aggregate.py skeleton, conftest dormant hook) are substrate the revised Plan 05.2-02 still consumes. Five commits: 6677618, 7dc303f, c607d84, 74a6c15, 9c9d2c6 + metadata 66934f0.",
+      "phase": "05.2"
+    },
+    {
+      "decision": "Keep commit d224044 (12-year XLSX + sidecar)",
+      "rationale": "12-year XLSX is canonical Ofgem-published raw data covering SY02-SY16. Its sha256-pinned sidecar is the same provenance posture the revised Plan 05.2-02 will use for SY18-SY23 XLSX. No reason to revert.",
+      "phase": "05.2"
+    },
+    {
+      "decision": "Mark commit a720ae7 (transcription-skeleton CSVs) as SUPERSEDED",
+      "rationale": "Skeleton CSVs were prepped for human PDF transcription that won't happen. Column shape may survive into the revised plan (XLSX-driven CSV emission could use the same column names) but file content gets replaced. Re-plan decides revert-vs-replace-in-place.",
+      "phase": "05.2"
+    }
+  ],
+  "uncommitted_files": [],
+  "next_action": "User runs /gsd-plan-phase 05.2 to regenerate Plan 05.2-02 around XLSX downloads. After re-plan completes, run /gsd-execute-phase 05.2 to resume.",
+  "context_notes": "Phase paused after Wave 1 success + partial Wave 2 progress. Test suite at 175 passed + 14 skipped + 22 xfailed (Wave 1 baseline; Wave 2 added no tests). Working tree clean post-pause-commit. The CONTEXT.md SY17–SY23 discovery section (commit b934492) is the canonical handoff for the re-plan — it carries the full URL inventory, file size table, and structural implications. The original 16 D-decisions in CONTEXT.md still hold; the re-plan adjusts SC #5 wording from 'transcription' to 'ingestion' and reshapes Plan 05.2-02 task structure but leaves D-01 through D-16 untouched."
+}
