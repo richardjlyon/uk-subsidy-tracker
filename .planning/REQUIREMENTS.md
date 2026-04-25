@@ -45,6 +45,8 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 - [x] **RO-03**: RO derived Parquet tables: `station_month`, `annual_summary`, `by_technology`, `by_allocation_round`, `forward_projection`
 - [x] **RO-04**: RO S2 dynamics chart (4-panel), S3 cost by technology, S4 concentration/Lorenz, S5 forward commitment published
+  - [ ] **deferred-data-gated**: SY1-SY4 (2002-03 to 2005-06) ROC buyout/recycle prices — no Ofgem-published recycle value found; all Ofgem transparency-document PDFs for these years return 404. Price columns left empty (NaN) in `data/raw/ofgem/roc-prices.csv`. Will be populated when a primary-source recycle value is located. Cross-ref: backlog 999.2.
+  - [ ] **deferred-data-gated**: e-ROC clearing prices (`eroc_gbp_per_roc`) for all scheme years — quarterly e-ROC auction clearing prices not yet transcribed from `www.e-roc.co.uk`. Pipeline uses `(buyout + recycle)` fallback when `eroc` is null per `cost_model.py` implementation. All 22 rows carry `eroc_gbp_per_roc=null`.
 - [x] **RO-05**: RO scheme docs page (`docs/schemes/ro.md`) + theme-page integration for Cost and Recipients themes
 - [x] **RO-06**: RO aggregate 2011-2022 benchmarks within 3% of Turver's published totals
 

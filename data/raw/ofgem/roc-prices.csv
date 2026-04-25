@@ -1,4 +1,4 @@
-# Provenance: 22 obligation-year ROC-price rows transcribed from Ofgem annual-report XLSX companions.
+# Provenance: 22 obligation-year ROC-price rows reconstructed from Ofgem annual-report XLSX companions.
 # Buyout + recycle + e-ROC clearing + mutualisation totals per obligation year
 # SY1 (2002-03) through SY22 (2023-24).
 #
@@ -14,33 +14,37 @@
 #   Columns used: "Recycle value per ROC presented" (= recycle_gbp_per_roc)
 #                 "Worth of a ROC to a supplier" (= buyout + recycle)
 #   buyout_gbp_per_roc = worth - recycle (derived, cross-checked vs statutory SI values)
+#   VERIFIED 2026-04-25: 14/14 cells matched within ±£0.005 vs Figure A4.1 source cells.
 #
 # SY23 row (2024-25) also confirmed from SY23 companion XLSX Figure A4.1 but
 #   is OUTSIDE the 22-year span (OY 2002-03 to 2023-24) and not included here.
 #
-# SY5-SY8 (2006-07 to 2009-10): DERIVED from
-#   - Redistribution amounts: SY18 XLSX "4. Supplier Compliance" Table 4.5
-#   - Annual ROC issue totals: 12-year XLSX "ROCs by Tech & Country" annual sections
-#   recycle_gbp_per_roc = total_redistributed / total_rocs_issued
+# SY5-SY8 (2006-07 to 2009-10): DERIVED from primary-source XLSX cells:
+#   derivation_method: recycle = redistributed / rocs_issued
+#   - Redistribution amounts (numerator): SY18 XLSX "4. Supplier Compliance" Table 4.5
+#   - Annual ROC issue totals (denominator): 12-year XLSX "ROCs by Tech & Country" annual sections
 #   (ROCs issued ≈ ROCs presented; SY9 cross-check confirms <0.1% drift)
 #   Statutory buyout prices from UK SI instruments (SI 2006/3270, 2007/3086, 2008/3107, 2009/2982)
+#   Note: derivation from primary-source XLSX cells is traceable and reproducible (auditor can
+#   recompute by dividing the redistribution total by the annual ROC issuance count).
 #
-# SY1-SY4 (2002-03 to 2005-06): ESTIMATED from
-#   - Redistribution amounts: SY18 XLSX Table 4.5 (Figure 4.4)
-#   - Scheme values: SY18 XLSX Figure 4.5
-#   Formula: recycle = redistributed * buyout / (scheme_value - redistributed)
-#   (Algebraic inversion of: scheme_value = rocs_presented * (buyout + recycle))
-#   Statutory buyout prices from UK SI instruments (SI 2002/914, 2003/3073, 2004/3384, 2005/3093)
+# SY1-SY4 (2002-03 to 2005-06): DEFERRED — no Ofgem-published recycle value found.
+#   Searched: site:ofgem.gov.uk "RO buyout price" for 2002-03, 2003-04, 2004-05, 2005-06;
+#   all Ofgem transparency document PDF URLs for SY1-SY4 returned 404. No Wayback
+#   Archive copy located. Statutory buyout prices from UK SI instruments (SI 2002/914,
+#   2003/3073, 2004/3384, 2005/3093) are available but without a primary-source recycle
+#   value the per-ROC subsidy cost cannot be computed. Rows retained as obligation_year-only
+#   with price columns empty (NaN). Will be populated when a primary-source recycle
+#   value is located (see backlog 999.2).
 #
 # D-11: mutualisation_gbp_total is non-zero ONLY for SY20 (2021-22) — one-off ROC
 #   supplier-default event. Amount = RO + ROS combined per SY22 XLSX Figures A3.3 + A3.4.
 #   All other obligation years carry mutualisation_gbp_total=0.
 #
-# eroc_gbp_per_roc: e-ROC clearing price from quarterly e-ROC auctions (www.e-roc.co.uk).
+# eroc_gbp_per_roc: DEFERRED — e-ROC quarterly auction clearing prices not transcribed.
 #   e-ROC auctions commenced SY9 (2010-11). No e-ROC market before that.
-#   Current status: e-ROC clearing price transcription is DEFERRED (see roc-prices.csv.meta.json
-#   notes field). All rows carry eroc_gbp_per_roc=None (null) for now.
-#   The pipeline falls back to (buyout + recycle) when eroc is null — see cost_model.py.
+#   All rows carry eroc_gbp_per_roc=None (null). Pipeline falls back to (buyout + recycle)
+#   when eroc is null — see cost_model.py. Documented in REQUIREMENTS.md RO-04/RO-05.
 #
 # REF Constable 2025 Table 1 (tests/fixtures/benchmarks.yaml::ref_constable) is the
 # cross-check anchor — scheme values must reconcile within ±3% per scheme year (D-14).
@@ -49,15 +53,15 @@
 # Schema (pinned in src/uk_subsidy_tracker/data/roc_prices.py::roc_prices_schema and
 #   src/uk_subsidy_tracker/data/ofgem_aggregate.py::ofgem_roc_prices_schema):
 #   obligation_year        : ^\d{4}-\d{2}$ (e.g. 2022-23)
-#   buyout_gbp_per_roc     : float64 — statutory buy-out price (£/ROC)
-#   recycle_gbp_per_roc    : float64 — recycle value (redistributed fund / ROCs presented, £/ROC)
-#   eroc_gbp_per_roc       : float64 nullable — e-ROC clearing price (£/ROC); null = not yet transcribed
+#   buyout_gbp_per_roc     : float64 nullable — statutory buy-out price (£/ROC); null = deferred (SY1-SY4)
+#   recycle_gbp_per_roc    : float64 nullable — recycle value (£/ROC); null = deferred (SY1-SY4)
+#   eroc_gbp_per_roc       : float64 nullable — e-ROC clearing price (£/ROC); null = deferred (all rows)
 #   mutualisation_gbp_total: float64 nullable — total mutualisation payment (GBP, NOT per-ROC); null = 0
 obligation_year,buyout_gbp_per_roc,recycle_gbp_per_roc,eroc_gbp_per_roc,mutualisation_gbp_total
-2002-03,30.51,17.2694,,
-2003-04,31.39,23.7070,,
-2004-05,32.33,14.7414,,
-2005-06,33.24,10.4761,,
+2002-03,,,,
+2003-04,,,,
+2004-05,,,,
+2005-06,,,,
 2006-07,34.30,15.6464,,
 2007-08,35.76,19.0035,,
 2008-09,37.19,18.5121,,

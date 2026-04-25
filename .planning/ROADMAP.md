@@ -304,7 +304,32 @@ Backlog items live outside the active milestone sequence. Promote with `/gsd-rev
 Plans:
 - [ ] TBD (promote with `/gsd-review-backlog` when trigger fires)
 
+### Phase 999.2: SY1-SY4 ROC Prices — Primary-Source Recycle Values (BACKLOG)
+
+**Goal**: Populate `buyout_gbp_per_roc` and `recycle_gbp_per_roc` for obligation years 2002-03 through 2005-06 from a primary Ofgem-published source, replacing the current deferred-data-gated empty (NaN) cells in `data/raw/ofgem/roc-prices.csv`.
+
+**Background**: Plan 05.2-02 audit cleanup (2026-04-25) removed algebraically-estimated SY1-SY4 values (derived from scheme totals + statutory buyout prices via algebraic inversion) because the methodology does not constitute a primary-source transcription. Searched site:ofgem.gov.uk for transparency-document PDFs covering 2002-03 through 2005-06; all returned 404. Wayback Archive search found no archived copies.
+
+**What is needed**: An Ofgem-published document (annual report, transparency document, or equivalent) that states the actual recycle value per ROC for one or more of SY1-SY4. Statutory buyout prices are available from UK SI instruments (SI 2002/914, 2003/3073, 2004/3384, 2005/3093); only the recycle value is missing.
+
+**Resolution steps**:
+1. Locate a primary Ofgem source (archived PDF, FOI response, or historical annual report) that publishes recycle values for SY1-SY4
+2. HEAD-verify the URL (require HTTP 200)
+3. Download to `data/raw/ofgem/transparency-documents/` and compute sha256
+4. Transcribe recycle values verbatim into `roc-prices.csv` SY1-SY4 rows
+5. Update `roc-prices.csv.meta.json` sources[] + `roc-prices-manifest.txt`
+6. Update provenance comment block in `roc-prices.csv` from DEFERRED to EXACT/DERIVED as appropriate
+7. Remove deferred-data-gated sub-bullet for SY1-SY4 from REQUIREMENTS.md RO-04
+
+**Cross-ref**: REQUIREMENTS.md RO-04 deferred-data-gated sub-bullet; `data/raw/ofgem/roc-prices.csv` SY1-SY4 rows (currently empty NaN).
+
+**Plans**: 0 plans
+
+Plans:
+- [ ] TBD (promote with `/gsd-review-backlog` when primary source located)
+
 ---
 *Roadmap defined: 2026-04-21*
 *Maps 1:1 to ARCHITECTURE.md §11 phases P0–P11*
 *Backlog section added: 2026-04-24*
+*Backlog 999.2 added: 2026-04-25*

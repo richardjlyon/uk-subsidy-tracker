@@ -30,8 +30,11 @@
 2007-08 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
 2008-09 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
 2009-10 data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1 2026-04-24
-# SY1-SY4: algebraic estimate from scheme values + statutory buyout prices (SY18 XLSX Figure 4.5)
-2002-03 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
-2003-04 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
-2004-05 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
-2005-06 data/raw/ofgem/ro_annual_report_data_2019-20.xlsx ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba 2026-04-24
+# SY1-SY4: DEFERRED — no Ofgem-published recycle value found.
+# Searched: site:ofgem.gov.uk "RO buyout price" for 2002-03, 2003-04, 2004-05, 2005-06.
+# All Ofgem transparency document PDF URLs for SY1-SY4 returned 404. No Wayback Archive copy located.
+# Price columns (buyout_gbp_per_roc, recycle_gbp_per_roc) left empty (NaN) in roc-prices.csv.
+# Will be populated when a primary-source recycle value is located (see backlog 999.2).
+# Previously these rows carried algebraically-estimated values derived from scheme values + statutory
+# buyout prices (SY18 XLSX Figure 4.5). That algebraic method was removed in Plan 05.2-02 audit
+# cleanup (2026-04-25) because it does not constitute a primary-source transcription.
