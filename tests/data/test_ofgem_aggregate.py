@@ -224,3 +224,72 @@ def test_download_annual_xlsx_raises_key_error_for_sy17():
     from uk_subsidy_tracker.data import ofgem_aggregate
     with pytest.raises(KeyError):
         ofgem_aggregate.download_annual_xlsx("SY17")
+
+
+# ---------------------------------------------------------------------------
+# Task 5: parse_annual_xlsx_to_aggregate_rows + emit_annual_aggregate_csv
+# ---------------------------------------------------------------------------
+
+def test_parse_annual_xlsx_sy18_emits_all_technologies_row():
+    """SY18 has no per-tech breakdown — must emit exactly 1 row with technology='All technologies'."""
+    from uk_subsidy_tracker.data.ofgem_aggregate import parse_annual_xlsx_to_aggregate_rows
+
+    df = parse_annual_xlsx_to_aggregate_rows("SY18")
+    assert len(df) == 1, f"Expected 1 row for SY18, got {len(df)}"
+    assert df.iloc[0]["technology"] == "All technologies"
+    assert df.iloc[0]["scheme_year"] == "SY18"
+    assert df.iloc[0]["country"] == "GB"
+    assert df.iloc[0]["rocs_issued"] is not None
+    assert df.iloc[0]["rocs_issued"] > 0
+
+
+def test_parse_annual_xlsx_sy21_has_gb_and_ni_rows():
+    """SY21 (Figure 3.2/3.3 path) emits rows for both GB (England/Scotland/Wales) and NI."""
+    from uk_subsidy_tracker.data.ofgem_aggregate import parse_annual_xlsx_to_aggregate_rows
+
+    df = parse_annual_xlsx_to_aggregate_rows("SY21")
+    assert len(df) > 10, f"Expected >10 rows for SY21, got {len(df)}"
+    assert set(df["scheme_year"]) == {"SY21"}
+    countries = set(df["country"].unique())
+    assert "GB" in countries, f"Expected GB in countries, got {countries}"
+    assert "NI" in countries, f"Expected NI in countries, got {countries}"
+    # No SY17 contamination
+    assert "SY17" not in df["scheme_year"].values
+
+
+def test_emit_annual_aggregate_csv_shape_and_sidecar(tmp_path, monkeypatch):
+    """emit_annual_aggregate_csv writes >=30 data rows, Provenance header, 6-source sidecar."""
+    import json
+    from uk_subsidy_tracker.data import ofgem_aggregate
+
+    monkeypatch.setattr(ofgem_aggregate, "DATA_DIR", tmp_path)
+    # XLSXes are in the real DATA_DIR — point read path to real files by NOT
+    # patching xlsx reads; only patch the output path via output_path kwarg.
+    from uk_subsidy_tracker import DATA_DIR as REAL_DATA_DIR
+
+    # Monkeypatching DATA_DIR breaks xlsx_path resolution — restore for parse calls.
+    monkeypatch.setattr(ofgem_aggregate, "DATA_DIR", REAL_DATA_DIR)
+    out_path = tmp_path / "ro-annual-aggregate.csv"
+    result = ofgem_aggregate.emit_annual_aggregate_csv(output_path=out_path)
+
+    assert result == out_path
+    assert out_path.exists()
+
+    # Provenance header must be present
+    with open(out_path, encoding="utf-8") as f:
+        first_line = f.readline()
+    assert first_line.startswith("# Provenance:")
+
+    # Data rows
+    df = pd.read_csv(out_path, comment="#")
+    assert len(df) >= 30, f"Expected >=30 rows, got {len(df)}"
+    assert "SY17" not in df["scheme_year"].values
+
+    # Sidecar
+    sidecar_path = tmp_path / "ro-annual-aggregate.csv.meta.json"
+    assert sidecar_path.exists(), "Sidecar .meta.json must exist alongside CSV"
+    meta = json.loads(sidecar_path.read_text())
+    assert "sources" in meta, "Sidecar must have sources[] array"
+    assert len(meta["sources"]) == 6, f"Expected 6 sources, got {len(meta['sources'])}"
+    scheme_years_in_sources = [s["scheme_year"] for s in meta["sources"]]
+    assert scheme_years_in_sources == ["SY18", "SY19", "SY20", "SY21", "SY22", "SY23"]

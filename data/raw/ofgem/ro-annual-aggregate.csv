@@ -1,25 +1,134 @@
-# Provenance: SY17–SY23 annual aggregate transcription from Ofgem annual-report PDFs.
-# Per-row source PDF URL is recorded in the source_pdf_url column; full per-PDF
-# sha256 + retrieved_on chain lives in the sibling .meta.json sources[] array (D-03).
+# Provenance: RO annual-aggregate emitted from Ofgem XLSX dataset companions (SY18-SY23).
 #
-# Source PDFs (one per scheme year — GB rows mandatory, NI rows optional under
-# aggregate-grain D-09 NIRO discipline):
-#   SY17: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-17
-#   SY18: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-18
-#   SY19: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-19
-#   SY20: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-20
-#   SY21: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-21
-#         (D-11 mutualisation event — record mutualisation_gbp_total in roc-prices.csv)
-#   SY22: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-22
-#   SY23: https://www.ofgem.gov.uk/transparency-document/renewables-obligation-annual-report-scheme-year-23-1-april-2024-31-march-2025
+# Each row below is extracted from the scheme-year XLSX listed in the .meta.json sources[] array.
+# SY17 deferred per Phase 05.2 revision_decisions.sy17_disposition (PDF-only year).
 #
-# Schema (pinned in src/uk_subsidy_tracker/data/ofgem_aggregate.py::ofgem_annual_aggregate_schema):
-#   scheme_year       : ^SY\d{2}$  (label of the scheme year — SY17 = April 2017–March 2018)
-#   year              : int64      (calendar year of the SY end)
-#   country           : GB | NI
-#   technology        : string from Ofgem's published table
-#   generation_gwh    : float64 nullable
-#   rocs_issued       : float64 nullable
-#   ro_cost_gbp_nominal : float64 nullable
-#   source_pdf_url    : string (one of the URLs listed above)
+# Source XLSX inventory (also enumerated in .meta.json):
+#   - SY18 (2019-20): https://www.ofgem.gov.uk/sites/default/files/docs/2021/03/ro_annual_report_data_2019-20.xlsx
+#   - SY19 (2020-21): https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+#   - SY20 (2021-22): https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+#   - SY21 (2022-23): https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+#   - SY22 (2023-24): https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+#   - SY23 (2024-25): https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+#
+# Audit log:
+#   2026-04-24 — Phase 05.2 Plan 02 emission (replaces commit a720ae7 in-place).
+#
 scheme_year,year,country,technology,generation_gwh,rocs_issued,ro_cost_gbp_nominal,source_pdf_url
+SY18,2020,GB,All technologies,84920.897,114706958.0,,https://www.ofgem.gov.uk/sites/default/files/docs/2021/03/ro_annual_report_data_2019-20.xlsx
+SY19,2021,GB,Fuelled,,21480902.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Hydro,,2610584.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Landfill gas,,2932496.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Offshore wind,,44083339.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Onshore wind,,27266279.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Sewage gas,,704937.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Solar PV,,10125690.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY19,2021,GB,Tidal power,,48655.0,,https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx
+SY20,2022,GB,Fuelled,15393.437856721901,18238024.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Fuelled,1270.9025238092274,2428646.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Fuelled,562.0750718459177,821791.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Hydro,52.88699999999985,52740.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Hydro,2096.306,2096306.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Hydro,139.16699999999997,139128.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Landfill gas,2393.171,2336691.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Landfill gas,275.643,275643.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Landfill gas,74.798,74798.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Offshore wind,18209.85857894087,34149096.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Offshore wind,1011.603457142373,2372002.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Offshore wind,1940.8724999997476,3612379.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Onshore wind,5439.188555555335,5217980.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Onshore wind,16046.502333332626,15347082.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Onshore wind,2173.0289999998827,2054840.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Sewage gas,761.265,598846.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Sewage gas,33.042,32265.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Sewage gas,34.173,34166.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Solar PV,5969.144141425556,8563187.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Solar PV,39.26767496226319,49550.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Solar PV,561.1737458786904,768075.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,GB,Tidal power,5.7462,28731.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,NI,Fuelled,511.9716388887877,1618810.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,NI,Hydro,17.06649999999116,42470.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,NI,Landfill gas,47.896,47896.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,NI,Onshore wind,2635.886694444322,3460580.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY20,2022,NI,Solar PV,258.5773690474529,589001.0,,https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx
+SY21,2023,GB,Fuelled,15434.299888050271,18395622.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Fuelled,1285.7870822887155,2438440.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Fuelled,436.3985162903661,596941.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Hydro,49.66285714285702,49536.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Hydro,2064.593,2064593.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Hydro,119.83071428571425,119787.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Landfill gas,2209.951,2155621.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Landfill gas,249.918,249918.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Landfill gas,72.477,72477.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Offshore wind,18710.235152040113,35075616.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Offshore wind,1144.5739142851423,2704944.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Offshore wind,2104.6939999997376,3915034.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Onshore wind,5695.458777777552,5467615.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Onshore wind,17349.361555554777,16589022.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Onshore wind,2327.386999999875,2202529.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Sewage gas,668.738,527351.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Sewage gas,33.393,32619.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Sewage gas,28.854,28745.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Solar PV,6030.047355145608,8642629.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Solar PV,45.355057315198664,57395.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Solar PV,552.8525521973777,756555.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,GB,Tidal power,12.8728,64364.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,NI,Fuelled,533.4699166665408,1651689.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,NI,Hydro,14.618166666658407,36892.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,NI,Landfill gas,50.448,50448.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,NI,Onshore wind,2848.7115277776447,3808142.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY21,2023,NI,Solar PV,239.00669047603785,543608.0,,https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx
+SY22,2024,GB,Fuelled,14306.589690472623,17264754.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Fuelled,1365.8922038426317,2617908.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Fuelled,412.013223057331,550765.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Hydro,63.54314285714268,63367.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Hydro,2100.46,2100460.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Hydro,176.79671428571416,176750.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Landfill gas,2102.079,2044581.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Landfill gas,244.063,244063.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Landfill gas,69.854,69854.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Offshore wind,20115.016374261864,37742580.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Offshore wind,1107.8981190470747,2611241.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Offshore wind,2123.1701666664003,3947507.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Onshore wind,5851.925666666429,5617852.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Onshore wind,15430.216999999333,14771333.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Onshore wind,2447.8805555554204,2313119.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Sewage gas,634.306,495708.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Sewage gas,32.125,31502.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Sewage gas,24.999,24945.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Solar PV,5683.206394819397,8137135.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Solar PV,43.61883333329953,55193.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Solar PV,537.206840658926,734562.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,GB,Tidal power,12.402400000000002,62012.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,NI,Fuelled,541.2416388887619,1676566.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,NI,Hydro,19.230499999988336,49776.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,NI,Landfill gas,47.808,47808.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,NI,Onshore wind,2480.8161111109994,3474892.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY22,2024,NI,Solar PV,229.5214702379494,523647.0,,https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx
+SY23,2025,GB,Fuelled,14368.857244671533,17305685.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Fuelled,1270.6124801271333,2425757.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Fuelled,490.512161196406,671381.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Hydro,51.779857143034995,51602.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Hydro,2060.096,2060096.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Hydro,132.45100000004797,132403.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Landfill gas,2053.4153976630882,2003813.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Landfill gas,226.338000000904,227242.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Landfill gas,63.48505263182,63702.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Offshore wind,17738.238905117647,33307373.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Offshore wind,1011.9405908560008,2392636.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Offshore wind,1841.804833460846,3403226.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Onshore wind,5336.452555342927,5123825.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Onshore wind,16284.902554864777,15594158.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Onshore wind,1993.4997776660243,1881746.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Sewage gas,634.663,495978.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Sewage gas,35.724,35057.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Sewage gas,24.325,24297.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Solar PV,5489.364574682912,7850365.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Solar PV,43.11048716494202,54436.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Solar PV,514.049958162372,701284.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,GB,Tidal power,13.749799999999999,68749.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,NI,Fuelled,527.0085833002485,1632819.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,NI,Hydro,14.62708332480199,36875.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,NI,Landfill gas,46.405,46405.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,NI,Onshore wind,2317.7915832312074,3346283.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx
+SY23,2025,NI,Solar PV,204.165720189863,472090.0,,https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx

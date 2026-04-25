@@ -1,0 +1,51 @@
+{
+  "http_status": null,
+  "publisher_last_modified": null,
+  "retrieved_at": "2026-04-25T02:21:07.395357+00:00",
+  "sha256": "1a3dd4cecd093bfdfd2e4b79c9b5c13dae294f519e58ef3cca014ae19ebd7da2",
+  "sources": [
+    {
+      "notes": "Ofgem RO Annual Report 2019-20 dataset companion (XLSX, ~89 KB)",
+      "retrieved_on": "2026-04-24",
+      "scheme_year": "SY18",
+      "sha256": "ac464d64a98fe39d593f059e77f53870d4b2cc0ca56b19a6a9c3e4e3a142ecba",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/docs/2021/03/ro_annual_report_data_2019-20.xlsx"
+    },
+    {
+      "notes": "Ofgem RO Annual Report 2020-21 dataset companion (XLSX, ~2.47 MB; URL contains spaces)",
+      "retrieved_on": "2026-04-24",
+      "scheme_year": "SY19",
+      "sha256": "893581c63dff54c4ca95a11a985a1d3f3295fda9d17200554461a9961d192db2",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx"
+    },
+    {
+      "notes": "Ofgem RO Annual Report Scheme Year 20 dataset companion (XLSX, ~1.80 MB; URL contains spaces)",
+      "retrieved_on": "2026-04-24",
+      "scheme_year": "SY20",
+      "sha256": "838bef8b392a54e7a74dad2d8e4f0e1418dace6c053226796d295c61b8272dc7",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx"
+    },
+    {
+      "notes": "Ofgem RO Annual Report SY21 dataset companion (XLSX, ~1.08 MB)",
+      "retrieved_on": "2026-04-24",
+      "scheme_year": "SY21",
+      "sha256": "b46d51cb5fa5dd205dc51519c0426eb71141b5cb42e7ef9783705a32fa7ea03f",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx"
+    },
+    {
+      "notes": "Ofgem RO Annual Report SY22 dataset companion (XLSX, ~786 KB; URL contains parens)",
+      "retrieved_on": "2026-04-24",
+      "scheme_year": "SY22",
+      "sha256": "8e07f9e0d419d03439b9cfa9b7369798220820759378469d4ce58bd599306f63",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx"
+    },
+    {
+      "notes": "Ofgem RO Annual Report Scheme Year 23 dataset companion (XLSX, ~1.01 MB; date-stamped suffix)",
+      "retrieved_on": "2026-04-24",
+      "scheme_year": "SY23",
+      "sha256": "2b44030b3ba329d51955e9aaaf15f1539de1b80850899fcd2c0844d11a4847a1",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx"
+    }
+  ],
+  "upstream_url": "emitted-from-ofgem-annual-xlsxes"
+}

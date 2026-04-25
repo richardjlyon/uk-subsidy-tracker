@@ -267,24 +267,294 @@ def download_annual_xlsx(scheme_year: str) -> Path:
         raise  # fail loud per D-17
 
 
+def _scheme_year_end_calendar(scheme_year: str) -> int:
+    """Return the end calendar year for a scheme_year label.
+
+    Scheme years run April-March:
+      SY18 = 2019-20 → end calendar year 2020
+      SY19 = 2020-21 → end calendar year 2021
+      SY20 = 2021-22 → end calendar year 2022
+      SY21 = 2022-23 → end calendar year 2023
+      SY22 = 2023-24 → end calendar year 2024
+      SY23 = 2024-25 → end calendar year 2025
+    """
+    _MAP: dict[str, int] = {
+        "SY18": 2020, "SY19": 2021, "SY20": 2022,
+        "SY21": 2023, "SY22": 2024, "SY23": 2025,
+    }
+    if scheme_year not in _MAP:
+        raise KeyError(f"Unknown scheme_year for calendar mapping: {scheme_year!r}")
+    return _MAP[scheme_year]
+
+
+def _clean_roc_value(v: object) -> float | None:
+    """Convert a cell value to float ROC count. '-' and None become None."""
+    if v is None or v == "-" or str(v).strip() == "-":
+        return None
+    try:
+        return float(str(v).replace(",", ""))
+    except (ValueError, TypeError):
+        return None
+
+
+def _parse_sy18(wb: object, entry_url: str, cal_year: int) -> list[dict]:
+    """SY18 (2019-20): Only aggregate totals available — no per-technology breakdown.
+
+    Sheet: '2. ROCs issued and generation'
+    Row 7 carries 'Associated renewable generation (MWh)' = 84,920,897 (UK total).
+    Row 6 carries 'Total number of ROCs issued' = 114,706,958 (UK total).
+    No per-technology split; emits one row with technology='All technologies', country='GB'.
+
+    This is the sole year for which technology disaggregation is not available
+    in the published XLSX dataset companion.
+    """
+    import openpyxl
+
+    ws = wb["2. ROCs issued and generation"]
+    rocs_total = None
+    gen_mwh_total = None
+    for row in ws.iter_rows(values_only=True):
+        if row[0] is not None:
+            cell0 = str(row[0])
+            if "Total number of ROCs issued" in cell0:
+                rocs_total = _clean_roc_value(row[1])
+            elif "Associated renewable generation" in cell0 and "MWh" in cell0:
+                gen_mwh_total = _clean_roc_value(row[1])
+    gen_gwh = (gen_mwh_total / 1000) if gen_mwh_total is not None else None
+    return [{
+        "scheme_year": "SY18",
+        "year": cal_year,
+        "country": "GB",
+        "technology": "All technologies",
+        "generation_gwh": gen_gwh,
+        "rocs_issued": rocs_total,
+        "ro_cost_gbp_nominal": None,
+        "source_pdf_url": entry_url,
+    }]
+
+
+def _parse_sy19(wb: object, entry_url: str, cal_year: int) -> list[dict]:
+    """SY19 (2020-21): Technology × total-UK ROC data from 'Table 2.2'.
+
+    Header row: ['Technology', 'England', 'Scotland', 'Wales', 'Northern Ireland', 'Total']
+    Data rows: technology name in col B, UK total ROCs in col F.
+    No per-technology generation MWh available; generation_gwh set to None.
+    Country = 'GB' (UK total; NI included in ROC total for this year).
+    """
+    ws = wb["Table 2.2"]
+    rows: list[dict] = []
+    skip_terms = {"Total", "Return to information tab"}
+    header_found = False
+    for row in ws.iter_rows(values_only=True):
+        if row[1] is None:
+            continue
+        cell1 = str(row[1]).strip()
+        if cell1 == "Technology":
+            header_found = True
+            continue
+        if not header_found:
+            continue
+        if cell1 in skip_terms or cell1 == "":
+            continue
+        # col F (index 6) = Total
+        rocs_total = _clean_roc_value(row[6])
+        rows.append({
+            "scheme_year": "SY19",
+            "year": cal_year,
+            "country": "GB",
+            "technology": cell1,
+            "generation_gwh": None,
+            "rocs_issued": rocs_total,
+            "ro_cost_gbp_nominal": None,
+            "source_pdf_url": entry_url,
+        })
+    return rows
+
+
+def _parse_sy20_sy23(wb: object, entry_url: str, scheme_year: str, cal_year: int) -> list[dict]:
+    """SY20-SY23: Technology × Country from 'Figure 3.2' (ROCs) + 'Figure 3.3' (MWh).
+
+    Sheet 'Figure 3.2': header at row 8 (0-indexed):
+      ['Technology', 'England', 'Scotland', 'Wales', 'Northern Ireland', 'Total']
+    Sheet 'Figure 3.3': same header, 'Total (MWh)' in last data col.
+
+    Strategy: emit one row per (technology, country) using per-country values.
+    Countries: England, Scotland, Wales, Northern Ireland.
+    '-' values are emitted as None (technology not active in that country).
+    """
+    countries = ["England", "Scotland", "Wales", "Northern Ireland"]
+    country_code = {"England": "GB", "Scotland": "GB", "Wales": "GB", "Northern Ireland": "NI"}
+
+    # --- ROCs (Figure 3.2) ---
+    ws_roc = wb["Figure 3.2"]
+    skip_terms = {"Total", "Return to information tab", ""}
+    roc_by_tech_country: dict[tuple[str, str], float | None] = {}
+    header_found = False
+    for row in ws_roc.iter_rows(values_only=True):
+        if row[1] is None:
+            continue
+        cell1 = str(row[1]).strip()
+        if cell1 == "Technology":
+            header_found = True
+            continue
+        if not header_found:
+            continue
+        if cell1 in skip_terms:
+            continue
+        # cols 2-5 = England, Scotland, Wales, NI
+        for ci, country in enumerate(countries):
+            roc_val = _clean_roc_value(row[ci + 2])
+            roc_by_tech_country[(cell1, country)] = roc_val
+
+    # --- Generation MWh (Figure 3.3) ---
+    ws_gen = wb["Figure 3.3"]
+    gen_by_tech_country: dict[tuple[str, str], float | None] = {}
+    header_found = False
+    for row in ws_gen.iter_rows(values_only=True):
+        if row[1] is None:
+            continue
+        cell1 = str(row[1]).strip()
+        if cell1 == "Technology":
+            header_found = True
+            continue
+        if not header_found:
+            continue
+        if cell1 in skip_terms or "Total (MWh)" in cell1:
+            continue
+        for ci, country in enumerate(countries):
+            gen_mwh = _clean_roc_value(row[ci + 2])
+            gen_gwh = (gen_mwh / 1000) if gen_mwh is not None else None
+            gen_by_tech_country[(cell1, country)] = gen_gwh
+
+    # --- Emit rows ---
+    rows: list[dict] = []
+    all_techs = sorted({k[0] for k in roc_by_tech_country})
+    for tech in all_techs:
+        for country in countries:
+            rocs = roc_by_tech_country.get((tech, country))
+            gen_gwh = gen_by_tech_country.get((tech, country))
+            # Skip rows where both ROCs and generation are None (technology absent)
+            if rocs is None and gen_gwh is None:
+                continue
+            rows.append({
+                "scheme_year": scheme_year,
+                "year": cal_year,
+                "country": country_code[country],
+                "technology": tech,
+                "generation_gwh": gen_gwh,
+                "rocs_issued": rocs,
+                "ro_cost_gbp_nominal": None,
+                "source_pdf_url": entry_url,
+            })
+    return rows
+
+
 def parse_annual_xlsx_to_aggregate_rows(scheme_year: str) -> pd.DataFrame:
     """Parse one SY18-SY23 XLSX into ofgem_annual_aggregate_schema rows.
 
     Returns DataFrame with columns: scheme_year, year, country, technology,
-    generation_gwh, rocs_issued, ro_cost_gbp_nominal, source_pdf_url
-    (under XLSX path: source_pdf_url carries the XLSX URL).
+    generation_gwh, rocs_issued, ro_cost_gbp_nominal, source_pdf_url.
+    Under the XLSX path: source_pdf_url carries the XLSX URL.
 
-    Pure function: same XLSX bytes -> same DataFrame (D-21). Real implementation
-    in Task 5.
+    Sheet inventory (determined via Step 1 inspection, hard-coded):
+      SY18: '2. ROCs issued and generation' — aggregate totals only; technology='All technologies'
+      SY19: 'Table 2.2' — technology × UK-total ROCs; no per-country MWh breakdown
+      SY20-SY23: 'Figure 3.2' (ROCs by tech × country) + 'Figure 3.3' (MWh by tech × country)
+
+    Pure function: same XLSX bytes → byte-identical DataFrame (D-21).
     """
-    raise NotImplementedError("Plan 02 Task 5 fills this body")
+    import openpyxl
+
+    cfg = load_ofgem_annual_reports_config()
+    entry = cfg.by_scheme_year(scheme_year)
+    xlsx_path = DATA_DIR / "raw" / "ofgem" / entry.local_filename
+    cal_year = _scheme_year_end_calendar(scheme_year)
+
+    wb = openpyxl.load_workbook(xlsx_path, data_only=True, read_only=True)
+    try:
+        if scheme_year == "SY18":
+            records = _parse_sy18(wb, entry.url, cal_year)
+        elif scheme_year == "SY19":
+            records = _parse_sy19(wb, entry.url, cal_year)
+        else:
+            records = _parse_sy20_sy23(wb, entry.url, scheme_year, cal_year)
+    finally:
+        wb.close()
+
+    df = pd.DataFrame(records, columns=[
+        "scheme_year", "year", "country", "technology",
+        "generation_gwh", "rocs_issued", "ro_cost_gbp_nominal", "source_pdf_url",
+    ])
+    df = df.sort_values(["country", "technology"], kind="mergesort").reset_index(drop=True)
+    df = ofgem_annual_aggregate_schema.validate(df)
+    return df
 
 
 def emit_annual_aggregate_csv(output_path: Path | None = None) -> Path:
     """Concatenate SY18-SY23 parsed rows into ro-annual-aggregate.csv.
 
-    Writes a Provenance: comment header + the unified data rows + emits the
-    sibling .meta.json sidecar with sources[] enumerating the 6 XLSX upstreams.
-    Real implementation in Task 5.
+    Writes:
+      1. # Provenance: comment header listing the 6 source XLSX URLs.
+      2. Column header + data rows.
+      3. Sibling .meta.json sidecar with sources[] enumerating each XLSX's
+         url + sha256 + retrieved_on + scheme_year + notes.
     """
-    raise NotImplementedError("Plan 02 Task 5 fills this body")
+    import hashlib
+    from datetime import date
+    from uk_subsidy_tracker.data.sidecar import write_sidecar
+
+    target = output_path if output_path is not None else (
+        DATA_DIR / "raw" / "ofgem" / "ro-annual-aggregate.csv"
+    )
+
+    cfg = load_ofgem_annual_reports_config()
+    frames = [parse_annual_xlsx_to_aggregate_rows(r.scheme_year) for r in cfg.reports]
+    unified = pd.concat(frames, ignore_index=True)
+    unified = unified.sort_values(
+        ["scheme_year", "country", "technology"], kind="mergesort"
+    ).reset_index(drop=True)
+
+    # Build the # Provenance: header block
+    retrieved_on = date.today().isoformat()
+    header_lines = [
+        "# Provenance: RO annual-aggregate emitted from Ofgem XLSX dataset companions (SY18-SY23).",
+        "#",
+        "# Each row below is extracted from the scheme-year XLSX listed in the .meta.json sources[] array.",
+        "# SY17 deferred per Phase 05.2 revision_decisions.sy17_disposition (PDF-only year).",
+        "#",
+        "# Source XLSX inventory (also enumerated in .meta.json):",
+    ]
+    for r in cfg.reports:
+        header_lines.append(f"#   - {r.scheme_year} ({r.period}): {r.url}")
+    header_lines.append("#")
+    header_lines.append("# Audit log:")
+    header_lines.append(
+        f"#   {retrieved_on} — Phase 05.2 Plan 02 emission (replaces commit a720ae7 in-place)."
+    )
+    header_lines.append("#")
+
+    with open(target, "w", encoding="utf-8") as f:
+        f.write("\n".join(header_lines) + "\n")
+        unified.to_csv(f, index=False, lineterminator="\n")
+
+    # Build sources[] for sidecar
+    sources = []
+    for r in cfg.reports:
+        xlsx_path = DATA_DIR / "raw" / "ofgem" / r.local_filename
+        sha256 = hashlib.sha256(xlsx_path.read_bytes()).hexdigest()
+        sources.append({
+            "url": r.url,
+            "sha256": sha256,
+            "retrieved_on": retrieved_on,
+            "scheme_year": r.scheme_year,
+            "notes": r.notes,
+        })
+
+    write_sidecar(
+        raw_path=target,
+        upstream_url="emitted-from-ofgem-annual-xlsxes",
+        http_status=None,
+        publisher_last_modified=None,
+        sources=sources,
+    )
+    return target
