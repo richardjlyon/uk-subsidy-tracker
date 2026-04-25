@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05.2-04-PLAN.md
-last_updated: "2026-04-25T12:02:33.736Z"
+stopped_at: Completed 05.2-05-PLAN.md
+last_updated: "2026-04-25T12:13:24.060Z"
 progress:
   total_phases: 16
   completed_phases: 6
   total_plans: 43
-  completed_plans: 41
-  percent: 95
+  completed_plans: 42
+  percent: 98
 ---
 
 # Project State: UK Renewable Subsidy Tracker
@@ -39,7 +39,7 @@ progress:
 ## Current Position
 
 Phase: 05.2 (ro-data-reconstruction-aggregate-grain) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 **Status:** Ready to execute
 **Focus:** Plan 05.2-01 shipped Wave-1 foundations (sidecar sources[] extension + ofgem_aggregate.py loader skeleton + tests/conftest.py @pytest.mark.dormant auto-skip hook). Three independent building blocks landed across 5 atomic commits with TDD RED→GREEN for Tasks 1+2; full suite 175 passed + 14 skipped + 22 xfailed (zero regressions). **Plan 05.2-02 (Wave 2 raw data landing — XLSX commit + transcribed CSVs with multi-source sidecars) is unblocked next** — has the `sources[]` kwarg + `XLSX_URL` constant + comment-aware loaders ready to consume.
 
@@ -97,6 +97,7 @@ Progress: [█████████░] 88% (38/43 plans)
 | Phase 05.2 P02 | 180 | 8 tasks | 10 files |
 | Phase 05.2 P03 | 90 | 4 tasks | 11 files |
 | Phase 05.2 P04 | 6 | 3 tasks | 10 files |
+| Phase 05.2-ro-data-reconstruction-aggregate-grain P05 | 30 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -251,7 +252,7 @@ None currently.
 
 **Next command:** `/gsd-execute-phase 5 --plan 13` (Phase 5 Plan 12 COMPLETE — CHANGES.md consolidation shipped; Phase 5 audit trail now grep-verifiable with 6 RO requirement closures + 4 ## Methodology versions H3 audit entries). Plan 05-12 shipped 1 atomic commit (`22bb8c5`), 1 file modified (CHANGES.md), 1 file created (05-12-SUMMARY.md), ~4 min duration. Test count unchanged: **163 passed + 12 skipped + 22 xfailed**. RO-01..RO-06 marked complete in REQUIREMENTS.md; ROADMAP.md plan-progress row reflects 12/13. Phase 5 progress: 12/13 plans. Plan 05-13 (Post-Execution Human Review) is the only remaining plan — handles 8 follow-up items: replace 3 ofgem stub raws with real RER exports, plumb OFGEM_RER_* secrets if Playwright path approved, transcribe roc-prices.csv from public PDFs, decide on Option-C pdfplumber middle-ground, re-examine RESEARCH §2 stale URL templates, transcribe NIROC primary source for 12 [ASSUMED] entries, audit 2005-2017 DEFAULT_CARBON_PRICES against EEA + BoE primary sources, delete `.planning/phases/05-ro-module/05-09-DIVERGENCE.md` sentinel to re-arm REF reconciliation D-14 hard-block. **Earlier:** `/gsd-execute-phase 5 --auto --plan 12` (Plan 11 COMPLETE). | Earlier: `/gsd-execute-phase 5 --auto --plan 08` (Phase 5 Plan 07 COMPLETE — Wave 3 lead-off shipped; RO end-to-end refresh path closed). Plan 05-07 shipped 3 atomic commits (`8b2fc1d`, `86bf146`, `6bb38b7`), 3 files modified (refresh_all.py, manifest.py, test_refresh_loop.py), ~4 min duration. 153 passed + 4 skipped (+2 new RO refresh-loop tests; zero regressions). Phase 5 progress: 7/13 plans. `refresh_all.SCHEMES` now iterates both CfD and RO under D-18 per-scheme dirty-check; `manifest.build()` emits 10 Dataset entries (5 CfD + 5 RO) once `data/derived/ro/*.parquet` is rebuilt from non-stub raw data. Plan 05-08 (RO chart files: ro_dynamics, ro_by_technology, ro_concentration, ro_forward_projection) is next. Earlier: `/gsd-execute-phase 5 --auto --plan 07` (Phase 5 Plan 06 COMPLETE — manifest.py multi-scheme scaffolding); `/gsd-execute-phase 5 --auto --plan 03` (Phase 5 Plan 02 COMPLETE — partial RO-02 progress, bandings foundation shipped). Earlier: `/gsd-execute-phase 5 --auto --plan 02` (Phase 5 Plan 01 COMPLETE — RO-01 closed via Option-D fallback). Plan 05-01 shipped 2 atomic commits (8c71cde, 5729d02), 11 created files, 1 modified, 12-file file count, 7-min duration. 82 passed + 4 skipped (+8 new from `tests/data/test_ofgem_ro.py`). Phase 5 progress: 1/13 plans. RO-01 closed; remaining requirements (RO-02..RO-06) routed to Plans 05-02 through 05-13. Plan 05-13 will pick up the 6 Plan 05-01 follow-ups during post-execution review (replace 3 ofgem stubs with real exports, plumb `OFGEM_RER_*` secrets if Playwright path approved, transcribe `roc-prices.csv`, decide on `pdfplumber` middle-ground, re-examine RESEARCH §2 stale URLs). | Earlier: Phase 4 closed 7/7 plans: 04-01 (wave-0 deps + SEED-001 Tier-2 drift tripwire), 04-02 (raw-layer migration), 04-03 (derived layer + schemes/cfd/), 04-04 (publishing layer manifest + csv_mirror + snapshot), 04-05 (refresh.yml + deploy.yml + refresh-failure-template.md), 04-06 (docs/data/index.md + nav tab + citation versioned-snapshot pattern + D-11 lccc_self audit note Disposition C), 04-07 (refresh-loop closure: sidecar.write_sidecar + refresh() wires all 3 downloaders + rewrites all 5 sidecars + ons_gas fail-loud fix + refresh-loop invariant test + backfill script refactor). All five ROADMAP Phase-4 success criteria delivered. PUB-04 closed by 04-06; PUB-01/02/03/05/06 + GOV-02/03/06 closed by 04-04/05; GOV-03 robustness + PUB-05 end-to-end loop locked by 04-07. D-11 fallback preserved with explicit 2026-04-22 audit evidence per user-selected Disposition C (ARA 2024/25 FY-only limitation, RESEARCH Pitfall 7). 74 passed + 4 skipped; `mkdocs build --strict` green; METHODOLOGY_VERSION stays "0.1.0" (bump is Phase 6+). Phase 5 is unblocked: schemes/cfd/ is the §6.1 Protocol template for schemes/ro/ (now including a complete refresh-loop reference implementation that writes sidecars via the shared `sidecar.write_sidecar()` helper); `refresh_all.SCHEMES` is a one-line append; manifest iteration is SCHEMES-driven; docs/data/index.md works unchanged for new schemes. Outstanding user setup (deferred to user, dashboard-only, does not block Phase 5 planning): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation + (from 04-06 follow-up) LCCC ARA CY-aggregate transcription when a future quarterly publication surfaces.
 
-**Stopped at:** Completed 05.2-04-PLAN.md
+**Stopped at:** Completed 05.2-05-PLAN.md
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*
