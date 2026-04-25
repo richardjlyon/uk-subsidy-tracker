@@ -10,22 +10,31 @@ DORMANT_STATION_LEVEL=True in schemes/ro/__init__.py. Station-level grains
 backlog 999.1 re-activates them.
 
 Sources consumed:
-  - data/raw/ofgem/ro-generation.csv          (12-year XLSX monthly aggregate SY5-SY17)
+  - data/raw/ofgem/ro-generation.csv          (12-year XLSX monthly aggregate SY5-SY16)
   - data/raw/ofgem/ro-annual-aggregate.csv    (SY18-SY23 annual totals from XLSX companions)
   - data/raw/ofgem/roc-prices.csv             (buyout + recycle; SY1-SY4 NaN, SY5+ present)
 
 D-04 nullability: ro_cost_gbp_eroc is always None under aggregate grain (no per-station
 e-ROC clearing dispatch available). RoAnnualSummaryRow.ro_cost_gbp_eroc = float | None.
 
-SY17 coverage: SY17 (Apr 2018 – Mar 2019) is recovered from parse_xlsx_to_monthly()
-because no XLSX dataset companion exists for SY17 (PDF-only year). The 12-year XLSX
-covers SY5-SY17; ro-annual-aggregate.csv covers SY18-SY23. _unified_annual_frame()
-stitches both halves so SY17 surfaces as a real annual row with real ROC counts and
-real cost (SY17 falls in the SY9-SY22 exact ROC-price range).
+Year convention (D-07 fix, Defect 3): the canonical `year` column uses the OBLIGATION-YEAR
+START calendar year throughout — matching tests/fixtures/benchmarks.yaml::ref_constable
+convention. SY5 (2006-07) → year=2006; SY18 (2019-20) → year=2019; SY23 (2024-25) → year=2024.
+The ROC-price join uses a separate `obligation_end_year` column (end calendar year) to
+match roc-prices.csv's obligation_year format ("YYYY-YY" → end year).
+
+SY17 (2018-19 = start year 2018): deferred — the 12-year XLSX covers SY5-SY16 only
+(Apr 2006 – Mar 2018). No XLSX dataset companion exists for SY17 (PDF-only year).
+year=2018 is absent from annual_summary.parquet. Plan 06 REF reconciliation must
+account for this gap.
 
 SY1-SY4 cost NaN: roc-prices.csv has empty price columns for SY1-SY4 (2002-03 through
 2005-06) — deferred-data-gated per REQUIREMENTS.md RO-04 + backlog 999.2. NaN propagates
 through the multiplication (default pandas behaviour — no fillna(0)).
+
+Defect 4 fix: ro-annual-aggregate.csv stores SY20-SY23 GB rows as 3 sub-rows per
+technology (England / Scotland / Wales merged to 'GB' country code). _unified_annual_frame()
+aggregates with groupby().sum() rather than drop_duplicates() to preserve all sub-rows.
 """
 from __future__ import annotations
 
@@ -97,81 +106,123 @@ def _obligation_year_to_end_year(s: str) -> int:
     return start + 1
 
 
-def _end_year_to_obligation_year(year: int) -> str:
-    """Convert an end calendar year to the obligation_year string for roc-prices join.
-
-    Examples:
-      2020 → "2019-20"
-      2007 → "2006-07"
-    """
-    start = year - 1
-    return f"{start}-{str(year)[-2:]}"
+# Canonical start-year mapping for SY18-SY23 (Defect 3 fix).
+# obligation_end_year is used for the roc-prices join only;
+# 'year' in output = obligation START year (matching ref_constable convention).
+_SY_TO_START_YEAR: dict[str, int] = {
+    "SY18": 2019, "SY19": 2020, "SY20": 2021,
+    "SY21": 2022, "SY22": 2023, "SY23": 2024,
+}
+_SY_TO_END_YEAR: dict[str, int] = {
+    "SY18": 2020, "SY19": 2021, "SY20": 2022,
+    "SY21": 2023, "SY22": 2024, "SY23": 2025,
+}
 
 
 def _unified_annual_frame() -> pd.DataFrame:
-    """Merge the XLSX monthly aggregate (SY5-SY17) with the XLSX-emitted
+    """Merge the XLSX monthly aggregate (SY5-SY16) with the XLSX-emitted
     SY18-SY23 annual aggregate into a single long-form frame keyed on
-    (year, country, technology).
+    (scheme_year, country, technology).
 
-    SY17 coverage: SY17 (2018-19 = calendar 2018 Apr–Dec + calendar 2019
-    Jan–Mar) is surfaced from the 12-year XLSX's monthly aggregate (per
-    revised Plan 02, the annual-aggregate CSV starts at SY18). This
-    closes the SY17 gap that would otherwise break REF 22-year
-    reconciliation in Wave 6.
+    Returns a DataFrame with columns:
+      scheme_year, year (START year), obligation_end_year (for price join),
+      country, technology, generation_gwh, rocs_issued,
+      ro_cost_gbp_nominal, source_pdf_url.
 
-    SY1-SY4 cost NaN: roc-prices.csv rows for SY1-SY4 (2002-03 through
-    2005-06) have empty buyout + recycle columns. NaN propagates naturally
-    through rocs_issued × price multiplication — we do NOT fillna(0).
-    Documented comment at the join site in build_annual_summary_aggregate.
+    Year convention (Defect 3 fix): canonical 'year' = obligation-year START
+    calendar year, matching ref_constable. SY5 → year=2006; SY18 → year=2019.
+    A separate 'obligation_end_year' column preserves the end-year for the
+    roc-prices join (roc-prices obligation_year "YYYY-YY" → end year YYYY+1).
+
+    SY17 (year=2018): absent from both the 12-year XLSX (covers SY5-SY16
+    only, Apr 2006 – Mar 2018) and ro-annual-aggregate.csv (starts at SY18).
+    year=2018 will be missing from annual_summary.parquet. Documented.
+
+    Defect 4 fix: ro-annual-aggregate.csv stores SY20-SY23 GB data as
+    3 sub-rows per technology (England / Scotland / Wales each coded 'GB').
+    This function aggregates via groupby().sum() — NOT drop_duplicates —
+    so all sub-rows are included in the technology total.
+
+    SY1-SY4 cost NaN: roc-prices.csv has empty price columns for SY1-SY4
+    (2002-03 through 2005-06) — deferred-data-gated per REQUIREMENTS.md
+    RO-04 + backlog 999.2. NaN propagates through rocs_issued × price
+    multiplication; we do NOT fillna(0).
     """
     monthly = parse_xlsx_to_monthly().copy()
 
     # Derive scheme_year_int per monthly row.
     # Scheme years run Apr–Mar: month >= 4 belongs to the year's SY start
-    # (e.g. Apr 2018 → SY17 which starts 2018-04); month < 4 belongs to the
-    # previous start year (e.g. Jan 2019 → SY17 which ends 2019-03).
+    # (e.g. Apr 2006 → SY5 which starts 2006-04); month < 4 belongs to the
+    # previous start year (e.g. Jan 2007 → SY5 which ends 2007-03).
     # SY number = calendar year of Apr start - 2001.
-    # Apr 2018 → start 2018 → SY = 2018 - 2001 = 17.
-    # Jan 2019 → start 2018 → SY = 2018 - 2001 = 17 (Jan is in same SY17).
+    # SY5: Apr 2006 → start 2006 → SY = 2006 - 2001 = 5.
     monthly["scheme_year_int"] = monthly.apply(
         lambda r: int(r["year"]) - 2001 if int(r["month"]) >= 4 else int(r["year"]) - 2002,
         axis=1,
     )
-    # Select SY <= 17: the XLSX covers SY5-SY17; SY18+ comes from the annual
-    # aggregate CSV (six XLSX dataset companions, SY18-SY23).
-    xlsx_monthly_pre_sy18 = monthly[monthly["scheme_year_int"] <= 17].copy()
+    # Select SY <= 16: the 12-year XLSX covers SY5-SY16 (Apr 2006 – Mar 2018).
+    # SY17 (Apr 2018 – Mar 2019) is absent from the XLSX and from the annual-
+    # aggregate CSV (starts at SY18) — year=2018 is a known gap, documented.
+    # SY18+ comes from the annual-aggregate CSV (six XLSX dataset companions).
+    xlsx_monthly_pre_sy18 = monthly[monthly["scheme_year_int"] <= 16].copy()
 
     pre_sy18 = (
         xlsx_monthly_pre_sy18
         .groupby(["scheme_year_int", "country", "technology"], sort=True, as_index=False)
-        .agg({"rocs_issued": "sum"})
+        .agg(
+            generation_gwh=("generation_mwh", lambda x: x.sum(min_count=1) / 1000.0
+                            if x.notna().any() else float("nan")),
+            rocs_issued=("rocs_issued", "sum"),
+        )
     )
 
-    # Map SY number to end calendar year: SY N ends in year 2002 + N.
-    # SY5 → 2007, SY17 → 2019.
-    pre_sy18["year"] = pre_sy18["scheme_year_int"].apply(lambda n: 2002 + int(n))
+    # Defect 3 fix: use START calendar year (2001 + SY_int) as canonical year.
+    # SY5 → year=2006; SY16 → year=2017.
+    # obligation_end_year (= 2002 + SY_int) is kept for the roc-prices join.
+    pre_sy18["year"] = pre_sy18["scheme_year_int"].apply(lambda n: 2001 + int(n))
+    pre_sy18["obligation_end_year"] = pre_sy18["scheme_year_int"].apply(lambda n: 2002 + int(n))
     pre_sy18["scheme_year"] = pre_sy18["scheme_year_int"].apply(lambda n: f"SY{int(n):02d}")
-    pre_sy18["generation_gwh"] = None   # 12-year XLSX has ROC counts only (no MWh)
+    # 12-year XLSX has generation_mwh = None throughout (ROC counts only,
+    # no MWh data in the 'ROCs by Tech & Month' sheet). generation_gwh = NaN.
+    pre_sy18["generation_gwh"] = float("nan")
     pre_sy18["ro_cost_gbp_nominal"] = None
     pre_sy18["source_pdf_url"] = None
     pre_sy18 = pre_sy18[[
-        "scheme_year", "year", "country", "technology",
+        "scheme_year", "year", "obligation_end_year", "country", "technology",
         "generation_gwh", "rocs_issued", "ro_cost_gbp_nominal", "source_pdf_url",
     ]]
 
     annual = load_annual_aggregate_csv().copy()
-    # annual already has generation_gwh (GWh), rocs_issued
-    annual = annual[[
-        "scheme_year", "year", "country", "technology",
-        "generation_gwh", "rocs_issued", "ro_cost_gbp_nominal", "source_pdf_url",
-    ]]
 
-    unified = pd.concat([pre_sy18, annual], ignore_index=True)
-    # Drop duplicates preferring later data (annual CSV for any overlap; there should be none
-    # since XLSX covers SY<=17 and annual CSV covers SY18+).
-    unified = unified.drop_duplicates(
-        subset=["scheme_year", "country", "technology"], keep="last"
+    # Defect 3 fix: ro-annual-aggregate.csv uses END-year convention
+    # (SY18 → year=2020). Override with START-year convention for consistency.
+    annual["year"] = annual["scheme_year"].map(_SY_TO_START_YEAR)
+    annual["obligation_end_year"] = annual["scheme_year"].map(_SY_TO_END_YEAR)
+
+    # Defect 4 fix: SY20-SY23 have 3 sub-rows per (country='GB', technology)
+    # because _parse_sy20_sy23 stores England/Scotland/Wales separately under
+    # country='GB'. Aggregate with groupby().sum() to combine them, preserving
+    # NaN only when all sub-rows are NaN (min_count=1).
+    annual_agg = (
+        annual
+        .groupby(
+            ["scheme_year", "year", "obligation_end_year", "country", "technology"],
+            sort=True, as_index=False,
+        )
+        .agg(
+            generation_gwh=("generation_gwh", lambda x: x.sum(min_count=1)),
+            rocs_issued=("rocs_issued", lambda x: x.sum(min_count=1)),
+            ro_cost_gbp_nominal=("ro_cost_gbp_nominal", lambda x: x.sum(min_count=1)),
+            source_pdf_url=("source_pdf_url", "first"),
+        )
     )
+
+    _COLS = [
+        "scheme_year", "year", "obligation_end_year", "country", "technology",
+        "generation_gwh", "rocs_issued", "ro_cost_gbp_nominal", "source_pdf_url",
+    ]
+    unified = pd.concat([pre_sy18[_COLS], annual_agg[_COLS]], ignore_index=True)
+    # No drop_duplicates: there is no overlap between XLSX (SY5-SY16) and annual CSV (SY18-SY23).
     return (
         unified
         .sort_values(["year", "country", "technology"], kind="mergesort")
@@ -191,44 +242,56 @@ def build_annual_summary_aggregate(output_dir: Path) -> pd.DataFrame:
     clock, no randomness. Column order = RoAnnualSummaryRow field
     declaration order (D-10). Final stable sort: (year, country).
 
+    Defect 3 fix: price join uses 'obligation_end_year' (not 'year') so that
+    the start-year-labelled output rows correctly join to the end-year-keyed
+    roc-prices.csv. Example: year=2019 (SY18 start) joins on
+    obligation_end_year=2020 which maps to roc-prices row "2019-20".
+
+    Defect 2 fix: mutualisation_gbp_total from roc-prices is a scheme-wide
+    UK total. It is assigned in full to the GB row for each year; NI rows
+    receive 0.0 explicitly (not NaN) to avoid double-counting. Convention
+    per D-11: "RO + ROS combined per SY22 XLSX Figures A3.3 + A3.4; full
+    amount carried on GB row by convention; ROS share folded in."
+
     SY1-SY4 cost NaN rationale: roc-prices.csv has empty buyout + recycle
     columns for obligation years 2002-03 through 2005-06 (deferred-data-gated
     per REQUIREMENTS.md RO-04 + backlog 999.2). NaN propagates through
     rocs_issued × buyout_gbp_per_roc — we do NOT fillna(0) for these rows.
-    The annual_summary.parquet rows for years 2003-2006 will have
-    ro_cost_gbp = NaN, consistent with the documented data-gap rationale.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
     unified = _unified_annual_frame()
     prices = load_roc_prices_csv().copy()
 
-    # Add end calendar year for the join: obligation_year "YYYY-YY" → end year.
-    prices["year"] = prices["obligation_year"].apply(_obligation_year_to_end_year)
+    # Defect 3 fix: join key is obligation_end_year (end calendar year),
+    # derived from roc-prices.csv obligation_year string "YYYY-YY".
+    prices["obligation_end_year"] = prices["obligation_year"].apply(_obligation_year_to_end_year)
 
-    # Aggregate to (year, country) — generation in MWh, rocs_issued summed.
-    # generation_gwh may be None for pre-SY18 rows (12-year XLSX has no MWh).
+    # Aggregate to (year, obligation_end_year, country).
+    # Defect 1 fix: use min_count=1 so sum() of all-NaN generation stays NaN
+    # rather than collapsing to 0 (12-year XLSX has no MWh data).
     by_yc = (
         unified
         .assign(
             generation_mwh=lambda df: pd.to_numeric(df["generation_gwh"], errors="coerce") * 1000.0,
         )
-        .groupby(["year", "country"], sort=True, as_index=False)
+        .groupby(["year", "obligation_end_year", "country"], sort=True, as_index=False)
         .agg(
-            generation_mwh=("generation_mwh", "sum"),
+            generation_mwh=("generation_mwh", lambda x: x.sum(min_count=1)),
             rocs_issued=("rocs_issued", "sum"),
         )
     )
 
-    # Join ROC prices on end calendar year.
+    # Join ROC prices on obligation_end_year (Defect 3 fix).
     by_yc = by_yc.merge(
-        prices[["year", "buyout_gbp_per_roc", "recycle_gbp_per_roc", "mutualisation_gbp_total"]],
-        on="year",
+        prices[["obligation_end_year", "buyout_gbp_per_roc", "recycle_gbp_per_roc",
+                "mutualisation_gbp_total"]],
+        on="obligation_end_year",
         how="left",
     )
 
     # Compute primary cost: rocs_issued × (buyout + recycle).
-    # SY1-SY4: buyout + recycle are NaN → ro_cost_gbp propagates NaN (D-04 SY1-SY4 gap).
+    # SY1-SY4: buyout + recycle are NaN → ro_cost_gbp propagates NaN.
     by_yc["ro_cost_gbp"] = (
         by_yc["rocs_issued"] * (
             by_yc["buyout_gbp_per_roc"].astype(float) +
@@ -236,12 +299,16 @@ def build_annual_summary_aggregate(output_dir: Path) -> pd.DataFrame:
         )
     )
 
-    # Mutualisation total — null for years without it.
-    by_yc["mutualisation_gbp"] = pd.to_numeric(
-        by_yc["mutualisation_gbp_total"], errors="coerce"
-    )
+    # Defect 2 fix: mutualisation is a single scheme-wide total.
+    # Assign full amount to GB row; NI rows get 0.0 (not NaN) to avoid
+    # double-counting when aggregating across countries.
+    # Convention: "scheme-wide mutualisation total carried on GB row by
+    # convention; ROS share folded in per D-11."
+    mut_raw = pd.to_numeric(by_yc["mutualisation_gbp_total"], errors="coerce")
+    by_yc["mutualisation_gbp"] = mut_raw.where(by_yc["country"] == "GB", other=0.0)
 
     # Gas counterfactual using annual-average CY lookup.
+    # Uses start year (= 'year' column) for the calendar-year lookup.
     cf = _annual_counterfactual_gbp_per_mwh()
     by_yc["gas_counterfactual_gbp"] = by_yc.apply(
         lambda r: (
@@ -257,6 +324,7 @@ def build_annual_summary_aggregate(output_dir: Path) -> pd.DataFrame:
 
     # e-ROC sensitivity is always None under aggregate grain (D-04).
     by_yc["ro_cost_gbp_eroc"] = None
+    # Defect 1 fix: preserve NaN for years with no generation data (pre-SY18).
     by_yc["ro_generation_mwh"] = by_yc["generation_mwh"]
     by_yc["methodology_version"] = METHODOLOGY_VERSION
 
@@ -282,30 +350,35 @@ def build_by_technology_aggregate(output_dir: Path) -> pd.DataFrame:
     Aggregates over (year, technology) across GB + NI rows in _unified_annual_frame
     to match what station-level would produce (scheme-wide technology totals).
     ro_cost_gbp_eroc = None for all rows (aggregate-grain, D-04).
+
+    Defect 3 fix: price join uses obligation_end_year (matching the start-year
+    output convention in 'year' column).
+    Defect 1 fix: generation_mwh preserves NaN (min_count=1) for pre-SY18 rows.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
     unified = _unified_annual_frame()
     prices = load_roc_prices_csv().copy()
-    prices["year"] = prices["obligation_year"].apply(_obligation_year_to_end_year)
+    # Defect 3 fix: join key is obligation_end_year.
+    prices["obligation_end_year"] = prices["obligation_year"].apply(_obligation_year_to_end_year)
 
-    # Aggregate to (year, technology) — all countries combined.
+    # Aggregate to (year, obligation_end_year, technology) — all countries combined.
     by_yt = (
         unified
         .assign(
             generation_mwh=lambda df: pd.to_numeric(df["generation_gwh"], errors="coerce") * 1000.0,
         )
-        .groupby(["year", "technology"], sort=True, as_index=False)
+        .groupby(["year", "obligation_end_year", "technology"], sort=True, as_index=False)
         .agg(
-            generation_mwh=("generation_mwh", "sum"),
+            generation_mwh=("generation_mwh", lambda x: x.sum(min_count=1)),
             rocs_issued=("rocs_issued", "sum"),
         )
     )
 
-    # Join ROC prices on end calendar year.
+    # Join ROC prices on obligation_end_year (Defect 3 fix).
     by_yt = by_yt.merge(
-        prices[["year", "buyout_gbp_per_roc", "recycle_gbp_per_roc"]],
-        on="year",
+        prices[["obligation_end_year", "buyout_gbp_per_roc", "recycle_gbp_per_roc"]],
+        on="obligation_end_year",
         how="left",
     )
 
@@ -319,6 +392,7 @@ def build_by_technology_aggregate(output_dir: Path) -> pd.DataFrame:
 
     # e-ROC sensitivity is always None under aggregate grain (D-04).
     by_yt["ro_cost_gbp_eroc"] = None
+    # Defect 1 fix: preserve NaN generation for pre-SY18 rows.
     by_yt["ro_generation_mwh"] = by_yt["generation_mwh"]
     by_yt["methodology_version"] = METHODOLOGY_VERSION
 
