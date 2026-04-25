@@ -1,0 +1,55 @@
+# Ofgem RO Annual Report XLSX dataset companions (SY18-SY23).
+#
+# Inventory verified 2026-04-24 in commit b934492 (CONTEXT.md SY17-SY23 discovery section).
+# SY17 (2018-19) ships PDF-only — deferred per Phase 05.2 revision_decisions.sy17_disposition.
+# URLs containing spaces / parens are quoted; requests.get URL-encodes at fetch time.
+#
+# Provenance:
+#   source:       Ofgem-published XLSX dataset companions to RO annual reports (per-publication URLs).
+#   url:          (per-entry below)
+#   basis:        Each XLSX is the canonical machine-readable companion to that scheme year's annual report PDF.
+#   retrieved_on: 2026-04-24
+#   next_audit:   when Ofgem publishes SY24 annual report (~2027 Q1) or any prior URL drops to 4xx.
+
+reports:
+  - scheme_year: SY18
+    period: "2019-20"
+    url: "https://www.ofgem.gov.uk/sites/default/files/docs/2021/03/ro_annual_report_data_2019-20.xlsx"
+    local_filename: "ro_annual_report_data_2019-20.xlsx"
+    expected_min_size_bytes: 50000
+    notes: "Ofgem RO Annual Report 2019-20 dataset companion (XLSX, ~89 KB)"
+
+  - scheme_year: SY19
+    period: "2020-21"
+    url: "https://www.ofgem.gov.uk/sites/default/files/2022-03/RO Annual Report 2020-21 - Dataset.xlsx"
+    local_filename: "ro_annual_report_2020-21_dataset.xlsx"
+    expected_min_size_bytes: 1000000
+    notes: "Ofgem RO Annual Report 2020-21 dataset companion (XLSX, ~2.47 MB; URL contains spaces)"
+
+  - scheme_year: SY20
+    period: "2021-22"
+    url: "https://www.ofgem.gov.uk/sites/default/files/2023-03/Renewables Obligation Annual Report Scheme Year 20 Dataset.xlsx"
+    local_filename: "ro_annual_report_sy20_dataset.xlsx"
+    expected_min_size_bytes: 1000000
+    notes: "Ofgem RO Annual Report Scheme Year 20 dataset companion (XLSX, ~1.80 MB; URL contains spaces)"
+
+  - scheme_year: SY21
+    period: "2022-23"
+    url: "https://www.ofgem.gov.uk/sites/default/files/2024-03/renewables_obligation_annual_report_sy21_dataset.xlsx"
+    local_filename: "ro_annual_report_sy21_dataset.xlsx"
+    expected_min_size_bytes: 500000
+    notes: "Ofgem RO Annual Report SY21 dataset companion (XLSX, ~1.08 MB)"
+
+  - scheme_year: SY22
+    period: "2023-24"
+    url: "https://www.ofgem.gov.uk/sites/default/files/2025-03/Renewables-Obligation-(RO)-2023-to-2024-(SY22)-Annual-Report-Dataset.xlsx"
+    local_filename: "ro_annual_report_sy22_dataset.xlsx"
+    expected_min_size_bytes: 500000
+    notes: "Ofgem RO Annual Report SY22 dataset companion (XLSX, ~786 KB; URL contains parens)"
+
+  - scheme_year: SY23
+    period: "2024-25"
+    url: "https://www.ofgem.gov.uk/sites/default/files/2026-03/Renewables_Obligation_Annual_Report_Scheme_Year_23_Dataset-20260327121339.xlsx"
+    local_filename: "ro_annual_report_sy23_dataset.xlsx"
+    expected_min_size_bytes: 500000
+    notes: "Ofgem RO Annual Report Scheme Year 23 dataset companion (XLSX, ~1.01 MB; date-stamped suffix)"

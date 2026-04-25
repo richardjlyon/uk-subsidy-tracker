@@ -35,6 +35,8 @@ from pathlib import Path
 import pandas as pd
 import pandera.pandas as pa
 import requests
+import yaml
+from pydantic import BaseModel
 
 from uk_subsidy_tracker import DATA_DIR
 from uk_subsidy_tracker.data.utils import HEADERS
@@ -193,4 +195,79 @@ __all__ = [
     "parse_xlsx_to_monthly",
     "load_annual_aggregate_csv",
     "load_roc_prices_csv",
+    "OfgemAnnualReportConfig",
+    "OfgemAnnualReportsConfig",
+    "load_ofgem_annual_reports_config",
+    "download_annual_xlsx",
+    "parse_annual_xlsx_to_aggregate_rows",
+    "emit_annual_aggregate_csv",
 ]
+
+
+# ----- Phase 05.2 Plan 02 (revised): SY18-SY23 annual-report XLSX path -----
+
+
+class OfgemAnnualReportConfig(BaseModel):
+    scheme_year: str
+    period: str
+    url: str
+    local_filename: str
+    expected_min_size_bytes: int
+    notes: str
+
+
+class OfgemAnnualReportsConfig(BaseModel):
+    reports: list[OfgemAnnualReportConfig]
+
+    def by_scheme_year(self, scheme_year: str) -> OfgemAnnualReportConfig:
+        for r in self.reports:
+            if r.scheme_year == scheme_year:
+                return r
+        raise KeyError(scheme_year)
+
+
+_ANNUAL_REPORTS_YAML = Path(__file__).parent / "ofgem_annual_reports.yaml"
+
+
+def load_ofgem_annual_reports_config(path: Path | None = None) -> OfgemAnnualReportsConfig:
+    """Load the SY18-SY23 XLSX-companion manifest.
+
+    Provenance: data/ofgem_annual_reports.yaml carries the verbatim URL inventory
+    from CONTEXT.md (SY17-SY23 discovery, 2026-04-24, commit b934492).
+    """
+    target = path if path is not None else _ANNUAL_REPORTS_YAML
+    with open(target, "r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f)
+    return OfgemAnnualReportsConfig(**raw)
+
+
+def download_annual_xlsx(scheme_year: str) -> Path:
+    """Download a single SY18-SY23 annual-report XLSX dataset companion.
+
+    Resolves URL via the YAML manifest. D-17 fail-loud discipline applies.
+    Real implementation in Task 4.
+    """
+    raise NotImplementedError("Plan 02 Task 4 fills this body")
+
+
+def parse_annual_xlsx_to_aggregate_rows(scheme_year: str) -> pd.DataFrame:
+    """Parse one SY18-SY23 XLSX into ofgem_annual_aggregate_schema rows.
+
+    Returns DataFrame with columns: scheme_year, year, country, technology,
+    generation_gwh, rocs_issued, ro_cost_gbp_nominal, source_pdf_url
+    (under XLSX path: source_pdf_url carries the XLSX URL).
+
+    Pure function: same XLSX bytes -> same DataFrame (D-21). Real implementation
+    in Task 5.
+    """
+    raise NotImplementedError("Plan 02 Task 5 fills this body")
+
+
+def emit_annual_aggregate_csv(output_path: Path | None = None) -> Path:
+    """Concatenate SY18-SY23 parsed rows into ro-annual-aggregate.csv.
+
+    Writes a Provenance: comment header + the unified data rows + emits the
+    sibling .meta.json sidecar with sources[] enumerating the 6 XLSX upstreams.
+    Real implementation in Task 5.
+    """
+    raise NotImplementedError("Plan 02 Task 5 fills this body")
