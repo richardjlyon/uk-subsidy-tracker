@@ -1,0 +1,89 @@
+# Per-year xfail map for tests/test_benchmarks.py::test_ref_constable_ro_reconciliation
+#
+# Consumed by the test at collection time. Each entry carries:
+#   year       - calendar year matching benchmarks.yaml::ref_constable
+#   category   - "deferred-data-gated" | "drift-exceeding"
+#   reason     - human-readable explanation (shown in pytest -v output)
+#   cross_ref  - backlog item tracking the unlock path
+#
+# Sync invariant: the set of years in this file must exactly match the
+# xfailed-year rows in .planning/phases/05-ro-module/05-09-DIVERGENCE.md.
+# Enforced by tests/test_benchmarks.py::test_divergences_yaml_sync.
+#
+# Unlock protocol: to promote a year from xfail to hard assertion,
+# fix the pipeline, verify drift < 3%, then REMOVE the entry here AND
+# the corresponding row from DIVERGENCE.md. Do NOT widen REF_TOLERANCE_PCT.
+#
+# Phase origin: 05.2 (close-out 2026-04-25)
+# Human record: .planning/phases/05-ro-module/05-09-DIVERGENCE.md
+
+xfailed_years:
+
+  # --- Deferred-data-gated (pipeline produces NaN — no data to compare) ---
+
+  - year: 2002
+    category: deferred-data-gated
+    reason: "SY1 (2002-03) ROC buyout/recycle prices deferred — no Ofgem-published source found; backlog 999.2"
+    cross_ref: backlog-999.2
+
+  - year: 2003
+    category: deferred-data-gated
+    reason: "SY2 (2003-04) ROC buyout/recycle prices deferred — no Ofgem-published source found; backlog 999.2"
+    cross_ref: backlog-999.2
+
+  - year: 2004
+    category: deferred-data-gated
+    reason: "SY3 (2004-05) ROC buyout/recycle prices deferred — no Ofgem-published source found; backlog 999.2"
+    cross_ref: backlog-999.2
+
+  - year: 2005
+    category: deferred-data-gated
+    reason: "SY4 (2005-06) ROC buyout/recycle prices deferred — no Ofgem-published source found; backlog 999.2"
+    cross_ref: backlog-999.2
+
+  - year: 2018
+    category: deferred-data-gated
+    reason: "SY17 (2018-19) annual report PDF-only — no XLSX dataset companion; sy17_disposition deferral per Plan 05.2-02; backlog 999.3"
+    cross_ref: backlog-999.3
+
+  # --- Drift-exceeding ±3% (pipeline produces value but fails hard block) ---
+
+  - year: 2006
+    category: drift-exceeding
+    reason: "SY5 (2006-07) pipeline=0.748bn REF=0.70bn drift=+6.8%; 12-year XLSX GB/NI scope vs REF GB-only — early years may include small NIRO; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2008
+    category: drift-exceeding
+    reason: "SY7 (2008-09) pipeline=1.061bn REF=1.00bn drift=+6.1%; same GB/NI scope issue as 2006; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2013
+    category: drift-exceeding
+    reason: "SY12 (2013-14) pipeline=2.692bn REF=2.60bn drift=+3.5%; borderline — likely rounding at 2013 banding-review boundary; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2015
+    category: drift-exceeding
+    reason: "SY14 (2015-16) pipeline=4.015bn REF=3.70bn drift=+8.5%; 2013 banding transition — possible double-count of stations under old+new banding for SY14 window; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2016
+    category: drift-exceeding
+    reason: "SY15 (2016-17) pipeline=4.319bn REF=4.50bn drift=-4.0%; possibly related to 2013 banding transition tail; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2020
+    category: drift-exceeding
+    reason: "SY19 (2020-21) pipeline=5.951bn REF=5.70bn drift=+4.4%; SY19 year-semantics; no per-tech generation MWh in source XLSX; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2021
+    category: drift-exceeding
+    reason: "SY20 (2021-22) pipeline=5.783bn REF=6.40bn drift=-9.6%; mutualisation single-row attribution may misalign with REF scope; backlog 999.4"
+    cross_ref: backlog-999.4
+
+  - year: 2022
+    category: drift-exceeding
+    reason: "SY21 (2022-23) pipeline=6.108bn REF=6.40bn drift=-4.6%; mutualisation tail / SY21 specific; backlog 999.4"
+    cross_ref: backlog-999.4

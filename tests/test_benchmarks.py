@@ -15,11 +15,41 @@ Two check types:
    per CONTEXT D-07. Zero external entries is allowed per D-11 fallback.
 """
 
+from pathlib import Path
+
 import pytest
+import yaml
 
 from tests.fixtures import BenchmarkEntry, load_benchmarks
 from uk_subsidy_tracker import PROJECT_ROOT
 from uk_subsidy_tracker.data import load_lccc_dataset
+
+# --- Divergences YAML loader (per-year xfail map for REF reconciliation) --- #
+
+_DIVERGENCES_YAML = Path(__file__).parent / "fixtures" / "divergences.yaml"
+_DIVERGENCE_DOC = (
+    PROJECT_ROOT / ".planning" / "phases" / "05-ro-module" / "05-09-DIVERGENCE.md"
+)
+
+
+def _load_xfail_years() -> dict[int, str]:
+    """Load per-year xfail map from tests/fixtures/divergences.yaml.
+
+    Returns a dict mapping calendar year -> xfail reason string.
+    Called at collection time; raises if the file is missing (fail loud —
+    no try/except shim: if divergences.yaml is absent, tests must fail).
+
+    The file must exist. It is part of the test fixture tree, not optional.
+    """
+    raw = yaml.safe_load(_DIVERGENCES_YAML.read_text())
+    return {
+        entry["year"]: entry["reason"]
+        for entry in raw.get("xfailed_years", [])
+    }
+
+
+# Build xfail map at collection time (module-level, no try/except by design).
+_XFAIL_YEARS: dict[int, str] = _load_xfail_years()
 
 # --- Tolerance constants (CONTEXT D-06 — docstring rationale mandatory) --- #
 
@@ -222,10 +252,36 @@ def _ref_entries() -> list[BenchmarkEntry]:
     return entries
 
 
-# Sentinel file for the D-14 xfail escape hatch. If this file exists, the
-# reconciliation test xfails (strict=False) so Phase 5's unattended chain
-# can complete; Plan 05-13 Task 4 is the gate that forces resolution.
-# Deleting the file re-arms the hard block.
+def _parametrised_ref_entries() -> list:
+    """Build parametrised entries with per-year xfail marks from divergences.yaml.
+
+    Years listed in _XFAIL_YEARS receive pytest.mark.xfail(strict=False,
+    reason=<entry reason>). All other years run as hard assertions (D-14).
+
+    The xfail map is loaded from tests/fixtures/divergences.yaml at module
+    import time (no try/except — file absence is a hard failure, not silent).
+    """
+    params = []
+    for entry in _ref_entries():
+        reason = _XFAIL_YEARS.get(entry.year)
+        if reason is not None:
+            params.append(
+                pytest.param(
+                    entry,
+                    marks=pytest.mark.xfail(strict=False, reason=reason),
+                )
+            )
+        else:
+            params.append(entry)
+    return params
+
+
+# Dead code — kept for historical traceability (Phase 5 Plan 05-09 sentinel
+# mechanism). The blanket sentinel xfail was replaced in Phase 05.2 Plan 06
+# by per-year xfail entries in tests/fixtures/divergences.yaml. The file
+# now exists as a per-year record (not a blanket sentinel), so this check
+# always evaluates to True but the xfail is applied at parametrisation time
+# above, not here. Do not remove this reference — it documents the transition.
 _DIVERGENCE_SENTINEL = (
     PROJECT_ROOT / ".planning" / "phases" / "05-ro-module" / "05-09-DIVERGENCE.md"
 )
@@ -233,8 +289,8 @@ _DIVERGENCE_SENTINEL = (
 
 @pytest.mark.parametrize(
     "entry",
-    _ref_entries(),
-    ids=lambda e: f"ref_constable-{e.year}",
+    _parametrised_ref_entries(),
+    ids=lambda e: f"ref_constable-{e.year}" if isinstance(e, BenchmarkEntry) else f"ref_constable-{e.values[0].year}",
 )
 def test_ref_constable_ro_reconciliation(
     entry: BenchmarkEntry, ro_annual_totals_gbp_bn: dict[int, float]
@@ -242,22 +298,16 @@ def test_ref_constable_ro_reconciliation(
     """RO-06 / D-14 / ROADMAP SC #3: pipeline ro_cost_gbp aggregate within ±3%
     of REF Constable 2025 Table 1 per-year figure.
 
-    HARD BLOCK: if this fails, investigate BEFORE raising the tolerance.
+    HARD BLOCK: if this fails for a non-xfailed year, investigate BEFORE
+    raising the tolerance.
 
-    Unattended-execution escape hatch (Plan 05-13 Task 4 post-execution review):
-      If ``.planning/phases/05-ro-module/05-09-DIVERGENCE.md`` exists, the
-      executor has already documented a divergence event for human triage.
-      The test xfails (strict=False) so the Phase 5 unattended chain
-      completes; Plan 05-13 Task 4 is the gate that forces resolution.
-      Deleting the DIVERGENCE.md sentinel restores the D-14 hard block.
+    Per-year xfail escape hatch (Phase 05.2 Plan 06):
+      Years listed in tests/fixtures/divergences.yaml are xfailed with
+      per-entry root-cause reasons. See .planning/phases/05-ro-module/
+      05-09-DIVERGENCE.md for the methodology record and unlock conditions.
+      Do NOT widen REF_TOLERANCE_PCT — the only sanctioned path is to fix
+      the pipeline and remove the entry from divergences.yaml.
     """
-    if _DIVERGENCE_SENTINEL.exists():
-        pytest.xfail(
-            f"REF reconciliation divergence documented at "
-            f"{_DIVERGENCE_SENTINEL.name} (Plan 05-13 Task 4 review pending). "
-            f"D-14 hard-block restored once file deleted."
-        )
-
     ours = ro_annual_totals_gbp_bn.get(entry.year)
     if ours is None:
         pytest.fail(
@@ -267,7 +317,7 @@ def test_ref_constable_ro_reconciliation(
             f"year. Rebuild via `uv run python -c \"from uk_subsidy_tracker"
             f".schemes import ro; ro.rebuild_derived()\"`, then re-run. "
             f"Phase 05.2: reads annual_summary.parquet (aggregate grain, D-05). "
-            f"Document unresolved divergence at {_DIVERGENCE_SENTINEL} for Plan 06 review."
+            f"Unlock path: see {_DIVERGENCE_SENTINEL.name} per-year table."
         )
 
     divergence_pct = abs(ours - entry.value_gbp_bn) / entry.value_gbp_bn * 100.0
@@ -283,3 +333,58 @@ def test_ref_constable_ro_reconciliation(
         f"  3. Carbon-price extension — is DEFAULT_CARBON_PRICES[{entry.year}] sensible?\n"
         f"URL: {entry.url}"
     )
+
+
+# --- Divergences YAML sync check --- #
+
+
+def test_divergences_yaml_sync() -> None:
+    """Structural sync-check: divergences.yaml and DIVERGENCE.md stay in sync.
+
+    Verifies:
+    1. divergences.yaml is loadable and has valid structure.
+    2. Every year in divergences.yaml appears in benchmarks.yaml::ref_constable
+       (no phantom entries referencing non-existent REF years).
+    3. The set of xfailed years from divergences.yaml is internally consistent
+       (no duplicate year entries).
+    4. DIVERGENCE.md exists (the human-readable record must not be deleted
+       while divergences.yaml still has entries).
+
+    This test does NOT parse DIVERGENCE.md tables — it trusts that the
+    human maintaining the file keeps them aligned. The machine-readable
+    source of truth is divergences.yaml.
+    """
+    # 1. divergences.yaml is loadable
+    assert _DIVERGENCES_YAML.exists(), (
+        f"tests/fixtures/divergences.yaml is missing. "
+        f"It is the machine-readable xfail map for REF reconciliation. "
+        f"Do not delete it while there are active per-year xfail entries."
+    )
+    raw = yaml.safe_load(_DIVERGENCES_YAML.read_text())
+    assert isinstance(raw, dict), "divergences.yaml must parse to a dict"
+    entries = raw.get("xfailed_years", [])
+    assert isinstance(entries, list), "divergences.yaml::xfailed_years must be a list"
+
+    # 2. No phantom years (every xfailed year must be in benchmarks.yaml)
+    ref_years = {e.year for e in load_benchmarks().ref_constable}
+    xfail_years_in_yaml = [e["year"] for e in entries]
+    for year in xfail_years_in_yaml:
+        assert year in ref_years, (
+            f"divergences.yaml entry year={year} does not appear in "
+            f"benchmarks.yaml::ref_constable. Either the year is wrong or "
+            f"it was removed from benchmarks.yaml without cleaning up divergences.yaml."
+        )
+
+    # 3. No duplicates
+    assert len(xfail_years_in_yaml) == len(set(xfail_years_in_yaml)), (
+        f"divergences.yaml has duplicate year entries: "
+        f"{[y for y in xfail_years_in_yaml if xfail_years_in_yaml.count(y) > 1]}"
+    )
+
+    # 4. DIVERGENCE.md exists while there are active xfail entries
+    if entries:
+        assert _DIVERGENCE_DOC.exists(), (
+            f"{_DIVERGENCE_DOC.name} must exist while divergences.yaml has "
+            f"active xfail entries. The human-readable record cannot be deleted "
+            f"before all per-year entries are resolved and removed from divergences.yaml."
+        )
