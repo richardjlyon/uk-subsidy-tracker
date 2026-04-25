@@ -1,3 +1,4 @@
+# dormant: true
 """Ofgem RO register + generation downloaders and loaders (Plan 05-01).
 
 Raw artefacts (see `data/raw/ofgem/README.md`):
