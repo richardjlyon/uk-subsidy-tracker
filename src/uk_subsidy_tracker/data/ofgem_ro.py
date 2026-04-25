@@ -176,29 +176,9 @@ def load_ofgem_ro_register() -> pd.DataFrame:
 
 
 def load_ofgem_ro_generation() -> pd.DataFrame:
-    """Load + validate the Ofgem monthly ROC-issuance dataset (per-station format).
-
-    Under Option D, ``ro-generation.csv`` carries the aggregate monthly format
-    emitted by ``ofgem_aggregate.emit_ro_generation_csv()`` (year, month,
-    country, technology, generation_mwh, rocs_issued). This loader owns the
-    per-station contract (station_id, output_period_end, ...) and returns an
-    empty validated DataFrame when the file lacks ``station_id`` (i.e. while
-    the per-station download path is still Option-D). Cost-model callers receive
-    zero data rows, which activates their empty-input short-circuit paths.
-    """
+    """Load + validate the Ofgem monthly ROC-issuance dataset."""
     path = DATA_DIR / "raw" / "ofgem" / "ro-generation.csv"
-    raw = pd.read_csv(path, comment="#")
-    if "output_period_end" not in raw.columns:
-        # Aggregate-format file (Plan 02 placeholder) — return empty per-station stub.
-        empty = pd.DataFrame(
-            columns=["station_id", "output_period_end", "generation_mwh", "rocs_issued"]
-        )
-        empty["output_period_end"] = pd.to_datetime(empty["output_period_end"])
-        empty["generation_mwh"] = empty["generation_mwh"].astype(float)
-        empty["rocs_issued"] = empty["rocs_issued"].astype(float)
-        return ro_generation_schema.validate(empty)
-    df = raw.copy()
-    df["output_period_end"] = pd.to_datetime(df["output_period_end"])
+    df = pd.read_csv(path, parse_dates=["output_period_end"])
     df = ro_generation_schema.validate(df)
     return df
 
