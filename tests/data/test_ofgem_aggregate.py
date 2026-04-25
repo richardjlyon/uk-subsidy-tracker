@@ -178,3 +178,49 @@ def test_parse_xlsx_to_monthly_deterministic():
     df1 = parse_xlsx_to_monthly()
     df2 = parse_xlsx_to_monthly()
     pd.testing.assert_frame_equal(df1, df2)
+
+
+# ---------------------------------------------------------------------------
+# Task 4: download_annual_xlsx — mocked-network tests
+# ---------------------------------------------------------------------------
+
+def test_download_annual_xlsx_writes_file_for_sy18(tmp_path, monkeypatch):
+    """Happy path: SY18 download writes bytes; output path matches manifest."""
+    from unittest.mock import MagicMock
+    from uk_subsidy_tracker.data import ofgem_aggregate
+    monkeypatch.setattr(
+        ofgem_aggregate,
+        "DATA_DIR",
+        tmp_path,
+        raising=False,
+    )
+    # Mock requests.get to return a fake XLSX payload
+    fake_response = MagicMock()
+    fake_response.raise_for_status.return_value = None
+    fake_response.iter_content.return_value = [b"PK\x03\x04fake-xlsx-bytes"]
+    with patch(
+        "uk_subsidy_tracker.data.ofgem_aggregate.requests.get",
+        return_value=fake_response,
+    ):
+        out = ofgem_aggregate.download_annual_xlsx("SY18")
+    assert out.name == "ro_annual_report_data_2019-20.xlsx"
+    assert out.exists()
+    assert out.read_bytes().startswith(b"PK")
+
+
+def test_download_annual_xlsx_fails_loud_on_network_error():
+    """D-17 fail-loud: RequestException propagates."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+    with patch(
+        "uk_subsidy_tracker.data.ofgem_aggregate.requests.get",
+        side_effect=requests.exceptions.ConnectionError("network down"),
+    ):
+        with pytest.raises(requests.exceptions.RequestException):
+            ofgem_aggregate.download_annual_xlsx("SY18")
+
+
+def test_download_annual_xlsx_raises_key_error_for_sy17():
+    """SY17 deferred — manifest has no SY17 entry; download must KeyError."""
+    from uk_subsidy_tracker.data import ofgem_aggregate
+    with pytest.raises(KeyError):
+        ofgem_aggregate.download_annual_xlsx("SY17")

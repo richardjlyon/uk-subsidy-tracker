@@ -244,10 +244,27 @@ def load_ofgem_annual_reports_config(path: Path | None = None) -> OfgemAnnualRep
 def download_annual_xlsx(scheme_year: str) -> Path:
     """Download a single SY18-SY23 annual-report XLSX dataset companion.
 
-    Resolves URL via the YAML manifest. D-17 fail-loud discipline applies.
-    Real implementation in Task 4.
+    Resolves URL via the YAML manifest. D-17 fail-loud discipline:
+      - output_path bound BEFORE try (gap #2 fix from Phase 4 Plan 07)
+      - timeout=60 on requests.get
+      - bare raise in except RequestException
+
+    Raises KeyError if scheme_year not in manifest (e.g. 'SY17' deferred).
     """
-    raise NotImplementedError("Plan 02 Task 4 fills this body")
+    cfg = load_ofgem_annual_reports_config()
+    entry = cfg.by_scheme_year(scheme_year)  # raises KeyError on SY17
+    output_path = DATA_DIR / "raw" / "ofgem" / entry.local_filename  # BOUND BEFORE try (D-17 gap #2)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        response = requests.get(entry.url, headers=HEADERS, stream=True, timeout=60)
+        response.raise_for_status()
+        with open(output_path, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        return output_path
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while downloading {scheme_year} XLSX: {e}")
+        raise  # fail loud per D-17
 
 
 def parse_annual_xlsx_to_aggregate_rows(scheme_year: str) -> pd.DataFrame:
