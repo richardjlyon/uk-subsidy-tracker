@@ -7,8 +7,8 @@ with RO-specific logic substitutions.
 Public surface (ARCHITECTURE §6.1):
 - ``DERIVED_DIR``: where this scheme's Parquet lives (``data/derived/ro/``).
 - ``upstream_changed()``: SHA-compare against Ofgem raw sidecars (Plan 05-01).
-- ``refresh()``: re-fetch three Ofgem raw files (Plan 05-05 Task 1).
-- ``rebuild_derived(output_dir)``: raw → five Parquet grains.
+- ``refresh()``: re-fetch Ofgem raw files (XLSX only when dormant; full when active).
+- ``rebuild_derived(output_dir)``: raw → Parquet grains (aggregate grain while dormant).
 - ``regenerate_charts()``: delegate to ``uk_subsidy_tracker.plotting.__main__``.
 - ``validate()``: four D-04 post-rebuild sanity checks; empty list = clean.
 
@@ -28,15 +28,12 @@ from uk_subsidy_tracker.schemes.ro._refresh import (
     refresh as _refresh,
     upstream_changed as _upstream_changed,
 )
-from uk_subsidy_tracker.schemes.ro.aggregation import (
-    build_annual_summary,
-    build_by_allocation_round,
-    build_by_technology,
-)
-from uk_subsidy_tracker.schemes.ro.cost_model import build_station_month
-from uk_subsidy_tracker.schemes.ro.forward_projection import build_forward_projection
 
 DERIVED_DIR: Path = PROJECT_ROOT / "data" / "derived" / "ro"
+
+# Module-level dormancy flag (D-07 — single switch to flip on backlog 999.1).
+# Grep-discoverable: `grep -rn "DORMANT_STATION_LEVEL" src/`
+DORMANT_STATION_LEVEL: bool = True
 
 
 def upstream_changed() -> bool:
@@ -50,18 +47,39 @@ def refresh() -> None:
 
 
 def rebuild_derived(output_dir: Path | None = None) -> None:
-    """Emit the five RO derived Parquet grains under the target directory.
+    """Emit RO derived Parquet grains under the target directory.
+
+    Phase 05.2 + D-05 + D-07: when DORMANT_STATION_LEVEL is True, emits
+    only annual_summary.parquet + by_technology.parquet from aggregate
+    sources. Station-level grains (station_month, by_allocation_round,
+    forward_projection) are skipped — no file written; manifest.json
+    correspondingly omits them.
 
     Pure function of ``data/raw/ofgem/`` content (D-21). If ``output_dir`` is
     None, writes to ``DERIVED_DIR = data/derived/ro/``. Otherwise writes to
     the caller-supplied path (test fixtures depend on this).
-
-    Order matters: ``build_station_month`` first (canonical upstream grain);
-    the three rollups + forward projection read ``station_month.parquet``
-    back to exercise the round-trip path and guarantee consistency (D-03).
     """
     target = output_dir if output_dir is not None else DERIVED_DIR
     target.mkdir(parents=True, exist_ok=True)
+
+    if DORMANT_STATION_LEVEL:
+        from uk_subsidy_tracker.schemes.ro.aggregate_model import (
+            build_annual_summary_aggregate,
+            build_by_technology_aggregate,
+        )
+        build_annual_summary_aggregate(target)
+        build_by_technology_aggregate(target)
+        return
+
+    # Station-level path (re-activated on backlog 999.1)
+    from uk_subsidy_tracker.schemes.ro.aggregation import (
+        build_annual_summary,
+        build_by_allocation_round,
+        build_by_technology,
+    )
+    from uk_subsidy_tracker.schemes.ro.cost_model import build_station_month
+    from uk_subsidy_tracker.schemes.ro.forward_projection import build_forward_projection
+
     build_station_month(target)
     build_annual_summary(target)
     build_by_technology(target)
@@ -88,25 +106,28 @@ def validate() -> list[str]:
 
     1. Banding divergence — per-station Ofgem-published vs YAML-computed ROCs
        delta; warns if >10 stations or >5% of station population exceed 1%.
+       (Skipped when DORMANT_STATION_LEVEL=True; station_month.parquet absent.)
     2. REF Constable drift — 2011-2022 ``ro_cost_gbp`` aggregate vs the
        ``ref_constable`` benchmark fixture; warns at >3% drift (the hard-block
        version lives in ``tests/test_benchmarks.py``; this is the cheap
        post-rebuild warner).
-    3. ``methodology_version`` column consistency across all five RO Parquets.
+    3. ``methodology_version`` column consistency across all available RO Parquets.
     4. ``forward_projection`` sanity — negative costs or >50% year-on-year
        ``remaining_committed_mwh`` jumps within a technology.
+       (Skipped when DORMANT_STATION_LEVEL=True; forward_projection.parquet absent.)
 
     All checks short-circuit cleanly on missing Parquets or empty data so a
     partial rebuild never trip-wires this function.
     """
-    import pandas as pd  # noqa: F401 — imported for downstream branches
     import pyarrow.parquet as pq
 
     warnings: list[str] = []
 
     # ---- Check 1 — banding divergence (D-04 Check 1) ----
+    # Only meaningful when station_month.parquet exists (station-level path).
     sm_path = DERIVED_DIR / "station_month.parquet"
     if sm_path.exists():
+        import pandas as pd  # noqa: F401
         sm = pq.read_table(sm_path).to_pandas()
         if (
             len(sm) > 0
@@ -137,16 +158,14 @@ def validate() -> list[str]:
     if annual_path.exists():
         ann = pq.read_table(annual_path).to_pandas()
         if "ro_cost_gbp" in ann.columns and len(ann) > 0:
-            # Cheap negative-sanity short-circuit.
-            if (ann["ro_cost_gbp"] < 0).any():
+            # Cheap negative-sanity short-circuit (skip NaN rows from SY1-SY4).
+            cost_col = ann["ro_cost_gbp"].dropna()
+            if len(cost_col) > 0 and (cost_col < 0).any():
                 warnings.append(
                     "D-04 Check 2: negative ro_cost_gbp in annual_summary"
                 )
 
             # REF drift aggregate check (best-effort; silent if fixture absent).
-            # The benchmarks fixture currently lives under tests/fixtures/ (the
-            # hard-block test in tests/test_benchmarks.py is its primary home);
-            # this cheap pipeline-level warner reads the same file.
             try:
                 import yaml  # pyyaml is already a project dep
 
@@ -176,14 +195,6 @@ def validate() -> list[str]:
                                     f"(drift {drift_pct:.2f}% > 3.0% tolerance)"
                                 )
             except (FileNotFoundError, KeyError, yaml.YAMLError):
-                # validate() must never raise; drift detection is best-effort
-                # for the three expected failure modes:
-                # - FileNotFoundError: benchmarks fixture absent (fresh clone)
-                # - KeyError:          ref_constable block / annual_gbp missing
-                # - yaml.YAMLError:    malformed YAML (user-edited fixture)
-                # Any other exception (e.g. AttributeError from a schema-drifted
-                # annual frame, ArithmeticError, OSError) propagates so real
-                # bugs aren't masked.
                 pass
 
     # ---- Check 3 — methodology_version consistency (D-04 Check 3) ----
@@ -241,6 +252,7 @@ def validate() -> list[str]:
 
 __all__ = [
     "DERIVED_DIR",
+    "DORMANT_STATION_LEVEL",
     "upstream_changed",
     "refresh",
     "rebuild_derived",

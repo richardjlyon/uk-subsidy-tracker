@@ -161,71 +161,67 @@ def test_refresh_loop_generated_at_advances_once_then_stable(tmp_raw_tree):
 
 @pytest.fixture
 def tmp_ro_raw_tree(tmp_path, monkeypatch):
-    """Seed tmp_path with the three RO raw files + sidecars that match,
+    """Seed tmp_path with the RO 12-year XLSX + sidecar that match,
     pointing ro_refresh at tmp_path as DATA_DIR. Returns the tmp_path root.
+
+    Phase 05.2 update: ro_refresh now tracks a single XLSX file (_XLSX_REL)
+    rather than the old three-file _URL_MAP (register + generation + prices).
+    DORMANT_STATION_LEVEL=True means only the 12-year XLSX is fetched on refresh.
     """
     raw_root = tmp_path
     (raw_root / "raw/ofgem").mkdir(parents=True, exist_ok=True)
     from uk_subsidy_tracker.data.sidecar import write_sidecar
-    for rel, url in ro_refresh._URL_MAP.items():
-        raw_path = raw_root / rel
-        raw_path.write_bytes(f"INITIAL-CONTENT-{rel}".encode())
-        write_sidecar(raw_path=raw_path, upstream_url=url)
+    # Seed the single tracked file — the 12-year XLSX.
+    rel = ro_refresh._XLSX_REL
+    url = ro_refresh._XLSX_URL
+    raw_path = raw_root / rel
+    raw_path.write_bytes(f"INITIAL-CONTENT-{rel}".encode())
+    write_sidecar(raw_path=raw_path, upstream_url=url)
     # Redirect the scheme module at tmp_path.
     monkeypatch.setattr(ro_refresh, "DATA_DIR", raw_root)
     return raw_root
 
 
 def _patched_ro_refresh_downloaders(raw_root: Path, new_content: dict[str, bytes]):
-    """Return a context manager stack that patches the three RO downloaders
-    to write `new_content[rel]` bytes to each raw file in `raw_root`.
+    """Return a context manager stack that patches the RO XLSX downloader
+    to write `new_content[rel]` bytes to the raw file in `raw_root`.
 
-    Mirrors the CfD helper `_patched_refresh_downloaders` above. The three
-    Ofgem downloaders are patched to write synthetic bytes rather than hit
-    the network; `ro_refresh.refresh()` then iterates `_URL_MAP` and
-    rewrites the three sidecars via `write_sidecar()`, so on the next
-    `upstream_changed()` call the SHA comparison agrees and returns False.
+    Phase 05.2 update: DORMANT_STATION_LEVEL=True means refresh() only
+    downloads the 12-year XLSX; the three station-level downloaders are
+    skipped. This helper patches download_twelve_year_xlsx to write synthetic
+    bytes rather than hitting the network.
     """
     stack = ExitStack()
+    rel = ro_refresh._XLSX_REL
 
-    def fake_register():
-        rel = "raw/ofgem/ro-register.xlsx"
+    def fake_download_twelve_year_xlsx():
         (raw_root / rel).write_bytes(new_content[rel])
-
-    def fake_generation():
-        rel = "raw/ofgem/ro-generation.csv"
-        (raw_root / rel).write_bytes(new_content[rel])
-
-    def fake_prices():
-        rel = "raw/ofgem/roc-prices.csv"
-        (raw_root / rel).write_bytes(new_content[rel])
+        return raw_root / rel
 
     stack.enter_context(patch(
-        "uk_subsidy_tracker.data.ofgem_ro.download_ofgem_ro_register",
-        side_effect=fake_register,
+        "uk_subsidy_tracker.data.ofgem_aggregate.download_twelve_year_xlsx",
+        side_effect=fake_download_twelve_year_xlsx,
     ))
-    stack.enter_context(patch(
-        "uk_subsidy_tracker.data.ofgem_ro.download_ofgem_ro_generation",
-        side_effect=fake_generation,
-    ))
-    stack.enter_context(patch(
-        "uk_subsidy_tracker.data.roc_prices.download_roc_prices",
-        side_effect=fake_prices,
-    ))
+    # write_sidecar is called after the download — patch it so it writes a
+    # real sidecar against the synthetic bytes in raw_root.
+    # (We let the real write_sidecar run; it just reads the fake file's sha256.)
     return stack
 
 
 def test_ro_refresh_converges_on_unchanged_upstream(tmp_ro_raw_tree):
-    """After ro_refresh.refresh(), upstream_changed() = False (D-18 per-scheme)."""
-    new_content = {rel: f"FRESH-CONTENT-{rel}".encode()
-                   for rel in ro_refresh._URL_MAP}
+    """After ro_refresh.refresh(), upstream_changed() = False (D-18 per-scheme).
+
+    Phase 05.2 update: tests the single-XLSX invariant under DORMANT_STATION_LEVEL=True.
+    """
+    rel = ro_refresh._XLSX_REL
+    new_content = {rel: f"FRESH-CONTENT-{rel}".encode()}
 
     with _patched_ro_refresh_downloaders(tmp_ro_raw_tree, new_content):
         ro_refresh.refresh()
 
     # Invariant: after a successful refresh, the dirty-check reports clean.
     assert ro_refresh.upstream_changed() is False, (
-        "upstream_changed() must return False after refresh() rewrites RO sidecars"
+        "upstream_changed() must return False after refresh() rewrites RO sidecar"
     )
 
 

@@ -89,3 +89,95 @@ def test_every_row_has_methodology_version_0_1_0(tmp_path):
         assert unique == ["0.1.0"], (
             f"{name}: expected methodology_version == ['0.1.0'], got {unique}"
         )
+
+
+# ===========================================================================
+# Task 2b — integration tests (schemes.ro wiring + DORMANT_STATION_LEVEL).
+# ===========================================================================
+
+
+def test_schemes_ro_is_scheme_module():
+    """Test 6: schemes.ro satisfies the SchemeModule Protocol (five-function contract)."""
+    from uk_subsidy_tracker.schemes import ro
+    from uk_subsidy_tracker.schemes import SchemeModule
+
+    assert isinstance(ro, SchemeModule), (
+        "schemes.ro does not satisfy SchemeModule Protocol — "
+        "check that all five callables are present and DERIVED_DIR is a Path"
+    )
+
+
+def test_rebuild_derived_dormant_emits_only_two_grains(tmp_path):
+    """Test 7: with DORMANT_STATION_LEVEL=True, rebuild_derived emits only the two aggregate grains."""
+    from uk_subsidy_tracker.schemes import ro
+
+    assert ro.DORMANT_STATION_LEVEL is True, (
+        "DORMANT_STATION_LEVEL must be True for this test; flip the flag to re-run station-level"
+    )
+
+    ro.rebuild_derived(tmp_path)
+
+    # Must exist
+    assert (tmp_path / "annual_summary.parquet").exists(), "annual_summary.parquet not emitted"
+    assert (tmp_path / "by_technology.parquet").exists(), "by_technology.parquet not emitted"
+
+    # Must NOT exist (D-05: station-level grains skipped while dormant)
+    assert not (tmp_path / "station_month.parquet").exists(), (
+        "station_month.parquet was emitted despite DORMANT_STATION_LEVEL=True"
+    )
+    assert not (tmp_path / "by_allocation_round.parquet").exists(), (
+        "by_allocation_round.parquet was emitted despite DORMANT_STATION_LEVEL=True"
+    )
+    assert not (tmp_path / "forward_projection.parquet").exists(), (
+        "forward_projection.parquet was emitted despite DORMANT_STATION_LEVEL=True"
+    )
+
+
+def test_refresh_dormant_skips_station_level(monkeypatch):
+    """Test 8: when DORMANT_STATION_LEVEL=True, refresh() does not call station-level downloaders.
+
+    Monkeypatches the module-level functions that _refresh.py imports from
+    inside its function body (lazy imports). The patched targets are the
+    module objects that contain the functions, not the function names in _refresh
+    itself (since _refresh uses lazy `from ... import ...` inside refresh()).
+    """
+    from pathlib import Path
+
+    # Patch download_twelve_year_xlsx on its own module so the lazy import
+    # inside _refresh.refresh() picks up the stub.
+    import uk_subsidy_tracker.data.ofgem_aggregate as agg_mod
+
+    def fake_download_twelve_year_xlsx() -> Path:
+        import tempfile
+        p = Path(tempfile.mktemp(suffix=".xlsx"))
+        p.write_bytes(b"fake")
+        return p
+
+    monkeypatch.setattr(agg_mod, "download_twelve_year_xlsx", fake_download_twelve_year_xlsx)
+
+    # Patch write_sidecar on its own module.
+    import uk_subsidy_tracker.data.sidecar as sidecar_mod
+    monkeypatch.setattr(sidecar_mod, "write_sidecar", lambda **kwargs: None)
+
+    # Station-level downloaders must NOT be called when dormant.
+    def _should_not_be_called(*args, **kwargs):
+        raise RuntimeError("station-level downloader called despite DORMANT_STATION_LEVEL=True")
+
+    try:
+        import uk_subsidy_tracker.data.ofgem_ro as ofgem_ro_mod
+        monkeypatch.setattr(ofgem_ro_mod, "download_ofgem_ro_register", _should_not_be_called)
+        monkeypatch.setattr(ofgem_ro_mod, "download_ofgem_ro_generation", _should_not_be_called)
+    except (ImportError, AttributeError):
+        pass  # dormant module may not expose these callables; skip
+
+    try:
+        import uk_subsidy_tracker.data.roc_prices as roc_prices_mod
+        monkeypatch.setattr(roc_prices_mod, "download_roc_prices", _should_not_be_called)
+    except (ImportError, AttributeError):
+        pass
+
+    # Call ro.refresh() — it delegates to _refresh.refresh() via the bound alias.
+    from uk_subsidy_tracker.schemes import ro
+    assert ro.DORMANT_STATION_LEVEL is True
+    # Should complete without raising RuntimeError from any _should_not_be_called stub.
+    ro.refresh()
