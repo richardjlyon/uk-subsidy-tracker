@@ -144,7 +144,7 @@ Plans:
 
 Plans:
 - [x] 05.2-01-PLAN.md — Sidecar sources[] extension + data/ofgem_aggregate.py loader skeleton + tests/conftest.py pytest.mark.dormant registration (RO-03)
-- [ ] 05.2-02-PLAN.md — Ofgem 12-year XLSX download + SY17-SY23 annual-aggregate CSV transcription (checkpoint) + 22-row roc-prices CSV transcription + multi-source sidecars + ro-generation.csv regeneration + ro-register.xlsx dormant-stub deletion (RO-03)
+- [ ] 05.2-02-PLAN.md — URL-verification gate + ofgem_annual_reports.yaml manifest (6 SY18-SY23 XLSX URLs verbatim) + 6 SY18-SY23 XLSX downloads with single-URL sidecars + ro-annual-aggregate.csv emitted from openpyxl-parsed XLSXes (replaces a720ae7 in-place; SY17 deferred) + multi-source sidecar + roc-prices.csv human-transcribed (transparency-document PDFs; only surviving human checkpoint) + ro-generation.csv regenerated via parse_xlsx_to_monthly real implementation + 7 XLSX-determinism tests (RO-03)
 - [ ] 05.2-03-PLAN.md — schemas/ro.py aggregate-grain nullability + schemes/ro/aggregate_model.py pipeline + DORMANT_STATION_LEVEL short-circuit + test_benchmarks.py fixture adaptation (RO-03, RO-06)
 - [ ] 05.2-04-PLAN.md — Dormancy discipline: `# dormant: true` line-1 markers on 5 src/ modules + plotting/__main__.py dormant-skip logic + `@pytest.mark.dormant` applied across station-level tests + dormant Parquet + chart artefacts removed (RO-04)
 - [ ] 05.2-05-PLAN.md — docs/schemes/ro.md rewrite with real S2+S3 charts + DEFERRED S4/S5 admonitions + §7 Data access subsection + headline-sync regression test + theme-page link updates + mkdocs --strict (RO-04, RO-05)
