@@ -79,7 +79,7 @@ ofgem_roc_prices_schema = pa.DataFrameSchema(
             str,
             checks=pa.Check.str_matches(r"^\d{4}-\d{2}$|^SY\d{2}$"),
         ),
-        "buyout_gbp_per_roc": pa.Column(float, coerce=True),
+        "buyout_gbp_per_roc": pa.Column(float, nullable=True, coerce=True),  # SY1-SY4 NaN (deferred-data-gated)
         "recycle_gbp_per_roc": pa.Column(float, nullable=True, coerce=True),
         "eroc_gbp_per_roc": pa.Column(float, nullable=True, coerce=True),
         "mutualisation_gbp_total": pa.Column(float, nullable=True, coerce=True),
