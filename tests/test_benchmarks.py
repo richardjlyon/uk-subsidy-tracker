@@ -176,42 +176,33 @@ def test_external_benchmark_within_tolerance(entry: BenchmarkEntry, annual_total
 def ro_annual_totals_gbp_bn() -> dict[int, float]:
     """Pipeline yearly RO totals in £bn (GB-only per D-12), keyed by calendar year.
 
-    Sums ``ro_cost_gbp`` from ``data/derived/ro/station_month.parquet``
-    filtered to ``country == 'GB'``, grouped by ``month_end.dt.year``
-    (calendar year — D-07 primary plotting axis). Requires Plan 05-05 +
-    05-07 to have produced the derived Parquet; the RO rebuild runs as
-    part of ``refresh_all`` or can be invoked directly via
-    ``uk_subsidy_tracker.schemes.ro.rebuild_derived()``.
+    Phase 05.2: reads annual_summary.parquet (aggregate grain — D-04 + D-05).
+    The dormant station-level grain is absent from the tree while DORMANT_STATION_LEVEL
+    is True; aggregate grain is the sole source of RO cost data.
 
-    Empty-Parquet handling: under Plan 05-01 Option-D stub seeds the
-    RO derived Parquet is zero-row; this fixture returns ``{}`` in that
-    case and the parametrised test below documents the divergence
-    through the sentinel-file escape hatch rather than skipping silently
-    (D-14 posture).
+    Sums ``ro_cost_gbp`` from ``data/derived/ro/annual_summary.parquet``
+    filtered to ``country == 'GB'``, grouped by ``year`` (calendar year —
+    D-07 primary plotting axis). Requires ro.rebuild_derived() to have run;
+    invoke via ``uk_subsidy_tracker.schemes.ro.rebuild_derived()``.
+
+    Empty-Parquet / missing-file handling: returns ``{}`` so the parametrised
+    test body can route through the D-14 diagnostic path. The sentinel file
+    escape hatch (DIVERGENCE.md) keeps all 22 REF parametrisations xfailed
+    until Plan 06 deletes the sentinel.
     """
-    import pandas as pd
     import pyarrow.parquet as pq
     from uk_subsidy_tracker.schemes import ro
 
-    path = ro.DERIVED_DIR / "station_month.parquet"
+    path = ro.DERIVED_DIR / "annual_summary.parquet"
     if not path.exists():
-        # File absent → nothing to aggregate. Return empty dict; the test
-        # body raises through the D-14 diagnostic path with a pointer to
-        # the rebuild command.
         return {}
-
     df = pq.read_table(path).to_pandas()
     if len(df) == 0:
         return {}
-
     gb = df[df["country"] == "GB"].copy()
     if len(gb) == 0:
         return {}
-
-    # month_end may arrive as date-like object or pyarrow-backed timestamp;
-    # normalise through pd.to_datetime for robust dt-accessor use.
-    gb["cy"] = pd.to_datetime(gb["month_end"]).dt.year
-    totals_gbp = gb.groupby("cy")["ro_cost_gbp"].sum()
+    totals_gbp = gb.groupby("year")["ro_cost_gbp"].sum()
     return (totals_gbp / 1e9).astype(float).to_dict()
 
 
@@ -272,12 +263,11 @@ def test_ref_constable_ro_reconciliation(
         pytest.fail(
             f"Pipeline has no data for year {entry.year} — either the RO "
             f"derived Parquet was not built before this test or "
-            f"station_month.parquet filtering to country='GB' dropped the "
+            f"annual_summary.parquet filtering to country='GB' dropped the "
             f"year. Rebuild via `uv run python -c \"from uk_subsidy_tracker"
             f".schemes import ro; ro.rebuild_derived()\"`, then re-run. "
-            f"If the pipeline is still flowing Plan 05-01 Option-D stub "
-            f"seeds (zero-row output), document the divergence at "
-            f"{_DIVERGENCE_SENTINEL} for Plan 05-13 Task 4 review."
+            f"Phase 05.2: reads annual_summary.parquet (aggregate grain, D-05). "
+            f"Document unresolved divergence at {_DIVERGENCE_SENTINEL} for Plan 06 review."
         )
 
     divergence_pct = abs(ours - entry.value_gbp_bn) / entry.value_gbp_bn * 100.0
