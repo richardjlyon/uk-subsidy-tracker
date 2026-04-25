@@ -23,10 +23,9 @@ its DataFrame against a module-level schema before returning.
 
 Wave scoping (Phase 05.2 Plan 01):
   - This module lands the loader skeleton + download function + pandera schemas.
-  - `parse_xlsx_to_monthly()` is intentionally stubbed (raises NotImplementedError) —
-    Wave 3 ``schemes/ro/aggregate_model.py`` provides the parsing strategy once
-    Wave 2 commits the XLSX file. The signature + docstring contract is fixed now
-    so downstream consumers can plan against it.
+  - `parse_xlsx_to_monthly()` is implemented in Plan 02 (replaces the Plan 01 stub).
+    Reads ``ROCs by Tech & Month`` sheet from the 12-year XLSX and emits monthly
+    ROC counts by technology. See also ``emit_ro_generation_csv()``.
 """
 from __future__ import annotations
 
@@ -131,7 +130,7 @@ def download_twelve_year_xlsx() -> Path:
 
 
 # ---------------------------------------------------------------------------
-# XLSX → monthly DataFrame — STUBBED until Wave 3 lands the parsing strategy.
+# XLSX → monthly DataFrame — real implementation (Plan 02 replaces stub).
 # ---------------------------------------------------------------------------
 def parse_xlsx_to_monthly() -> pd.DataFrame:
     """Parse the 12-year Ofgem XLSX into a deterministic monthly aggregate.
@@ -140,20 +139,204 @@ def parse_xlsx_to_monthly() -> pd.DataFrame:
     (columns: ``year``, ``month``, ``country``, ``technology``,
     ``generation_mwh``, ``rocs_issued``).
 
-    Determinism discipline (Phase 4 D-21): same XLSX bytes → byte-identical
-    output DataFrame across runs. No clock, no randomness, every ``groupby``
-    explicit on sort order.
+    Source sheet: "ROCs by Tech & Month" in the 12-year XLSX.  Structure:
+      Row: "<YYYY/YYYY>" (year header, e.g. "2006/7" or "2007/2008")
+      Row: "Technology" | "Apr" | "May" | ... | "Mar" | "TOTAL" (header)
+      Rows: technology name + 12 monthly ROC counts + annual TOTAL
+      Row: "TOTAL" + 12 monthly sums + grand total
 
-    Implementation deferred to Wave 3 (``schemes/ro/aggregate_model.py``) once
-    Wave 2 commits the real XLSX. Calling now raises ``NotImplementedError``
-    so accidental refresh-loop invocation fails loud rather than silently
-    emitting an empty Parquet.
+    The sheet covers Apr 2006 – Mar 2018 (12 complete obligation years).
+    No per-country split or generation MWh is available in this sheet;
+    ``country`` is set to ``"GB"`` (UK aggregate) and ``generation_mwh``
+    is ``None`` (null) throughout.
+
+    Determinism discipline (Phase 4 D-21): same XLSX bytes → byte-identical
+    output DataFrame across runs. No clock, no randomness; technology names
+    sorted lexicographically within each year-month group; final sort on
+    (year, month, country, technology).
+
+    Returns
+    -------
+    pd.DataFrame
+        Monthly aggregate validated against ``ofgem_monthly_schema``.
+        Caller (``emit_ro_generation_csv``) writes this to
+        ``data/raw/ofgem/ro-generation.csv`` with a provenance header.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the 12-year XLSX is absent from ``data/raw/ofgem/``.
+    ValueError
+        If the sheet structure cannot be parsed (year-header not found or
+        unexpected column count).
     """
-    raise NotImplementedError(
-        "Wave 3 aggregate_model.py provides the parsing strategy — "
-        "planner discretion per CONTEXT.md (Claude's Discretion: "
-        "Openpyxl XLSX parsing strategy)."
+    import openpyxl
+
+    xlsx_path = DATA_DIR / "raw" / "ofgem" / XLSX_FILENAME
+    if not xlsx_path.exists():
+        raise FileNotFoundError(
+            f"12-year XLSX not found — run download_twelve_year_xlsx() first: {xlsx_path}"
+        )
+
+    wb = openpyxl.load_workbook(xlsx_path, data_only=True, read_only=True)
+    ws = wb["ROCs by Tech & Month"]
+
+    # Month-name → calendar month number (Apr=4, ..., Mar=3 of next year).
+    # The XLSX reports Apr–Mar within a single obligation year; we map to
+    # calendar months so rows carry (year, month) pairs that match Apr=4 in
+    # the start calendar year, through Mar=3 in the next calendar year.
+    _MONTH_COLS: dict[str, int] = {
+        "Apr": 4, "May": 5, "Jun": 6, "Jul": 7, "Aug": 8, "Sep": 9,
+        "Oct": 10, "Nov": 11, "Dec": 12, "Jan": 1, "Feb": 2, "Mar": 3,
+    }
+    _MONTH_ORDER = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"]
+
+    records: list[dict] = []
+    current_start_year: int | None = None
+    in_data_section = False
+
+    for row in ws.iter_rows(values_only=True):
+        if not any(v is not None for v in row):
+            in_data_section = False
+            continue
+
+        cell0 = row[0]
+        if cell0 is None:
+            continue
+
+        cell0_str = str(cell0).strip()
+
+        # Detect year-header rows like "2006/7" or "2007/2008".
+        if "/" in cell0_str and len(cell0_str) <= 10 and cell0_str[0].isdigit():
+            # Parse start year from e.g. "2006/7" → 2006
+            try:
+                current_start_year = int(cell0_str.split("/")[0])
+                in_data_section = False  # wait for Technology header
+            except ValueError:
+                pass
+            continue
+
+        # Detect "Technology | Apr | May | ..." column-header row.
+        if cell0_str == "Technology" and current_start_year is not None:
+            in_data_section = True
+            continue
+
+        # Skip TOTAL aggregate rows and non-data rows.
+        if cell0_str in {"TOTAL", "Return to information tab"} or not in_data_section:
+            continue
+
+        # Data row: technology name + 12 monthly counts.
+        technology = cell0_str
+        month_values = row[1:13]  # columns B through M (Apr..Mar)
+
+        if current_start_year is None:
+            continue
+
+        for col_idx, month_name in enumerate(_MONTH_ORDER):
+            raw_val = month_values[col_idx]
+            rocs = None
+            if raw_val is not None:
+                try:
+                    rocs = float(raw_val)
+                except (TypeError, ValueError):
+                    rocs = None
+
+            # Map Apr–Dec to start year; Jan–Mar to start_year+1.
+            cal_month = _MONTH_COLS[month_name]
+            cal_year = current_start_year if cal_month >= 4 else current_start_year + 1
+
+            records.append({
+                "year": cal_year,
+                "month": cal_month,
+                "country": "GB",
+                "technology": technology,
+                "generation_mwh": None,
+                "rocs_issued": rocs,
+            })
+
+    wb.close()
+
+    if not records:
+        raise ValueError(
+            f"No data rows parsed from 'ROCs by Tech & Month' in {xlsx_path}. "
+            "Verify XLSX structure matches expected year-header + Technology format."
+        )
+
+    df = pd.DataFrame(records)
+    # Sort deterministically (D-21): by (year, month, country, technology).
+    df = df.sort_values(
+        ["year", "month", "country", "technology"],
+        kind="mergesort",
+    ).reset_index(drop=True)
+
+    # Cast to schema dtypes before validation.
+    df["year"] = df["year"].astype("int64")
+    df["month"] = df["month"].astype("int64")
+    df["rocs_issued"] = pd.to_numeric(df["rocs_issued"], errors="coerce")
+
+    return ofgem_monthly_schema.validate(df)
+
+
+def emit_ro_generation_csv(output_path: Path | None = None) -> Path:
+    """Parse the 12-year XLSX and write ``ro-generation.csv`` with provenance header.
+
+    This is the canonical entry point that persists the monthly aggregate to
+    ``data/raw/ofgem/ro-generation.csv`` and updates its ``.meta.json`` sidecar.
+
+    Determinism (D-21): ``parse_xlsx_to_monthly()`` → sort → write. No clock
+    or randomness in the DataFrame; sidecar ``retrieved_at`` is non-deterministic
+    (current UTC timestamp) but the CSV bytes themselves are byte-identical.
+
+    Returns
+    -------
+    Path
+        Path to the written CSV file.
+    """
+    from uk_subsidy_tracker.data.sidecar import _sha256_of, write_sidecar
+
+    out = output_path or (DATA_DIR / "raw" / "ofgem" / "ro-generation.csv")
+
+    df = parse_xlsx_to_monthly()
+
+    provenance_lines = [
+        "# Provenance: Monthly ROC-issue aggregate regenerated from Ofgem 12-year XLSX (D-01).",
+        "# Source: data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx",
+        "#   Sheet: 'ROCs by Tech & Month'",
+        "#   Coverage: Apr 2006 – Mar 2018 (12 obligation years SY5–SY17)",
+        "# generation_mwh is null throughout — the 12-year XLSX carries ROC counts only.",
+        "# country='GB' throughout — the sheet aggregates all UK nations.",
+        "#",
+        "# Re-generate: uv run python3 -c",
+        "#   \"from uk_subsidy_tracker.data.ofgem_aggregate import emit_ro_generation_csv; emit_ro_generation_csv()\"",
+        "#",
+        f"# SHA256 of source XLSX: {_sha256_of(DATA_DIR / 'raw' / 'ofgem' / XLSX_FILENAME)}",
+    ]
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8", newline="") as f:
+        for line in provenance_lines:
+            f.write(line + "\n")
+        df.to_csv(f, index=False)
+
+    # Update sidecar to chain derivation back to the 12-year XLSX sha256.
+    xlsx_path = DATA_DIR / "raw" / "ofgem" / XLSX_FILENAME
+    write_sidecar(
+        raw_path=out,
+        upstream_url=XLSX_URL,
+        http_status=None,
+        sources=[
+            {
+                "url": XLSX_URL,
+                "sha256": _sha256_of(xlsx_path),
+                "retrieved_on": "2026-04-24",
+                "notes": (
+                    "Ofgem 12-year XLSX (Apr 2006 – Mar 2018); "
+                    "ro-generation.csv derived from 'ROCs by Tech & Month' sheet via parse_xlsx_to_monthly()"
+                ),
+            }
+        ],
     )
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -193,6 +376,7 @@ __all__ = [
     "ofgem_monthly_schema",
     "download_twelve_year_xlsx",
     "parse_xlsx_to_monthly",
+    "emit_ro_generation_csv",
     "load_annual_aggregate_csv",
     "load_roc_prices_csv",
     "OfgemAnnualReportConfig",

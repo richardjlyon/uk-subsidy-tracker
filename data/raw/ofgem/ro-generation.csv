@@ -1,1 +1,2172 @@
-station_id,output_period_end,generation_mwh,rocs_issued,obligation_year
+# Provenance: Monthly ROC-issue aggregate regenerated from Ofgem 12-year XLSX (D-01).
+# Source: data/raw/ofgem/rocs_report_2006_to_2018_20250410081520.xlsx
+#   Sheet: 'ROCs by Tech & Month'
+#   Coverage: Apr 2006 – Mar 2018 (12 obligation years SY5–SY17)
+# generation_mwh is null throughout — the 12-year XLSX carries ROC counts only.
+# country='GB' throughout — the sheet aggregates all UK nations.
+#
+# Re-generate: uv run python3 -c
+#   "from uk_subsidy_tracker.data.ofgem_aggregate import emit_ro_generation_csv; emit_ro_generation_csv()"
+#
+# SHA256 of source XLSX: 76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1
+year,month,country,technology,generation_mwh,rocs_issued
+2006,4,GB,Biomass using an Advanced Conversion Technology,,786.0
+2006,4,GB,Co-firing of Biomass with Fossil Fuel,,123196.0
+2006,4,GB,Fuelled,,96700.0
+2006,4,GB,Hydro 20MW DNC or less,,192426.0
+2006,4,GB,Hydro 50kW DNC or less,,1803.0
+2006,4,GB,Landfill Gas,,347376.0
+2006,4,GB,Micro Hydro,,5540.0
+2006,4,GB,Off-shore Wind,,52288.0
+2006,4,GB,On-shore Wind,,311164.0
+2006,4,GB,Photovoltaic,,7.0
+2006,4,GB,Photovoltaic 50kW DNC or less,,220.0
+2006,4,GB,Sewage Gas,,28327.0
+2006,4,GB,Waste using an Advanced Conversion Technology,,0.0
+2006,4,GB,Wave Power,,0.0
+2006,4,GB,Wind 50kW DNC or less,,693.0
+2006,5,GB,Biomass using an Advanced Conversion Technology,,825.0
+2006,5,GB,Co-firing of Biomass with Fossil Fuel,,106693.0
+2006,5,GB,Fuelled,,92388.0
+2006,5,GB,Hydro 20MW DNC or less,,152801.0
+2006,5,GB,Hydro 50kW DNC or less,,50.0
+2006,5,GB,Landfill Gas,,362528.0
+2006,5,GB,Micro Hydro,,4436.0
+2006,5,GB,Off-shore Wind,,63618.0
+2006,5,GB,On-shore Wind,,290173.0
+2006,5,GB,Photovoltaic,,14.0
+2006,5,GB,Photovoltaic 50kW DNC or less,,3.0
+2006,5,GB,Sewage Gas,,29889.0
+2006,5,GB,Waste using an Advanced Conversion Technology,,138.0
+2006,5,GB,Wave Power,,0.0
+2006,5,GB,Wind 50kW DNC or less,,4.0
+2006,6,GB,Biomass using an Advanced Conversion Technology,,830.0
+2006,6,GB,Co-firing of Biomass with Fossil Fuel,,108496.0
+2006,6,GB,Fuelled,,83661.0
+2006,6,GB,Hydro 20MW DNC or less,,101396.0
+2006,6,GB,Hydro 50kW DNC or less,,67.0
+2006,6,GB,Landfill Gas,,339708.0
+2006,6,GB,Micro Hydro,,3185.0
+2006,6,GB,Off-shore Wind,,33891.0
+2006,6,GB,On-shore Wind,,193649.0
+2006,6,GB,Photovoltaic,,29.0
+2006,6,GB,Photovoltaic 50kW DNC or less,,5.0
+2006,6,GB,Sewage Gas,,28397.0
+2006,6,GB,Waste using an Advanced Conversion Technology,,150.0
+2006,6,GB,Wave Power,,1.0
+2006,6,GB,Wind 50kW DNC or less,,1.0
+2006,7,GB,Biomass using an Advanced Conversion Technology,,919.0
+2006,7,GB,Co-firing of Biomass with Fossil Fuel,,120294.0
+2006,7,GB,Fuelled,,84227.0
+2006,7,GB,Hydro 20MW DNC or less,,92510.0
+2006,7,GB,Hydro 50kW DNC or less,,45.0
+2006,7,GB,Landfill Gas,,332426.0
+2006,7,GB,Micro Hydro,,2864.0
+2006,7,GB,Off-shore Wind,,38293.0
+2006,7,GB,On-shore Wind,,158746.0
+2006,7,GB,Photovoltaic,,27.0
+2006,7,GB,Photovoltaic 50kW DNC or less,,5.0
+2006,7,GB,Sewage Gas,,27646.0
+2006,7,GB,Waste using an Advanced Conversion Technology,,40.0
+2006,7,GB,Wave Power,,0.0
+2006,7,GB,Wind 50kW DNC or less,,2.0
+2006,8,GB,Biomass using an Advanced Conversion Technology,,1028.0
+2006,8,GB,Co-firing of Biomass with Fossil Fuel,,111365.0
+2006,8,GB,Fuelled,,80199.0
+2006,8,GB,Hydro 20MW DNC or less,,94825.0
+2006,8,GB,Hydro 50kW DNC or less,,41.0
+2006,8,GB,Landfill Gas,,351319.0
+2006,8,GB,Micro Hydro,,2730.0
+2006,8,GB,Off-shore Wind,,65084.0
+2006,8,GB,On-shore Wind,,208150.0
+2006,8,GB,Photovoltaic,,18.0
+2006,8,GB,Photovoltaic 50kW DNC or less,,3.0
+2006,8,GB,Sewage Gas,,27789.0
+2006,8,GB,Waste using an Advanced Conversion Technology,,122.0
+2006,8,GB,Wave Power,,0.0
+2006,8,GB,Wind 50kW DNC or less,,4.0
+2006,9,GB,Biomass using an Advanced Conversion Technology,,1328.0
+2006,9,GB,Co-firing of Biomass with Fossil Fuel,,126071.0
+2006,9,GB,Fuelled,,69330.0
+2006,9,GB,Hydro 20MW DNC or less,,147893.0
+2006,9,GB,Hydro 50kW DNC or less,,44.0
+2006,9,GB,Landfill Gas,,338597.0
+2006,9,GB,Micro Hydro,,4679.0
+2006,9,GB,Off-shore Wind,,53534.0
+2006,9,GB,On-shore Wind,,259004.0
+2006,9,GB,Photovoltaic,,22.0
+2006,9,GB,Photovoltaic 50kW DNC or less,,0.0
+2006,9,GB,Sewage Gas,,27215.0
+2006,9,GB,Waste using an Advanced Conversion Technology,,123.0
+2006,9,GB,Wave Power,,3.0
+2006,9,GB,Wind 50kW DNC or less,,2.0
+2006,10,GB,Biomass using an Advanced Conversion Technology,,1541.0
+2006,10,GB,Co-firing of Biomass with Fossil Fuel,,154711.0
+2006,10,GB,Fuelled,,70314.0
+2006,10,GB,Hydro 20MW DNC or less,,202233.0
+2006,10,GB,Hydro 50kW DNC or less,,37.0
+2006,10,GB,Landfill Gas,,361103.0
+2006,10,GB,Micro Hydro,,5980.0
+2006,10,GB,Off-shore Wind,,73975.0
+2006,10,GB,On-shore Wind,,326368.0
+2006,10,GB,Photovoltaic,,17.0
+2006,10,GB,Photovoltaic 50kW DNC or less,,0.0
+2006,10,GB,Sewage Gas,,27471.0
+2006,10,GB,Waste using an Advanced Conversion Technology,,108.0
+2006,10,GB,Wave Power,,1.0
+2006,10,GB,Wind 50kW DNC or less,,4.0
+2006,11,GB,Biomass using an Advanced Conversion Technology,,1528.0
+2006,11,GB,Co-firing of Biomass with Fossil Fuel,,221953.0
+2006,11,GB,Fuelled,,92596.0
+2006,11,GB,Hydro 20MW DNC or less,,250836.0
+2006,11,GB,Hydro 50kW DNC or less,,65.0
+2006,11,GB,Landfill Gas,,359464.0
+2006,11,GB,Micro Hydro,,6291.0
+2006,11,GB,Off-shore Wind,,75464.0
+2006,11,GB,On-shore Wind,,527193.0
+2006,11,GB,Photovoltaic,,8.0
+2006,11,GB,Photovoltaic 50kW DNC or less,,1.0
+2006,11,GB,Sewage Gas,,28839.0
+2006,11,GB,Waste using an Advanced Conversion Technology,,154.0
+2006,11,GB,Wave Power,,4.0
+2006,11,GB,Wind 50kW DNC or less,,5.0
+2006,12,GB,Biomass using an Advanced Conversion Technology,,1528.0
+2006,12,GB,Co-firing of Biomass with Fossil Fuel,,208365.0
+2006,12,GB,Fuelled,,92560.0
+2006,12,GB,Hydro 20MW DNC or less,,312288.0
+2006,12,GB,Hydro 50kW DNC or less,,72.0
+2006,12,GB,Landfill Gas,,372673.0
+2006,12,GB,Micro Hydro,,6375.0
+2006,12,GB,Off-shore Wind,,54005.0
+2006,12,GB,On-shore Wind,,481963.0
+2006,12,GB,Photovoltaic,,3.0
+2006,12,GB,Photovoltaic 50kW DNC or less,,0.0
+2006,12,GB,Sewage Gas,,28424.0
+2006,12,GB,Waste using an Advanced Conversion Technology,,100.0
+2006,12,GB,Wave Power,,0.0
+2006,12,GB,Wind 50kW DNC or less,,10.0
+2007,1,GB,Biomass using an Advanced Conversion Technology,,1444.0
+2007,1,GB,Co-firing of Biomass with Fossil Fuel,,276969.0
+2007,1,GB,Fuelled,,96660.0
+2007,1,GB,Hydro 20MW DNC or less,,318688.0
+2007,1,GB,Hydro 50kW DNC or less,,73.0
+2007,1,GB,Landfill Gas,,371999.0
+2007,1,GB,Micro Hydro,,6666.0
+2007,1,GB,Off-shore Wind,,86031.0
+2007,1,GB,On-shore Wind,,619675.0
+2007,1,GB,Photovoltaic,,9.0
+2007,1,GB,Photovoltaic 50kW DNC or less,,0.0
+2007,1,GB,Sewage Gas,,27524.0
+2007,1,GB,Waste using an Advanced Conversion Technology,,148.0
+2007,1,GB,Wave Power,,0.0
+2007,1,GB,Wind 50kW DNC or less,,7.0
+2007,2,GB,Biomass using an Advanced Conversion Technology,,1206.0
+2007,2,GB,Co-firing of Biomass with Fossil Fuel,,204468.0
+2007,2,GB,Fuelled,,83839.0
+2007,2,GB,Hydro 20MW DNC or less,,229762.0
+2007,2,GB,Hydro 50kW DNC or less,,62.0
+2007,2,GB,Landfill Gas,,342899.0
+2007,2,GB,Micro Hydro,,5499.0
+2007,2,GB,Off-shore Wind,,54487.0
+2007,2,GB,On-shore Wind,,336433.0
+2007,2,GB,Photovoltaic,,8.0
+2007,2,GB,Photovoltaic 50kW DNC or less,,2.0
+2007,2,GB,Sewage Gas,,26568.0
+2007,2,GB,Waste using an Advanced Conversion Technology,,0.0
+2007,2,GB,Wave Power,,0.0
+2007,2,GB,Wind 50kW DNC or less,,5.0
+2007,3,GB,Biomass using an Advanced Conversion Technology,,1519.0
+2007,3,GB,Co-firing of Biomass with Fossil Fuel,,166009.0
+2007,3,GB,Fuelled,,102241.0
+2007,3,GB,Hydro 20MW DNC or less,,288350.0
+2007,3,GB,Hydro 50kW DNC or less,,97.0
+2007,3,GB,Landfill Gas,,383008.0
+2007,3,GB,Micro Hydro,,6095.0
+2007,3,GB,Off-shore Wind,,70154.0
+2007,3,GB,On-shore Wind,,495750.0
+2007,3,GB,Photovoltaic,,22.0
+2007,3,GB,Photovoltaic 50kW DNC or less,,5.0
+2007,3,GB,Sewage Gas,,29831.0
+2007,3,GB,Waste using an Advanced Conversion Technology,,0.0
+2007,3,GB,Wave Power,,0.0
+2007,3,GB,Wind 50kW DNC or less,,9.0
+2007,4,GB,Biomass using an Advanced Conversion Technology,,1717.0
+2007,4,GB,Co-firing of Biomass with Fossil Fuel,,114924.0
+2007,4,GB,Co-firing of Energy Crops,,260.0
+2007,4,GB,Fuelled,,93621.0
+2007,4,GB,Hydro 20MW DNC or less,,148703.0
+2007,4,GB,Hydro 50kW DNC or less,,2690.0
+2007,4,GB,Landfill Gas,,367157.0
+2007,4,GB,Micro Hydro,,3687.0
+2007,4,GB,Off-shore Wind,,40272.0
+2007,4,GB,On-shore Wind,,284762.0
+2007,4,GB,Photovoltaic,,13.0
+2007,4,GB,Photovoltaic 50kW DNC or less,,1189.0
+2007,4,GB,Sewage Gas,,29982.0
+2007,4,GB,Waste using an Advanced Conversion Technology,,0.0
+2007,4,GB,Wave Power,,1.0
+2007,4,GB,Wind 50kW DNC or less,,2319.0
+2007,5,GB,Biomass using an Advanced Conversion Technology,,1446.0
+2007,5,GB,Co-firing of Biomass with Fossil Fuel,,147371.0
+2007,5,GB,Co-firing of Energy Crops,,577.0
+2007,5,GB,Fuelled,,94150.0
+2007,5,GB,Hydro 20MW DNC or less,,146577.0
+2007,5,GB,Hydro 50kW DNC or less,,109.0
+2007,5,GB,Landfill Gas,,378850.0
+2007,5,GB,Micro Hydro,,4258.0
+2007,5,GB,Off-shore Wind,,52174.0
+2007,5,GB,On-shore Wind,,321057.0
+2007,5,GB,Photovoltaic,,34.0
+2007,5,GB,Photovoltaic 50kW DNC or less,,7.0
+2007,5,GB,Sewage Gas,,31557.0
+2007,5,GB,Waste using an Advanced Conversion Technology,,171.0
+2007,5,GB,Wave Power,,2.0
+2007,5,GB,Wind 50kW DNC or less,,4.0
+2007,6,GB,Biomass using an Advanced Conversion Technology,,1216.0
+2007,6,GB,Co-firing of Biomass with Fossil Fuel,,119298.0
+2007,6,GB,Co-firing of Energy Crops,,963.0
+2007,6,GB,Fuelled,,102466.0
+2007,6,GB,Hydro 20MW DNC or less,,132802.0
+2007,6,GB,Hydro 50kW DNC or less,,123.0
+2007,6,GB,Landfill Gas,,367068.0
+2007,6,GB,Micro Hydro,,3810.0
+2007,6,GB,Off-shore Wind,,40424.0
+2007,6,GB,On-shore Wind,,205072.0
+2007,6,GB,Photovoltaic,,25.0
+2007,6,GB,Photovoltaic 50kW DNC or less,,8.0
+2007,6,GB,Sewage Gas,,29214.0
+2007,6,GB,Waste using an Advanced Conversion Technology,,247.0
+2007,6,GB,Wave Power,,0.0
+2007,6,GB,Wind 50kW DNC or less,,4.0
+2007,7,GB,Biomass using an Advanced Conversion Technology,,1383.0
+2007,7,GB,Co-firing of Biomass with Fossil Fuel,,122197.0
+2007,7,GB,Co-firing of Energy Crops,,240.0
+2007,7,GB,Fuelled,,90984.0
+2007,7,GB,Hydro 20MW DNC or less,,156727.0
+2007,7,GB,Hydro 50kW DNC or less,,136.0
+2007,7,GB,Landfill Gas,,376600.0
+2007,7,GB,Micro Hydro,,5021.0
+2007,7,GB,Off-shore Wind,,55223.0
+2007,7,GB,On-shore Wind,,261590.0
+2007,7,GB,Photovoltaic,,24.0
+2007,7,GB,Photovoltaic 50kW DNC or less,,11.0
+2007,7,GB,Sewage Gas,,28348.0
+2007,7,GB,Waste using an Advanced Conversion Technology,,199.0
+2007,7,GB,Wave Power,,0.0
+2007,7,GB,Wind 50kW DNC or less,,5.0
+2007,8,GB,Biomass using an Advanced Conversion Technology,,1418.0
+2007,8,GB,Co-firing of Biomass with Fossil Fuel,,108679.0
+2007,8,GB,Co-firing of Energy Crops,,638.0
+2007,8,GB,Fuelled,,75219.0
+2007,8,GB,Hydro 20MW DNC or less,,165276.0
+2007,8,GB,Hydro 50kW DNC or less,,119.0
+2007,8,GB,Landfill Gas,,378515.0
+2007,8,GB,Micro Hydro,,5185.0
+2007,8,GB,Off-shore Wind,,55343.0
+2007,8,GB,On-shore Wind,,302591.0
+2007,8,GB,Photovoltaic,,23.0
+2007,8,GB,Photovoltaic 50kW DNC or less,,7.0
+2007,8,GB,Sewage Gas,,28627.0
+2007,8,GB,Waste using an Advanced Conversion Technology,,244.0
+2007,8,GB,Wave Power,,0.0
+2007,8,GB,Wind 50kW DNC or less,,4.0
+2007,9,GB,Biomass using an Advanced Conversion Technology,,1419.0
+2007,9,GB,Co-firing of Biomass with Fossil Fuel,,101290.0
+2007,9,GB,Co-firing of Energy Crops,,316.0
+2007,9,GB,Fuelled,,69579.0
+2007,9,GB,Hydro 20MW DNC or less,,162017.0
+2007,9,GB,Hydro 50kW DNC or less,,77.0
+2007,9,GB,Landfill Gas,,367436.0
+2007,9,GB,Micro Hydro,,4611.0
+2007,9,GB,Off-shore Wind,,66865.0
+2007,9,GB,On-shore Wind,,361127.0
+2007,9,GB,Photovoltaic,,19.0
+2007,9,GB,Photovoltaic 50kW DNC or less,,6.0
+2007,9,GB,Sewage Gas,,29582.0
+2007,9,GB,Waste using an Advanced Conversion Technology,,175.0
+2007,9,GB,Wave Power,,1.0
+2007,9,GB,Wind 50kW DNC or less,,4.0
+2007,10,GB,Biomass using an Advanced Conversion Technology,,1500.0
+2007,10,GB,Co-firing of Biomass with Fossil Fuel,,174924.0
+2007,10,GB,Co-firing of Energy Crops,,533.0
+2007,10,GB,Fuelled,,84420.0
+2007,10,GB,Hydro 20MW DNC or less,,161723.0
+2007,10,GB,Hydro 50kW DNC or less,,81.0
+2007,10,GB,Landfill Gas,,383981.0
+2007,10,GB,Micro Hydro,,3678.0
+2007,10,GB,Off-shore Wind,,50142.0
+2007,10,GB,On-shore Wind,,289989.0
+2007,10,GB,Photovoltaic,,16.0
+2007,10,GB,Photovoltaic 50kW DNC or less,,4.0
+2007,10,GB,Sewage Gas,,31270.0
+2007,10,GB,Waste using an Advanced Conversion Technology,,218.0
+2007,10,GB,Wave Power,,1.0
+2007,10,GB,Wind 50kW DNC or less,,5.0
+2007,11,GB,Biomass using an Advanced Conversion Technology,,1348.0
+2007,11,GB,Co-firing of Biomass with Fossil Fuel,,186300.0
+2007,11,GB,Co-firing of Energy Crops,,241.0
+2007,11,GB,Fuelled,,122268.0
+2007,11,GB,Hydro 20MW DNC or less,,212474.0
+2007,11,GB,Hydro 50kW DNC or less,,117.0
+2007,11,GB,Landfill Gas,,379391.0
+2007,11,GB,Micro Hydro,,4907.0
+2007,11,GB,Off-shore Wind,,103571.0
+2007,11,GB,On-shore Wind,,450057.0
+2007,11,GB,Photovoltaic,,9.0
+2007,11,GB,Photovoltaic 50kW DNC or less,,2.0
+2007,11,GB,Sewage Gas,,26951.0
+2007,11,GB,Waste using an Advanced Conversion Technology,,174.0
+2007,11,GB,Wave Power,,1.0
+2007,11,GB,Wind 50kW DNC or less,,11.0
+2007,12,GB,Biomass using an Advanced Conversion Technology,,1314.0
+2007,12,GB,Co-firing of Biomass with Fossil Fuel,,197643.0
+2007,12,GB,Co-firing of Energy Crops,,471.0
+2007,12,GB,Fuelled,,149683.0
+2007,12,GB,Hydro 20MW DNC or less,,250392.0
+2007,12,GB,Hydro 50kW DNC or less,,137.0
+2007,12,GB,Landfill Gas,,394377.0
+2007,12,GB,Micro Hydro,,6265.0
+2007,12,GB,Off-shore Wind,,124951.0
+2007,12,GB,On-shore Wind,,549420.0
+2007,12,GB,Photovoltaic,,10.0
+2007,12,GB,Photovoltaic 50kW DNC or less,,0.0
+2007,12,GB,Sewage Gas,,27501.0
+2007,12,GB,Waste using an Advanced Conversion Technology,,182.0
+2007,12,GB,Wave Power,,3.0
+2007,12,GB,Wind 50kW DNC or less,,3.0
+2008,1,GB,Biomass using an Advanced Conversion Technology,,1293.0
+2008,1,GB,Co-firing of Biomass with Fossil Fuel,,155250.0
+2008,1,GB,Co-firing of Energy Crops,,804.0
+2008,1,GB,Fuelled,,141577.0
+2008,1,GB,Hydro 20MW DNC or less,,282944.0
+2008,1,GB,Hydro 50kW DNC or less,,134.0
+2008,1,GB,Landfill Gas,,395134.0
+2008,1,GB,Micro Hydro,,7204.0
+2008,1,GB,Off-shore Wind,,142569.0
+2008,1,GB,On-shore Wind,,635753.0
+2008,1,GB,Photovoltaic,,6.0
+2008,1,GB,Photovoltaic 50kW DNC or less,,0.0
+2008,1,GB,Sewage Gas,,27595.0
+2008,1,GB,Waste using an Advanced Conversion Technology,,35.0
+2008,1,GB,Wave Power,,5.0
+2008,1,GB,Wind 50kW DNC or less,,4.0
+2008,2,GB,Biomass using an Advanced Conversion Technology,,1278.0
+2008,2,GB,Co-firing of Biomass with Fossil Fuel,,171100.0
+2008,2,GB,Co-firing of Energy Crops,,863.0
+2008,2,GB,Fuelled,,125281.0
+2008,2,GB,Hydro 20MW DNC or less,,267860.0
+2008,2,GB,Hydro 50kW DNC or less,,123.0
+2008,2,GB,Landfill Gas,,369082.0
+2008,2,GB,Micro Hydro,,5761.0
+2008,2,GB,Off-shore Wind,,94474.0
+2008,2,GB,On-shore Wind,,528175.0
+2008,2,GB,Photovoltaic,,17.0
+2008,2,GB,Photovoltaic 50kW DNC or less,,4.0
+2008,2,GB,Sewage Gas,,27967.0
+2008,2,GB,Waste using an Advanced Conversion Technology,,15.0
+2008,2,GB,Wave Power,,4.0
+2008,2,GB,Wind 50kW DNC or less,,4.0
+2008,3,GB,Biomass using an Advanced Conversion Technology,,1380.0
+2008,3,GB,Co-firing of Biomass with Fossil Fuel,,166084.0
+2008,3,GB,Co-firing of Energy Crops,,0.0
+2008,3,GB,Fuelled,,98322.0
+2008,3,GB,Hydro 20MW DNC or less,,290365.0
+2008,3,GB,Hydro 50kW DNC or less,,276.0
+2008,3,GB,Landfill Gas,,395697.0
+2008,3,GB,Micro Hydro,,6684.0
+2008,3,GB,Off-shore Wind,,137192.0
+2008,3,GB,On-shore Wind,,624456.0
+2008,3,GB,Photovoltaic,,19.0
+2008,3,GB,Photovoltaic 50kW DNC or less,,23.0
+2008,3,GB,Sewage Gas,,31226.0
+2008,3,GB,Waste using an Advanced Conversion Technology,,231.0
+2008,3,GB,Wave Power,,4.0
+2008,3,GB,Wind 50kW DNC or less,,6.0
+2008,4,GB,Biomass,,7.0
+2008,4,GB,Biomass using an Advanced Conversion Technology,,1341.0
+2008,4,GB,Co-firing of Biomass with Fossil Fuel,,176200.0
+2008,4,GB,Co-firing of Energy Crops,,1044.0
+2008,4,GB,Fuelled,,123960.0
+2008,4,GB,Hydro 20MW DNC or less,,212989.0
+2008,4,GB,Hydro 50kW DNC or less,,3818.0
+2008,4,GB,Hydro greater than 20MW DNC,,0.0
+2008,4,GB,Landfill Gas,,384520.0
+2008,4,GB,Micro Hydro,,4808.0
+2008,4,GB,Off-shore Wind,,84045.0
+2008,4,GB,On-shore Wind,,398302.0
+2008,4,GB,Photovoltaic,,25.0
+2008,4,GB,Photovoltaic 50kW DNC or less,,2851.0
+2008,4,GB,Sewage Gas,,31255.0
+2008,4,GB,Waste using an Advanced Conversion Technology,,163.0
+2008,4,GB,Wave Power,,2.0
+2008,4,GB,Wind 50kW DNC or less,,4734.0
+2008,5,GB,Biomass,,0.0
+2008,5,GB,Biomass using an Advanced Conversion Technology,,1198.0
+2008,5,GB,Co-firing of Biomass with Fossil Fuel,,127357.0
+2008,5,GB,Co-firing of Energy Crops,,151.0
+2008,5,GB,Fuelled,,127527.0
+2008,5,GB,Hydro 20MW DNC or less,,113242.0
+2008,5,GB,Hydro 50kW DNC or less,,114.0
+2008,5,GB,Hydro greater than 20MW DNC,,0.0
+2008,5,GB,Landfill Gas,,389673.0
+2008,5,GB,Micro Hydro,,2742.0
+2008,5,GB,Off-shore Wind,,81393.0
+2008,5,GB,On-shore Wind,,301871.0
+2008,5,GB,Photovoltaic,,47.0
+2008,5,GB,Photovoltaic 50kW DNC or less,,2.0
+2008,5,GB,Sewage Gas,,36915.0
+2008,5,GB,Waste using an Advanced Conversion Technology,,38.0
+2008,5,GB,Wave Power,,0.0
+2008,5,GB,Wind 50kW DNC or less,,2.0
+2008,6,GB,Biomass,,0.0
+2008,6,GB,Biomass using an Advanced Conversion Technology,,1219.0
+2008,6,GB,Co-firing of Biomass with Fossil Fuel,,133200.0
+2008,6,GB,Co-firing of Energy Crops,,384.0
+2008,6,GB,Fuelled,,112251.0
+2008,6,GB,Hydro 20MW DNC or less,,84342.0
+2008,6,GB,Hydro 50kW DNC or less,,104.0
+2008,6,GB,Hydro greater than 20MW DNC,,0.0
+2008,6,GB,Landfill Gas,,376393.0
+2008,6,GB,Micro Hydro,,2740.0
+2008,6,GB,Off-shore Wind,,74100.0
+2008,6,GB,On-shore Wind,,360292.0
+2008,6,GB,Photovoltaic,,63.0
+2008,6,GB,Photovoltaic 50kW DNC or less,,7.0
+2008,6,GB,Sewage Gas,,35515.0
+2008,6,GB,Waste using an Advanced Conversion Technology,,31.0
+2008,6,GB,Wave Power,,1.0
+2008,6,GB,Wind 50kW DNC or less,,3.0
+2008,7,GB,Biomass,,0.0
+2008,7,GB,Biomass using an Advanced Conversion Technology,,1313.0
+2008,7,GB,Co-firing of Biomass with Fossil Fuel,,126415.0
+2008,7,GB,Co-firing of Energy Crops,,2462.0
+2008,7,GB,Fuelled,,121603.0
+2008,7,GB,Hydro 20MW DNC or less,,92262.0
+2008,7,GB,Hydro 50kW DNC or less,,103.0
+2008,7,GB,Hydro greater than 20MW DNC,,0.0
+2008,7,GB,Landfill Gas,,385584.0
+2008,7,GB,Micro Hydro,,4199.0
+2008,7,GB,Off-shore Wind,,99283.0
+2008,7,GB,On-shore Wind,,389441.0
+2008,7,GB,Photovoltaic,,51.0
+2008,7,GB,Photovoltaic 50kW DNC or less,,2.0
+2008,7,GB,Sewage Gas,,35814.0
+2008,7,GB,Waste using an Advanced Conversion Technology,,6.0
+2008,7,GB,Wave Power,,0.0
+2008,7,GB,Wind 50kW DNC or less,,3.0
+2008,8,GB,Biomass,,0.0
+2008,8,GB,Biomass using an Advanced Conversion Technology,,1495.0
+2008,8,GB,Co-firing of Biomass with Fossil Fuel,,118090.0
+2008,8,GB,Co-firing of Energy Crops,,668.0
+2008,8,GB,Fuelled,,128102.0
+2008,8,GB,Hydro 20MW DNC or less,,118438.0
+2008,8,GB,Hydro 50kW DNC or less,,131.0
+2008,8,GB,Hydro greater than 20MW DNC,,0.0
+2008,8,GB,Landfill Gas,,390651.0
+2008,8,GB,Micro Hydro,,6550.0
+2008,8,GB,Off-shore Wind,,102913.0
+2008,8,GB,On-shore Wind,,372141.0
+2008,8,GB,Photovoltaic,,45.0
+2008,8,GB,Photovoltaic 50kW DNC or less,,5.0
+2008,8,GB,Sewage Gas,,34553.0
+2008,8,GB,Waste using an Advanced Conversion Technology,,0.0
+2008,8,GB,Wave Power,,0.0
+2008,8,GB,Wind 50kW DNC or less,,3.0
+2008,9,GB,Biomass,,0.0
+2008,9,GB,Biomass using an Advanced Conversion Technology,,1573.0
+2008,9,GB,Co-firing of Biomass with Fossil Fuel,,168379.0
+2008,9,GB,Co-firing of Energy Crops,,410.0
+2008,9,GB,Fuelled,,126250.0
+2008,9,GB,Hydro 20MW DNC or less,,134838.0
+2008,9,GB,Hydro 50kW DNC or less,,143.0
+2008,9,GB,Hydro greater than 20MW DNC,,0.0
+2008,9,GB,Landfill Gas,,383963.0
+2008,9,GB,Micro Hydro,,5867.0
+2008,9,GB,Off-shore Wind,,95144.0
+2008,9,GB,On-shore Wind,,344931.0
+2008,9,GB,Photovoltaic,,34.0
+2008,9,GB,Photovoltaic 50kW DNC or less,,4.0
+2008,9,GB,Sewage Gas,,32455.0
+2008,9,GB,Waste using an Advanced Conversion Technology,,96.0
+2008,9,GB,Wave Power,,2.0
+2008,9,GB,Wind 50kW DNC or less,,6.0
+2008,10,GB,Biomass,,0.0
+2008,10,GB,Biomass using an Advanced Conversion Technology,,2103.0
+2008,10,GB,Co-firing of Biomass with Fossil Fuel,,203433.0
+2008,10,GB,Co-firing of Energy Crops,,695.0
+2008,10,GB,Fuelled,,153821.0
+2008,10,GB,Hydro 20MW DNC or less,,225199.0
+2008,10,GB,Hydro 50kW DNC or less,,162.0
+2008,10,GB,Hydro greater than 20MW DNC,,0.0
+2008,10,GB,Landfill Gas,,406596.0
+2008,10,GB,Micro Hydro,,7607.0
+2008,10,GB,Off-shore Wind,,184687.0
+2008,10,GB,On-shore Wind,,762991.0
+2008,10,GB,Photovoltaic,,31.0
+2008,10,GB,Photovoltaic 50kW DNC or less,,3.0
+2008,10,GB,Sewage Gas,,34694.0
+2008,10,GB,Waste using an Advanced Conversion Technology,,192.0
+2008,10,GB,Wave Power,,4.0
+2008,10,GB,Wind 50kW DNC or less,,7.0
+2008,11,GB,Biomass,,0.0
+2008,11,GB,Biomass using an Advanced Conversion Technology,,1987.0
+2008,11,GB,Co-firing of Biomass with Fossil Fuel,,218715.0
+2008,11,GB,Co-firing of Energy Crops,,2085.0
+2008,11,GB,Fuelled,,144828.0
+2008,11,GB,Hydro 20MW DNC or less,,236691.0
+2008,11,GB,Hydro 50kW DNC or less,,190.0
+2008,11,GB,Hydro greater than 20MW DNC,,1327.0
+2008,11,GB,Landfill Gas,,396620.0
+2008,11,GB,Micro Hydro,,6396.0
+2008,11,GB,Off-shore Wind,,183281.0
+2008,11,GB,On-shore Wind,,700863.0
+2008,11,GB,Photovoltaic,,15.0
+2008,11,GB,Photovoltaic 50kW DNC or less,,1.0
+2008,11,GB,Sewage Gas,,33146.0
+2008,11,GB,Waste using an Advanced Conversion Technology,,255.0
+2008,11,GB,Wave Power,,5.0
+2008,11,GB,Wind 50kW DNC or less,,16.0
+2008,12,GB,Biomass,,0.0
+2008,12,GB,Biomass using an Advanced Conversion Technology,,1782.0
+2008,12,GB,Co-firing of Biomass with Fossil Fuel,,252533.0
+2008,12,GB,Co-firing of Energy Crops,,822.0
+2008,12,GB,Fuelled,,149212.0
+2008,12,GB,Hydro 20MW DNC or less,,241227.0
+2008,12,GB,Hydro 50kW DNC or less,,197.0
+2008,12,GB,Hydro greater than 20MW DNC,,18296.0
+2008,12,GB,Landfill Gas,,407959.0
+2008,12,GB,Micro Hydro,,6544.0
+2008,12,GB,Off-shore Wind,,147861.0
+2008,12,GB,On-shore Wind,,561217.0
+2008,12,GB,Photovoltaic,,9.0
+2008,12,GB,Photovoltaic 50kW DNC or less,,0.0
+2008,12,GB,Sewage Gas,,33605.0
+2008,12,GB,Waste using an Advanced Conversion Technology,,259.0
+2008,12,GB,Wave Power,,7.0
+2008,12,GB,Wind 50kW DNC or less,,5.0
+2009,1,GB,Biomass,,0.0
+2009,1,GB,Biomass using an Advanced Conversion Technology,,1575.0
+2009,1,GB,Co-firing of Biomass with Fossil Fuel,,276989.0
+2009,1,GB,Co-firing of Energy Crops,,542.0
+2009,1,GB,Fuelled,,142609.0
+2009,1,GB,Hydro 20MW DNC or less,,261287.0
+2009,1,GB,Hydro 50kW DNC or less,,189.0
+2009,1,GB,Hydro greater than 20MW DNC,,12615.0
+2009,1,GB,Landfill Gas,,404314.0
+2009,1,GB,Micro Hydro,,6357.0
+2009,1,GB,Off-shore Wind,,172648.0
+2009,1,GB,On-shore Wind,,749250.0
+2009,1,GB,Photovoltaic,,10.0
+2009,1,GB,Photovoltaic 50kW DNC or less,,1.0
+2009,1,GB,Sewage Gas,,32878.0
+2009,1,GB,Waste using an Advanced Conversion Technology,,357.0
+2009,1,GB,Wave Power,,8.0
+2009,1,GB,Wind 50kW DNC or less,,6.0
+2009,2,GB,Biomass,,0.0
+2009,2,GB,Biomass using an Advanced Conversion Technology,,1200.0
+2009,2,GB,Co-firing of Biomass with Fossil Fuel,,214156.0
+2009,2,GB,Co-firing of Energy Crops,,0.0
+2009,2,GB,Fuelled,,138718.0
+2009,2,GB,Hydro 20MW DNC or less,,181342.0
+2009,2,GB,Hydro 50kW DNC or less,,162.0
+2009,2,GB,Hydro greater than 20MW DNC,,16924.0
+2009,2,GB,Landfill Gas,,365457.0
+2009,2,GB,Micro Hydro,,5343.0
+2009,2,GB,Off-shore Wind,,121003.0
+2009,2,GB,On-shore Wind,,491524.0
+2009,2,GB,Photovoltaic,,8.0
+2009,2,GB,Photovoltaic 50kW DNC or less,,1.0
+2009,2,GB,Sewage Gas,,32436.0
+2009,2,GB,Waste using an Advanced Conversion Technology,,165.0
+2009,2,GB,Wave Power,,2.0
+2009,2,GB,Wind 50kW DNC or less,,2.0
+2009,3,GB,Biomass,,0.0
+2009,3,GB,Biomass using an Advanced Conversion Technology,,1657.0
+2009,3,GB,Co-firing of Biomass with Fossil Fuel,,219451.0
+2009,3,GB,Co-firing of Energy Crops,,0.0
+2009,3,GB,Fuelled,,148138.0
+2009,3,GB,Hydro 20MW DNC or less,,255706.0
+2009,3,GB,Hydro 50kW DNC or less,,192.0
+2009,3,GB,Hydro greater than 20MW DNC,,26973.0
+2009,3,GB,Landfill Gas,,411577.0
+2009,3,GB,Micro Hydro,,6979.0
+2009,3,GB,Off-shore Wind,,151534.0
+2009,3,GB,On-shore Wind,,808335.0
+2009,3,GB,Photovoltaic,,30.0
+2009,3,GB,Photovoltaic 50kW DNC or less,,2.0
+2009,3,GB,Sewage Gas,,39104.0
+2009,3,GB,Waste using an Advanced Conversion Technology,,393.0
+2009,3,GB,Wave Power,,13.0
+2009,3,GB,Wind 50kW DNC or less,,9.0
+2009,4,GB,Biomass,,18.0
+2009,4,GB,Biomass 50kW DNC or less,,56.0
+2009,4,GB,Fuelled,,281352.0
+2009,4,GB,Hydro 20MW DNC or less,,180214.0
+2009,4,GB,Hydro 50kW DNC or less,,8988.0
+2009,4,GB,Hydro greater than 20MW DNC,,17338.0
+2009,4,GB,Landfill Gas,,400550.0
+2009,4,GB,Micro Hydro,,5370.0
+2009,4,GB,Off-shore Wind,,112782.0
+2009,4,GB,On-shore Wind,,513436.0
+2009,4,GB,Photovoltaic,,83.0
+2009,4,GB,Photovoltaic 50kW DNC or less,,10501.0
+2009,4,GB,Sewage Gas,,37038.0
+2009,4,GB,Tidal Flow,,7.0
+2009,4,GB,Wave Power,,7.0
+2009,4,GB,Wind 50kW DNC or less,,12956.0
+2009,5,GB,Biomass,,0.0
+2009,5,GB,Biomass 50kW DNC or less,,0.0
+2009,5,GB,Fuelled,,304177.0
+2009,5,GB,Hydro 20MW DNC or less,,154117.0
+2009,5,GB,Hydro 50kW DNC or less,,372.0
+2009,5,GB,Hydro greater than 20MW DNC,,11556.0
+2009,5,GB,Landfill Gas,,412432.0
+2009,5,GB,Micro Hydro,,6373.0
+2009,5,GB,Off-shore Wind,,211636.0
+2009,5,GB,On-shore Wind,,737537.0
+2009,5,GB,Photovoltaic,,72.0
+2009,5,GB,Photovoltaic 50kW DNC or less,,21.0
+2009,5,GB,Sewage Gas,,39259.0
+2009,5,GB,Tidal Flow,,47.0
+2009,5,GB,Wave Power,,3.0
+2009,5,GB,Wind 50kW DNC or less,,54.0
+2009,6,GB,Biomass,,0.0
+2009,6,GB,Biomass 50kW DNC or less,,0.0
+2009,6,GB,Fuelled,,328346.0
+2009,6,GB,Hydro 20MW DNC or less,,82489.0
+2009,6,GB,Hydro 50kW DNC or less,,253.0
+2009,6,GB,Hydro greater than 20MW DNC,,1848.0
+2009,6,GB,Landfill Gas,,392916.0
+2009,6,GB,Micro Hydro,,3054.0
+2009,6,GB,Off-shore Wind,,90752.0
+2009,6,GB,On-shore Wind,,314992.0
+2009,6,GB,Photovoltaic,,86.0
+2009,6,GB,Photovoltaic 50kW DNC or less,,26.0
+2009,6,GB,Sewage Gas,,37275.0
+2009,6,GB,Tidal Flow,,131.0
+2009,6,GB,Wave Power,,0.0
+2009,6,GB,Wind 50kW DNC or less,,24.0
+2009,7,GB,Biomass,,0.0
+2009,7,GB,Biomass 50kW DNC or less,,0.0
+2009,7,GB,Fuelled,,288833.0
+2009,7,GB,Hydro 20MW DNC or less,,102942.0
+2009,7,GB,Hydro 50kW DNC or less,,306.0
+2009,7,GB,Hydro greater than 20MW DNC,,7753.0
+2009,7,GB,Landfill Gas,,407011.0
+2009,7,GB,Micro Hydro,,4211.0
+2009,7,GB,Off-shore Wind,,167143.0
+2009,7,GB,On-shore Wind,,456622.0
+2009,7,GB,Photovoltaic,,87.0
+2009,7,GB,Photovoltaic 50kW DNC or less,,24.0
+2009,7,GB,Sewage Gas,,36265.0
+2009,7,GB,Tidal Flow,,155.0
+2009,7,GB,Wave Power,,0.0
+2009,7,GB,Wind 50kW DNC or less,,38.0
+2009,8,GB,Biomass,,0.0
+2009,8,GB,Biomass 50kW DNC or less,,10.0
+2009,8,GB,Fuelled,,312305.0
+2009,8,GB,Hydro 20MW DNC or less,,181726.0
+2009,8,GB,Hydro 50kW DNC or less,,330.0
+2009,8,GB,Hydro greater than 20MW DNC,,1136.0
+2009,8,GB,Landfill Gas,,416477.0
+2009,8,GB,Micro Hydro,,7272.0
+2009,8,GB,Off-shore Wind,,179073.0
+2009,8,GB,On-shore Wind,,684407.0
+2009,8,GB,Photovoltaic,,67.0
+2009,8,GB,Photovoltaic 50kW DNC or less,,23.0
+2009,8,GB,Sewage Gas,,37061.0
+2009,8,GB,Tidal Flow,,111.0
+2009,8,GB,Wave Power,,4.0
+2009,8,GB,Wind 50kW DNC or less,,43.0
+2009,9,GB,Biomass,,0.0
+2009,9,GB,Biomass 50kW DNC or less,,11.0
+2009,9,GB,Fuelled,,257792.0
+2009,9,GB,Hydro 20MW DNC or less,,218755.0
+2009,9,GB,Hydro 50kW DNC or less,,335.0
+2009,9,GB,Hydro greater than 20MW DNC,,0.0
+2009,9,GB,Landfill Gas,,397274.0
+2009,9,GB,Micro Hydro,,6677.0
+2009,9,GB,Off-shore Wind,,174898.0
+2009,9,GB,On-shore Wind,,660237.0
+2009,9,GB,Photovoltaic,,55.0
+2009,9,GB,Photovoltaic 50kW DNC or less,,22.0
+2009,9,GB,Sewage Gas,,34898.0
+2009,9,GB,Tidal Flow,,87.0
+2009,9,GB,Wave Power,,4.0
+2009,9,GB,Wind 50kW DNC or less,,37.0
+2009,10,GB,Biomass,,0.0
+2009,10,GB,Biomass 50kW DNC or less,,13.0
+2009,10,GB,Fuelled,,327226.0
+2009,10,GB,Hydro 20MW DNC or less,,205212.0
+2009,10,GB,Hydro 50kW DNC or less,,351.0
+2009,10,GB,Hydro greater than 20MW DNC,,0.0
+2009,10,GB,Landfill Gas,,420352.0
+2009,10,GB,Micro Hydro,,6007.0
+2009,10,GB,Off-shore Wind,,201121.0
+2009,10,GB,On-shore Wind,,620336.0
+2009,10,GB,Photovoltaic,,26.0
+2009,10,GB,Photovoltaic 50kW DNC or less,,12.0
+2009,10,GB,Sewage Gas,,38596.0
+2009,10,GB,Tidal Flow,,123.0
+2009,10,GB,Wave Power,,4.0
+2009,10,GB,Wind 50kW DNC or less,,33.0
+2009,11,GB,Biomass,,0.0
+2009,11,GB,Biomass 50kW DNC or less,,11.0
+2009,11,GB,Fuelled,,352842.0
+2009,11,GB,Hydro 20MW DNC or less,,276586.0
+2009,11,GB,Hydro 50kW DNC or less,,451.0
+2009,11,GB,Hydro greater than 20MW DNC,,0.0
+2009,11,GB,Landfill Gas,,415480.0
+2009,11,GB,Micro Hydro,,8581.0
+2009,11,GB,Off-shore Wind,,385198.0
+2009,11,GB,On-shore Wind,,935216.0
+2009,11,GB,Photovoltaic,,21.0
+2009,11,GB,Photovoltaic 50kW DNC or less,,6.0
+2009,11,GB,Sewage Gas,,37883.0
+2009,11,GB,Tidal Flow,,229.0
+2009,11,GB,Wave Power,,4.0
+2009,11,GB,Wind 50kW DNC or less,,66.0
+2009,12,GB,Biomass,,0.0
+2009,12,GB,Biomass 50kW DNC or less,,12.0
+2009,12,GB,Fuelled,,348128.0
+2009,12,GB,Hydro 20MW DNC or less,,217536.0
+2009,12,GB,Hydro 50kW DNC or less,,445.0
+2009,12,GB,Hydro greater than 20MW DNC,,0.0
+2009,12,GB,Landfill Gas,,430140.0
+2009,12,GB,Micro Hydro,,6680.0
+2009,12,GB,Off-shore Wind,,343269.0
+2009,12,GB,On-shore Wind,,592986.0
+2009,12,GB,Photovoltaic,,17.0
+2009,12,GB,Photovoltaic 50kW DNC or less,,4.0
+2009,12,GB,Sewage Gas,,39741.0
+2009,12,GB,Tidal Flow,,233.0
+2009,12,GB,Wave Power,,3.0
+2009,12,GB,Wind 50kW DNC or less,,39.0
+2010,1,GB,Biomass,,0.0
+2010,1,GB,Biomass 50kW DNC or less,,15.0
+2010,1,GB,Fuelled,,367562.0
+2010,1,GB,Hydro 20MW DNC or less,,143541.0
+2010,1,GB,Hydro 50kW DNC or less,,398.0
+2010,1,GB,Hydro greater than 20MW DNC,,0.0
+2010,1,GB,Landfill Gas,,423769.0
+2010,1,GB,Micro Hydro,,5150.0
+2010,1,GB,Off-shore Wind,,301240.0
+2010,1,GB,On-shore Wind,,674835.0
+2010,1,GB,Photovoltaic,,9.0
+2010,1,GB,Photovoltaic 50kW DNC or less,,3.0
+2010,1,GB,Sewage Gas,,35920.0
+2010,1,GB,Tidal Flow,,324.0
+2010,1,GB,Wave Power,,2.0
+2010,1,GB,Wind 50kW DNC or less,,44.0
+2010,2,GB,Biomass,,0.0
+2010,2,GB,Biomass 50kW DNC or less,,14.0
+2010,2,GB,Fuelled,,321939.0
+2010,2,GB,Hydro 20MW DNC or less,,104605.0
+2010,2,GB,Hydro 50kW DNC or less,,423.0
+2010,2,GB,Hydro greater than 20MW DNC,,0.0
+2010,2,GB,Landfill Gas,,387910.0
+2010,2,GB,Micro Hydro,,4672.0
+2010,2,GB,Off-shore Wind,,237644.0
+2010,2,GB,On-shore Wind,,370883.0
+2010,2,GB,Photovoltaic,,22.0
+2010,2,GB,Photovoltaic 50kW DNC or less,,7.0
+2010,2,GB,Sewage Gas,,39723.0
+2010,2,GB,Tidal Flow,,189.0
+2010,2,GB,Wave Power,,1.0
+2010,2,GB,Wind 50kW DNC or less,,32.0
+2010,3,GB,Biomass,,0.0
+2010,3,GB,Biomass 50kW DNC or less,,16.0
+2010,3,GB,Fuelled,,359486.0
+2010,3,GB,Hydro 20MW DNC or less,,135041.0
+2010,3,GB,Hydro 50kW DNC or less,,495.0
+2010,3,GB,Hydro greater than 20MW DNC,,0.0
+2010,3,GB,Landfill Gas,,429912.0
+2010,3,GB,Micro Hydro,,6125.0
+2010,3,GB,Off-shore Wind,,312031.0
+2010,3,GB,On-shore Wind,,688441.0
+2010,3,GB,Photovoltaic,,69.0
+2010,3,GB,Photovoltaic 50kW DNC or less,,18.0
+2010,3,GB,Sewage Gas,,44356.0
+2010,3,GB,Tidal Flow,,561.0
+2010,3,GB,Wave Power,,0.0
+2010,3,GB,Wind 50kW DNC or less,,52.0
+2010,4,GB,Biomass,,9.0
+2010,4,GB,Biomass 50kW DNC or less,,110.0
+2010,4,GB,Fuelled,,374249.0
+2010,4,GB,Hydro 20MW DNC or less,,157985.0
+2010,4,GB,Hydro 50kW DNC or less,,1340.0
+2010,4,GB,Landfill Gas,,413910.0
+2010,4,GB,Micro Hydro,,5760.0
+2010,4,GB,Off-shore Wind,,223230.0
+2010,4,GB,On-shore Wind,,501252.0
+2010,4,GB,Photovoltaic,,85.0
+2010,4,GB,Photovoltaic 50kW DNC or less,,1807.0
+2010,4,GB,Sewage Gas,,44497.0
+2010,4,GB,Tidal Flow,,392.0
+2010,4,GB,Wave Power,,1.0
+2010,4,GB,Wind 50kW DNC or less,,4756.0
+2010,5,GB,Biomass,,0.0
+2010,5,GB,Biomass 50kW DNC or less,,15.0
+2010,5,GB,Fuelled,,357207.0
+2010,5,GB,Hydro 20MW DNC or less,,90610.0
+2010,5,GB,Hydro 50kW DNC or less,,20.0
+2010,5,GB,Landfill Gas,,419373.0
+2010,5,GB,Micro Hydro,,2826.0
+2010,5,GB,Off-shore Wind,,220405.0
+2010,5,GB,On-shore Wind,,338535.0
+2010,5,GB,Photovoltaic,,73.0
+2010,5,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,5,GB,Sewage Gas,,46406.0
+2010,5,GB,Tidal Flow,,457.0
+2010,5,GB,Wave Power,,0.0
+2010,5,GB,Wind 50kW DNC or less,,2.0
+2010,6,GB,Biomass,,0.0
+2010,6,GB,Biomass 50kW DNC or less,,14.0
+2010,6,GB,Fuelled,,379476.0
+2010,6,GB,Hydro 20MW DNC or less,,57638.0
+2010,6,GB,Hydro 50kW DNC or less,,15.0
+2010,6,GB,Landfill Gas,,400189.0
+2010,6,GB,Micro Hydro,,1694.0
+2010,6,GB,Off-shore Wind,,172096.0
+2010,6,GB,On-shore Wind,,327476.0
+2010,6,GB,Photovoltaic,,98.0
+2010,6,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,6,GB,Sewage Gas,,43202.0
+2010,6,GB,Tidal Flow,,361.0
+2010,6,GB,Wave Power,,2.0
+2010,6,GB,Wind 50kW DNC or less,,2.0
+2010,7,GB,Biomass,,0.0
+2010,7,GB,Biomass 50kW DNC or less,,18.0
+2010,7,GB,Fuelled,,393109.0
+2010,7,GB,Hydro 20MW DNC or less,,115539.0
+2010,7,GB,Hydro 50kW DNC or less,,19.0
+2010,7,GB,Landfill Gas,,411490.0
+2010,7,GB,Micro Hydro,,5385.0
+2010,7,GB,Off-shore Wind,,315037.0
+2010,7,GB,On-shore Wind,,698835.0
+2010,7,GB,Photovoltaic,,111.0
+2010,7,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,7,GB,Sewage Gas,,44088.0
+2010,7,GB,Tidal Flow,,118.0
+2010,7,GB,Wave Power,,5.0
+2010,7,GB,Wind 50kW DNC or less,,3.0
+2010,8,GB,Biomass,,0.0
+2010,8,GB,Biomass 50kW DNC or less,,14.0
+2010,8,GB,Fuelled,,435185.0
+2010,8,GB,Hydro 20MW DNC or less,,119590.0
+2010,8,GB,Hydro 50kW DNC or less,,13.0
+2010,8,GB,Landfill Gas,,422840.0
+2010,8,GB,Micro Hydro,,5130.0
+2010,8,GB,Off-shore Wind,,438789.0
+2010,8,GB,On-shore Wind,,477711.0
+2010,8,GB,Photovoltaic,,73.0
+2010,8,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,8,GB,Sewage Gas,,41982.0
+2010,8,GB,Tidal Flow,,1044.0
+2010,8,GB,Wave Power,,2.0
+2010,8,GB,Wind 50kW DNC or less,,2.0
+2010,9,GB,Biomass,,0.0
+2010,9,GB,Biomass 50kW DNC or less,,15.0
+2010,9,GB,Fuelled,,375223.0
+2010,9,GB,Hydro 20MW DNC or less,,155697.0
+2010,9,GB,Hydro 50kW DNC or less,,32.0
+2010,9,GB,Landfill Gas,,410055.0
+2010,9,GB,Micro Hydro,,5642.0
+2010,9,GB,Off-shore Wind,,469406.0
+2010,9,GB,On-shore Wind,,737159.0
+2010,9,GB,Photovoltaic,,71.0
+2010,9,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,9,GB,Sewage Gas,,39177.0
+2010,9,GB,Tidal Flow,,73.0
+2010,9,GB,Wave Power,,5.0
+2010,9,GB,Wind 50kW DNC or less,,3.0
+2010,10,GB,Biomass,,0.0
+2010,10,GB,Biomass 50kW DNC or less,,19.0
+2010,10,GB,Fuelled,,427266.0
+2010,10,GB,Hydro 20MW DNC or less,,202891.0
+2010,10,GB,Hydro 50kW DNC or less,,23.0
+2010,10,GB,Landfill Gas,,435028.0
+2010,10,GB,Micro Hydro,,6508.0
+2010,10,GB,Off-shore Wind,,643202.0
+2010,10,GB,On-shore Wind,,913977.0
+2010,10,GB,Photovoltaic,,42.0
+2010,10,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,10,GB,Sewage Gas,,43320.0
+2010,10,GB,Tidal Flow,,5.0
+2010,10,GB,Wave Power,,6.0
+2010,10,GB,Wind 50kW DNC or less,,3.0
+2010,11,GB,Biomass,,0.0
+2010,11,GB,Biomass 50kW DNC or less,,1.0
+2010,11,GB,Fuelled,,425496.0
+2010,11,GB,Hydro 20MW DNC or less,,221805.0
+2010,11,GB,Hydro 50kW DNC or less,,35.0
+2010,11,GB,Landfill Gas,,419856.0
+2010,11,GB,Micro Hydro,,7255.0
+2010,11,GB,Off-shore Wind,,602947.0
+2010,11,GB,On-shore Wind,,860538.0
+2010,11,GB,Photovoltaic,,24.0
+2010,11,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,11,GB,Sewage Gas,,43235.0
+2010,11,GB,Tidal Flow,,154.0
+2010,11,GB,Wave Power,,8.0
+2010,11,GB,Wind 50kW DNC or less,,3.0
+2010,12,GB,Biomass,,0.0
+2010,12,GB,Biomass 50kW DNC or less,,4.0
+2010,12,GB,Fuelled,,407034.0
+2010,12,GB,Hydro 20MW DNC or less,,100024.0
+2010,12,GB,Hydro 50kW DNC or less,,28.0
+2010,12,GB,Landfill Gas,,410472.0
+2010,12,GB,Micro Hydro,,4423.0
+2010,12,GB,Off-shore Wind,,441973.0
+2010,12,GB,On-shore Wind,,534447.0
+2010,12,GB,Photovoltaic,,8.0
+2010,12,GB,Photovoltaic 50kW DNC or less,,0.0
+2010,12,GB,Sewage Gas,,37495.0
+2010,12,GB,Tidal Flow,,1.0
+2010,12,GB,Wave Power,,0.0
+2010,12,GB,Wind 50kW DNC or less,,2.0
+2011,1,GB,Biomass,,0.0
+2011,1,GB,Biomass 50kW DNC or less,,4.0
+2011,1,GB,Fuelled,,499256.0
+2011,1,GB,Hydro 20MW DNC or less,,176676.0
+2011,1,GB,Hydro 50kW DNC or less,,33.0
+2011,1,GB,Landfill Gas,,427064.0
+2011,1,GB,Micro Hydro,,7088.0
+2011,1,GB,Off-shore Wind,,584917.0
+2011,1,GB,On-shore Wind,,797164.0
+2011,1,GB,Photovoltaic,,13.0
+2011,1,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,1,GB,Sewage Gas,,43270.0
+2011,1,GB,Tidal Flow,,181.0
+2011,1,GB,Wave Power,,4.0
+2011,1,GB,Wind 50kW DNC or less,,3.0
+2011,2,GB,Biomass,,0.0
+2011,2,GB,Biomass 50kW DNC or less,,11.0
+2011,2,GB,Fuelled,,384303.0
+2011,2,GB,Hydro 20MW DNC or less,,226705.0
+2011,2,GB,Hydro 50kW DNC or less,,29.0
+2011,2,GB,Landfill Gas,,392557.0
+2011,2,GB,Micro Hydro,,7918.0
+2011,2,GB,Off-shore Wind,,538208.0
+2011,2,GB,On-shore Wind,,899559.0
+2011,2,GB,Photovoltaic,,22.0
+2011,2,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,2,GB,Sewage Gas,,43193.0
+2011,2,GB,Tidal Flow,,0.0
+2011,2,GB,Wave Power,,24.0
+2011,2,GB,Wind 50kW DNC or less,,2.0
+2011,3,GB,Biomass,,0.0
+2011,3,GB,Biomass 50kW DNC or less,,3.0
+2011,3,GB,Fuelled,,392528.0
+2011,3,GB,Hydro 20MW DNC or less,,164167.0
+2011,3,GB,Hydro 50kW DNC or less,,33.0
+2011,3,GB,Landfill Gas,,432837.0
+2011,3,GB,Micro Hydro,,6955.0
+2011,3,GB,Off-shore Wind,,375536.0
+2011,3,GB,On-shore Wind,,616936.0
+2011,3,GB,Photovoltaic,,53.0
+2011,3,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,3,GB,Sewage Gas,,48588.0
+2011,3,GB,Tidal Flow,,15.0
+2011,3,GB,Wave Power,,14.0
+2011,3,GB,Wind 50kW DNC or less,,2.0
+2011,4,GB,Biomass 50kW DNC or less,,633.0
+2011,4,GB,Fuelled,,400902.0
+2011,4,GB,Hydro 20MW DNC or less,,170824.0
+2011,4,GB,Hydro 50kW DNC or less,,2249.0
+2011,4,GB,Landfill Gas,,414950.0
+2011,4,GB,Micro Hydro,,5266.0
+2011,4,GB,Off-shore Wind,,460140.0
+2011,4,GB,On-shore Wind,,719154.0
+2011,4,GB,Photovoltaic,,91.0
+2011,4,GB,Photovoltaic 50kW DNC or less,,2357.0
+2011,4,GB,Sewage Gas,,47943.0
+2011,4,GB,Tidal Flow,,270.0
+2011,4,GB,Wave Power,,18.0
+2011,4,GB,Wind 50kW DNC or less,,8301.0
+2011,5,GB,Biomass 50kW DNC or less,,3.0
+2011,5,GB,Fuelled,,405063.0
+2011,5,GB,Hydro 20MW DNC or less,,162030.0
+2011,5,GB,Hydro 50kW DNC or less,,27.0
+2011,5,GB,Landfill Gas,,423000.0
+2011,5,GB,Micro Hydro,,4729.0
+2011,5,GB,Off-shore Wind,,749504.0
+2011,5,GB,On-shore Wind,,1188548.0
+2011,5,GB,Photovoltaic,,106.0
+2011,5,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,5,GB,Sewage Gas,,49168.0
+2011,5,GB,Tidal Flow,,97.0
+2011,5,GB,Wave Power,,0.0
+2011,5,GB,Wind 50kW DNC or less,,3.0
+2011,6,GB,Biomass 50kW DNC or less,,1.0
+2011,6,GB,Fuelled,,409908.0
+2011,6,GB,Hydro 20MW DNC or less,,158049.0
+2011,6,GB,Hydro 50kW DNC or less,,29.0
+2011,6,GB,Landfill Gas,,405918.0
+2011,6,GB,Micro Hydro,,5272.0
+2011,6,GB,Off-shore Wind,,496276.0
+2011,6,GB,On-shore Wind,,487045.0
+2011,6,GB,Photovoltaic,,145.0
+2011,6,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,6,GB,Sewage Gas,,46705.0
+2011,6,GB,Tidal Flow,,72.0
+2011,6,GB,Wave Power,,0.0
+2011,6,GB,Wind 50kW DNC or less,,2.0
+2011,7,GB,Biomass 50kW DNC or less,,1.0
+2011,7,GB,Fuelled,,439323.0
+2011,7,GB,Hydro 20MW DNC or less,,136438.0
+2011,7,GB,Hydro 50kW DNC or less,,21.0
+2011,7,GB,Landfill Gas,,417450.0
+2011,7,GB,Micro Hydro,,4472.0
+2011,7,GB,Off-shore Wind,,402412.0
+2011,7,GB,On-shore Wind,,368815.0
+2011,7,GB,Photovoltaic,,109.0
+2011,7,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,7,GB,Sewage Gas,,47736.0
+2011,7,GB,Tidal Flow,,133.0
+2011,7,GB,Wave Power,,0.0
+2011,7,GB,Wind 50kW DNC or less,,2.0
+2011,8,GB,Biomass 50kW DNC or less,,3.0
+2011,8,GB,Fuelled,,452722.0
+2011,8,GB,Hydro 20MW DNC or less,,168373.0
+2011,8,GB,Hydro 50kW DNC or less,,17.0
+2011,8,GB,Landfill Gas,,419965.0
+2011,8,GB,Micro Hydro,,5459.0
+2011,8,GB,Off-shore Wind,,451612.0
+2011,8,GB,On-shore Wind,,506335.0
+2011,8,GB,Photovoltaic,,84.0
+2011,8,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,8,GB,Sewage Gas,,45404.0
+2011,8,GB,Tidal Flow,,5.0
+2011,8,GB,Wave Power,,3.0
+2011,8,GB,Wind 50kW DNC or less,,1.0
+2011,9,GB,Biomass 50kW DNC or less,,8.0
+2011,9,GB,Fuelled,,413357.0
+2011,9,GB,Hydro 20MW DNC or less,,234710.0
+2011,9,GB,Hydro 50kW DNC or less,,27.0
+2011,9,GB,Landfill Gas,,408720.0
+2011,9,GB,Micro Hydro,,7647.0
+2011,9,GB,Off-shore Wind,,728786.0
+2011,9,GB,On-shore Wind,,1026656.0
+2011,9,GB,Photovoltaic,,70.0
+2011,9,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,9,GB,Sewage Gas,,46075.0
+2011,9,GB,Tidal Flow,,52.0
+2011,9,GB,Wave Power,,14.0
+2011,9,GB,Wind 50kW DNC or less,,3.0
+2011,10,GB,Biomass 50kW DNC or less,,10.0
+2011,10,GB,Fuelled,,451045.0
+2011,10,GB,Hydro 20MW DNC or less,,280687.0
+2011,10,GB,Hydro 50kW DNC or less,,33.0
+2011,10,GB,Landfill Gas,,424195.0
+2011,10,GB,Micro Hydro,,8250.0
+2011,10,GB,Off-shore Wind,,876780.0
+2011,10,GB,On-shore Wind,,1264185.0
+2011,10,GB,Photovoltaic,,43.0
+2011,10,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,10,GB,Sewage Gas,,48176.0
+2011,10,GB,Tidal Flow,,11.0
+2011,10,GB,Wave Power,,21.0
+2011,10,GB,Wind 50kW DNC or less,,3.0
+2011,11,GB,Biomass 50kW DNC or less,,11.0
+2011,11,GB,Fuelled,,429012.0
+2011,11,GB,Hydro 20MW DNC or less,,236110.0
+2011,11,GB,Hydro 50kW DNC or less,,39.0
+2011,11,GB,Landfill Gas,,420581.0
+2011,11,GB,Micro Hydro,,7256.0
+2011,11,GB,Off-shore Wind,,887668.0
+2011,11,GB,On-shore Wind,,1211273.0
+2011,11,GB,Photovoltaic,,18.0
+2011,11,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,11,GB,Sewage Gas,,47631.0
+2011,11,GB,Tidal Flow,,136.0
+2011,11,GB,Wave Power,,20.0
+2011,11,GB,Wind 50kW DNC or less,,4.0
+2011,12,GB,Biomass 50kW DNC or less,,10.0
+2011,12,GB,Fuelled,,472074.0
+2011,12,GB,Hydro 20MW DNC or less,,321482.0
+2011,12,GB,Hydro 50kW DNC or less,,46.0
+2011,12,GB,Landfill Gas,,436744.0
+2011,12,GB,Micro Hydro,,8068.0
+2011,12,GB,Off-shore Wind,,1272824.0
+2011,12,GB,On-shore Wind,,1544526.0
+2011,12,GB,Photovoltaic,,58.0
+2011,12,GB,Photovoltaic 50kW DNC or less,,0.0
+2011,12,GB,Sewage Gas,,47424.0
+2011,12,GB,Tidal Flow,,156.0
+2011,12,GB,Wave Power,,3.0
+2011,12,GB,Wind 50kW DNC or less,,3.0
+2012,1,GB,Biomass 50kW DNC or less,,11.0
+2012,1,GB,Fuelled,,945705.0
+2012,1,GB,Hydro 20MW DNC or less,,318222.0
+2012,1,GB,Hydro 50kW DNC or less,,46.0
+2012,1,GB,Landfill Gas,,432903.0
+2012,1,GB,Micro Hydro,,8007.0
+2012,1,GB,Off-shore Wind,,978215.0
+2012,1,GB,On-shore Wind,,1389779.0
+2012,1,GB,Photovoltaic,,276.0
+2012,1,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,1,GB,Sewage Gas,,48677.0
+2012,1,GB,Tidal Flow,,465.0
+2012,1,GB,Wave Power,,8.0
+2012,1,GB,Wind 50kW DNC or less,,3.0
+2012,2,GB,Biomass 50kW DNC or less,,13.0
+2012,2,GB,Fuelled,,773552.0
+2012,2,GB,Hydro 20MW DNC or less,,242321.0
+2012,2,GB,Hydro 50kW DNC or less,,39.0
+2012,2,GB,Landfill Gas,,395312.0
+2012,2,GB,Micro Hydro,,7109.0
+2012,2,GB,Off-shore Wind,,864993.0
+2012,2,GB,On-shore Wind,,1169343.0
+2012,2,GB,Photovoltaic,,496.0
+2012,2,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,2,GB,Sewage Gas,,44805.0
+2012,2,GB,Tidal Flow,,489.0
+2012,2,GB,Wave Power,,10.0
+2012,2,GB,Wind 50kW DNC or less,,2.0
+2012,3,GB,Biomass 50kW DNC or less,,30.0
+2012,3,GB,Fuelled,,480468.0
+2012,3,GB,Hydro 20MW DNC or less,,211866.0
+2012,3,GB,Hydro 50kW DNC or less,,33.0
+2012,3,GB,Landfill Gas,,417382.0
+2012,3,GB,Micro Hydro,,6376.0
+2012,3,GB,Off-shore Wind,,615878.0
+2012,3,GB,On-shore Wind,,915432.0
+2012,3,GB,Photovoltaic,,1122.0
+2012,3,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,3,GB,Sewage Gas,,48221.0
+2012,3,GB,Tidal Flow,,493.0
+2012,3,GB,Wave Power,,98.0
+2012,3,GB,Wind 50kW DNC or less,,3.0
+2012,4,GB,Biomass 50kW DNC or less,,486.0
+2012,4,GB,Fuelled,,401076.0
+2012,4,GB,Hydro 20MW DNC or less,,144322.0
+2012,4,GB,Hydro 50kW DNC or less,,3186.0
+2012,4,GB,Hydro greater than 20MW DNC,,0.0
+2012,4,GB,Landfill Gas,,406334.0
+2012,4,GB,Micro Hydro,,4597.0
+2012,4,GB,Off-shore Wind,,868644.0
+2012,4,GB,On-shore Wind,,786816.0
+2012,4,GB,Photovoltaic,,1111.0
+2012,4,GB,Photovoltaic 50kW DNC or less,,6345.0
+2012,4,GB,Sewage Gas,,46592.0
+2012,4,GB,Tidal Flow,,824.0
+2012,4,GB,Wave Power,,91.0
+2012,4,GB,Wind 50kW DNC or less,,7699.0
+2012,5,GB,Biomass 50kW DNC or less,,28.0
+2012,5,GB,Fuelled,,442379.0
+2012,5,GB,Hydro 20MW DNC or less,,138876.0
+2012,5,GB,Hydro 50kW DNC or less,,20.0
+2012,5,GB,Hydro greater than 20MW DNC,,0.0
+2012,5,GB,Landfill Gas,,417282.0
+2012,5,GB,Micro Hydro,,4298.0
+2012,5,GB,Off-shore Wind,,849171.0
+2012,5,GB,On-shore Wind,,659729.0
+2012,5,GB,Photovoltaic,,1519.0
+2012,5,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,5,GB,Sewage Gas,,45821.0
+2012,5,GB,Tidal Flow,,143.0
+2012,5,GB,Wave Power,,0.0
+2012,5,GB,Wind 50kW DNC or less,,3.0
+2012,6,GB,Biomass 50kW DNC or less,,16.0
+2012,6,GB,Fuelled,,433925.0
+2012,6,GB,Hydro 20MW DNC or less,,121998.0
+2012,6,GB,Hydro 50kW DNC or less,,30.0
+2012,6,GB,Hydro greater than 20MW DNC,,0.0
+2012,6,GB,Landfill Gas,,404199.0
+2012,6,GB,Micro Hydro,,4756.0
+2012,6,GB,Off-shore Wind,,1018004.0
+2012,6,GB,On-shore Wind,,711588.0
+2012,6,GB,Photovoltaic,,1550.0
+2012,6,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,6,GB,Sewage Gas,,45551.0
+2012,6,GB,Tidal Flow,,431.0
+2012,6,GB,Wave Power,,8.0
+2012,6,GB,Wind 50kW DNC or less,,3.0
+2012,7,GB,Biomass 50kW DNC or less,,23.0
+2012,7,GB,Fuelled,,552349.0
+2012,7,GB,Hydro 20MW DNC or less,,141417.0
+2012,7,GB,Hydro 50kW DNC or less,,30.0
+2012,7,GB,Hydro greater than 20MW DNC,,0.0
+2012,7,GB,Landfill Gas,,418587.0
+2012,7,GB,Micro Hydro,,6363.0
+2012,7,GB,Off-shore Wind,,734940.0
+2012,7,GB,On-shore Wind,,584695.0
+2012,7,GB,Photovoltaic,,1502.0
+2012,7,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,7,GB,Sewage Gas,,44854.0
+2012,7,GB,Tidal Flow,,784.0
+2012,7,GB,Wave Power,,36.0
+2012,7,GB,Wind 50kW DNC or less,,2.0
+2012,8,GB,Biomass 50kW DNC or less,,21.0
+2012,8,GB,Fuelled,,546525.0
+2012,8,GB,Hydro 20MW DNC or less,,123356.0
+2012,8,GB,Hydro 50kW DNC or less,,30.0
+2012,8,GB,Hydro greater than 20MW DNC,,3306.0
+2012,8,GB,Landfill Gas,,420151.0
+2012,8,GB,Micro Hydro,,6093.0
+2012,8,GB,Off-shore Wind,,881577.0
+2012,8,GB,On-shore Wind,,714528.0
+2012,8,GB,Photovoltaic,,1605.0
+2012,8,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,8,GB,Sewage Gas,,44680.0
+2012,8,GB,Tidal Flow,,672.0
+2012,8,GB,Wave Power,,0.0
+2012,8,GB,Wind 50kW DNC or less,,2.0
+2012,9,GB,Biomass 50kW DNC or less,,23.0
+2012,9,GB,Fuelled,,744515.0
+2012,9,GB,Hydro 20MW DNC or less,,169909.0
+2012,9,GB,Hydro 50kW DNC or less,,27.0
+2012,9,GB,Hydro greater than 20MW DNC,,12140.0
+2012,9,GB,Landfill Gas,,407581.0
+2012,9,GB,Micro Hydro,,7079.0
+2012,9,GB,Off-shore Wind,,1353120.0
+2012,9,GB,On-shore Wind,,1339799.0
+2012,9,GB,Photovoltaic,,1396.0
+2012,9,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,9,GB,Sewage Gas,,39935.0
+2012,9,GB,Tidal Flow,,685.0
+2012,9,GB,Wave Power,,2.0
+2012,9,GB,Wind 50kW DNC or less,,3.0
+2012,10,GB,Biomass 50kW DNC or less,,17.0
+2012,10,GB,Fuelled,,837007.0
+2012,10,GB,Hydro 20MW DNC or less,,193138.0
+2012,10,GB,Hydro 50kW DNC or less,,31.0
+2012,10,GB,Hydro greater than 20MW DNC,,16357.0
+2012,10,GB,Landfill Gas,,421380.0
+2012,10,GB,Micro Hydro,,7381.0
+2012,10,GB,Off-shore Wind,,1289971.0
+2012,10,GB,On-shore Wind,,770124.0
+2012,10,GB,Photovoltaic,,775.0
+2012,10,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,10,GB,Sewage Gas,,45224.0
+2012,10,GB,Tidal Flow,,1005.0
+2012,10,GB,Wave Power,,26.0
+2012,10,GB,Wind 50kW DNC or less,,3.0
+2012,11,GB,Biomass 50kW DNC or less,,22.0
+2012,11,GB,Fuelled,,955197.0
+2012,11,GB,Hydro 20MW DNC or less,,231632.0
+2012,11,GB,Hydro 50kW DNC or less,,30.0
+2012,11,GB,Hydro greater than 20MW DNC,,20233.0
+2012,11,GB,Landfill Gas,,402863.0
+2012,11,GB,Micro Hydro,,7774.0
+2012,11,GB,Off-shore Wind,,1551895.0
+2012,11,GB,On-shore Wind,,1220692.0
+2012,11,GB,Photovoltaic,,457.0
+2012,11,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,11,GB,Sewage Gas,,46571.0
+2012,11,GB,Tidal Flow,,916.0
+2012,11,GB,Wave Power,,45.0
+2012,11,GB,Wind 50kW DNC or less,,3.0
+2012,12,GB,Biomass 50kW DNC or less,,18.0
+2012,12,GB,Fuelled,,938702.0
+2012,12,GB,Hydro 20MW DNC or less,,236519.0
+2012,12,GB,Hydro 50kW DNC or less,,41.0
+2012,12,GB,Hydro greater than 20MW DNC,,15701.0
+2012,12,GB,Landfill Gas,,423634.0
+2012,12,GB,Micro Hydro,,8525.0
+2012,12,GB,Off-shore Wind,,2045203.0
+2012,12,GB,On-shore Wind,,1522287.0
+2012,12,GB,Photovoltaic,,176.0
+2012,12,GB,Photovoltaic 50kW DNC or less,,0.0
+2012,12,GB,Sewage Gas,,43229.0
+2012,12,GB,Tidal Flow,,162.0
+2012,12,GB,Wave Power,,36.0
+2012,12,GB,Wind 50kW DNC or less,,3.0
+2013,1,GB,Biomass 50kW DNC or less,,19.0
+2013,1,GB,Fuelled,,1012017.0
+2013,1,GB,Hydro 20MW DNC or less,,228693.0
+2013,1,GB,Hydro 50kW DNC or less,,46.0
+2013,1,GB,Hydro greater than 20MW DNC,,15779.0
+2013,1,GB,Landfill Gas,,421061.0
+2013,1,GB,Micro Hydro,,8310.0
+2013,1,GB,Off-shore Wind,,1730454.0
+2013,1,GB,On-shore Wind,,1470156.0
+2013,1,GB,Photovoltaic,,317.0
+2013,1,GB,Photovoltaic 50kW DNC or less,,0.0
+2013,1,GB,Sewage Gas,,45827.0
+2013,1,GB,Tidal Flow,,434.0
+2013,1,GB,Wave Power,,26.0
+2013,1,GB,Wind 50kW DNC or less,,3.0
+2013,2,GB,Biomass 50kW DNC or less,,1.0
+2013,2,GB,Fuelled,,835427.0
+2013,2,GB,Hydro 20MW DNC or less,,192008.0
+2013,2,GB,Hydro 50kW DNC or less,,38.0
+2013,2,GB,Hydro greater than 20MW DNC,,11017.0
+2013,2,GB,Landfill Gas,,383617.0
+2013,2,GB,Micro Hydro,,7485.0
+2013,2,GB,Off-shore Wind,,1610994.0
+2013,2,GB,On-shore Wind,,1060306.0
+2013,2,GB,Photovoltaic,,982.0
+2013,2,GB,Photovoltaic 50kW DNC or less,,0.0
+2013,2,GB,Sewage Gas,,42620.0
+2013,2,GB,Tidal Flow,,721.0
+2013,2,GB,Wave Power,,27.0
+2013,2,GB,Wind 50kW DNC or less,,3.0
+2013,3,GB,Biomass 50kW DNC or less,,0.0
+2013,3,GB,Fuelled,,1073894.0
+2013,3,GB,Hydro 20MW DNC or less,,103544.0
+2013,3,GB,Hydro 50kW DNC or less,,40.0
+2013,3,GB,Hydro greater than 20MW DNC,,6807.0
+2013,3,GB,Landfill Gas,,417977.0
+2013,3,GB,Micro Hydro,,4496.0
+2013,3,GB,Off-shore Wind,,1755625.0
+2013,3,GB,On-shore Wind,,1365669.0
+2013,3,GB,Photovoltaic,,6932.0
+2013,3,GB,Photovoltaic 50kW DNC or less,,0.0
+2013,3,GB,Sewage Gas,,49504.0
+2013,3,GB,Tidal Flow,,770.0
+2013,3,GB,Wave Power,,26.0
+2013,3,GB,Wind 50kW DNC or less,,3.0
+2013,4,GB,Biomass 50kW DNC or less,,5.0
+2013,4,GB,Fuelled,,1005122.0
+2013,4,GB,Hydro 20MW DNC or less,,137772.0
+2013,4,GB,Hydro 50kW DNC or less,,4366.0
+2013,4,GB,Hydro greater than 20MW DNC,,16801.0
+2013,4,GB,Landfill Gas,,403163.0
+2013,4,GB,Micro Hydro,,5893.0
+2013,4,GB,Off-shore Wind,,1756139.0
+2013,4,GB,On-shore Wind,,1489290.0
+2013,4,GB,Photovoltaic,,41665.0
+2013,4,GB,Photovoltaic 50kW DNC or less,,34168.0
+2013,4,GB,Sewage Gas,,50649.0
+2013,4,GB,Tidal Flow,,676.0
+2013,4,GB,Wave Power,,15.0
+2013,4,GB,Wind 50kW DNC or less,,11615.0
+2013,5,GB,Biomass 50kW DNC or less,,28.0
+2013,5,GB,Fuelled,,1245388.0
+2013,5,GB,Hydro 20MW DNC or less,,177642.0
+2013,5,GB,Hydro 50kW DNC or less,,32.0
+2013,5,GB,Hydro greater than 20MW DNC,,26190.0
+2013,5,GB,Landfill Gas,,416667.0
+2013,5,GB,Micro Hydro,,6985.0
+2013,5,GB,Off-shore Wind,,1590201.0
+2013,5,GB,On-shore Wind,,1395168.0
+2013,5,GB,Photovoltaic,,82053.0
+2013,5,GB,Photovoltaic 50kW DNC or less,,26.0
+2013,5,GB,Sewage Gas,,53539.0
+2013,5,GB,Tidal Flow,,926.0
+2013,5,GB,Wave Power,,74.0
+2013,5,GB,Wind 50kW DNC or less,,0.0
+2013,6,GB,Biomass 50kW DNC or less,,30.0
+2013,6,GB,Fuelled,,1018352.0
+2013,6,GB,Hydro 20MW DNC or less,,93521.0
+2013,6,GB,Hydro 50kW DNC or less,,27.0
+2013,6,GB,Hydro greater than 20MW DNC,,143.0
+2013,6,GB,Landfill Gas,,395738.0
+2013,6,GB,Micro Hydro,,3489.0
+2013,6,GB,Off-shore Wind,,1424515.0
+2013,6,GB,On-shore Wind,,799769.0
+2013,6,GB,Photovoltaic,,99824.0
+2013,6,GB,Photovoltaic 50kW DNC or less,,71.0
+2013,6,GB,Sewage Gas,,51528.0
+2013,6,GB,Tidal Flow,,63.0
+2013,6,GB,Wave Power,,54.0
+2013,6,GB,Wind 50kW DNC or less,,3.0
+2013,7,GB,Biomass 50kW DNC or less,,37.0
+2013,7,GB,Fuelled,,1104424.0
+2013,7,GB,Hydro 20MW DNC or less,,84551.0
+2013,7,GB,Hydro 50kW DNC or less,,18.0
+2013,7,GB,Hydro greater than 20MW DNC,,2179.0
+2013,7,GB,Landfill Gas,,394123.0
+2013,7,GB,Micro Hydro,,2870.0
+2013,7,GB,Off-shore Wind,,853191.0
+2013,7,GB,On-shore Wind,,590926.0
+2013,7,GB,Photovoltaic,,122994.0
+2013,7,GB,Photovoltaic 50kW DNC or less,,63.0
+2013,7,GB,Sewage Gas,,48139.0
+2013,7,GB,Tidal Flow,,496.0
+2013,7,GB,Wave Power,,3.0
+2013,7,GB,Wind 50kW DNC or less,,3.0
+2013,8,GB,Biomass 50kW DNC or less,,39.0
+2013,8,GB,Fuelled,,803609.0
+2013,8,GB,Hydro 20MW DNC or less,,104557.0
+2013,8,GB,Hydro 50kW DNC or less,,14.0
+2013,8,GB,Hydro greater than 20MW DNC,,2614.0
+2013,8,GB,Landfill Gas,,406774.0
+2013,8,GB,Micro Hydro,,4595.0
+2013,8,GB,Off-shore Wind,,1164060.0
+2013,8,GB,On-shore Wind,,890466.0
+2013,8,GB,Photovoltaic,,106344.0
+2013,8,GB,Photovoltaic 50kW DNC or less,,54.0
+2013,8,GB,Sewage Gas,,46647.0
+2013,8,GB,Tidal Flow,,442.0
+2013,8,GB,Wave Power,,72.0
+2013,8,GB,Wind 50kW DNC or less,,3.0
+2013,9,GB,Biomass 50kW DNC or less,,2.0
+2013,9,GB,Fuelled,,825901.0
+2013,9,GB,Hydro 20MW DNC or less,,130714.0
+2013,9,GB,Hydro 50kW DNC or less,,15.0
+2013,9,GB,Hydro greater than 20MW DNC,,7278.0
+2013,9,GB,Landfill Gas,,394255.0
+2013,9,GB,Micro Hydro,,5279.0
+2013,9,GB,Off-shore Wind,,1589401.0
+2013,9,GB,On-shore Wind,,1099918.0
+2013,9,GB,Photovoltaic,,73459.0
+2013,9,GB,Photovoltaic 50kW DNC or less,,25.0
+2013,9,GB,Sewage Gas,,45223.0
+2013,9,GB,Tidal Flow,,877.0
+2013,9,GB,Wave Power,,0.0
+2013,9,GB,Wind 50kW DNC or less,,3.0
+2013,10,GB,Biomass 50kW DNC or less,,43.0
+2013,10,GB,Fuelled,,947520.0
+2013,10,GB,Hydro 20MW DNC or less,,185051.0
+2013,10,GB,Hydro 50kW DNC or less,,28.0
+2013,10,GB,Hydro greater than 20MW DNC,,15199.0
+2013,10,GB,Landfill Gas,,411402.0
+2013,10,GB,Micro Hydro,,6842.0
+2013,10,GB,Off-shore Wind,,2676657.0
+2013,10,GB,On-shore Wind,,1792509.0
+2013,10,GB,Photovoltaic,,51148.0
+2013,10,GB,Photovoltaic 50kW DNC or less,,20.0
+2013,10,GB,Sewage Gas,,48137.0
+2013,10,GB,Tidal Flow,,1789.0
+2013,10,GB,Wave Power,,0.0
+2013,10,GB,Wind 50kW DNC or less,,3.0
+2013,11,GB,Biomass 50kW DNC or less,,11.0
+2013,11,GB,Fuelled,,858550.0
+2013,11,GB,Hydro 20MW DNC or less,,230959.0
+2013,11,GB,Hydro 50kW DNC or less,,32.0
+2013,11,GB,Hydro greater than 20MW DNC,,21958.0
+2013,11,GB,Landfill Gas,,403464.0
+2013,11,GB,Micro Hydro,,7592.0
+2013,11,GB,Off-shore Wind,,2027710.0
+2013,11,GB,On-shore Wind,,1610991.0
+2013,11,GB,Photovoltaic,,33141.0
+2013,11,GB,Photovoltaic 50kW DNC or less,,13.0
+2013,11,GB,Sewage Gas,,48185.0
+2013,11,GB,Tidal Flow,,1116.0
+2013,11,GB,Wave Power,,0.0
+2013,11,GB,Wind 50kW DNC or less,,2.0
+2013,12,GB,Biomass 50kW DNC or less,,1.0
+2013,12,GB,Fuelled,,896573.0
+2013,12,GB,Hydro 20MW DNC or less,,268381.0
+2013,12,GB,Hydro 50kW DNC or less,,30.0
+2013,12,GB,Hydro greater than 20MW DNC,,30639.0
+2013,12,GB,Landfill Gas,,410526.0
+2013,12,GB,Micro Hydro,,8133.0
+2013,12,GB,Off-shore Wind,,2828023.0
+2013,12,GB,On-shore Wind,,2663077.0
+2013,12,GB,Photovoltaic,,20300.0
+2013,12,GB,Photovoltaic 50kW DNC or less,,6.0
+2013,12,GB,Sewage Gas,,52079.0
+2013,12,GB,Tidal Flow,,842.0
+2013,12,GB,Wave Power,,0.0
+2013,12,GB,Wind 50kW DNC or less,,3.0
+2014,1,GB,Biomass 50kW DNC or less,,0.0
+2014,1,GB,Fuelled,,952671.0
+2014,1,GB,Hydro 20MW DNC or less,,311506.0
+2014,1,GB,Hydro 50kW DNC or less,,34.0
+2014,1,GB,Hydro greater than 20MW DNC,,23378.0
+2014,1,GB,Landfill Gas,,407956.0
+2014,1,GB,Micro Hydro,,9633.0
+2014,1,GB,Off-shore Wind,,2962907.0
+2014,1,GB,On-shore Wind,,2042445.0
+2014,1,GB,Photovoltaic,,26393.0
+2014,1,GB,Photovoltaic 50kW DNC or less,,7.0
+2014,1,GB,Sewage Gas,,48173.0
+2014,1,GB,Tidal Flow,,755.0
+2014,1,GB,Wave Power,,0.0
+2014,1,GB,Wind 50kW DNC or less,,4.0
+2014,2,GB,Biomass 50kW DNC or less,,1.0
+2014,2,GB,Fuelled,,790061.0
+2014,2,GB,Hydro 20MW DNC or less,,281478.0
+2014,2,GB,Hydro 50kW DNC or less,,36.0
+2014,2,GB,Hydro greater than 20MW DNC,,13761.0
+2014,2,GB,Landfill Gas,,367318.0
+2014,2,GB,Micro Hydro,,8575.0
+2014,2,GB,Off-shore Wind,,3011130.0
+2014,2,GB,On-shore Wind,,2386817.0
+2014,2,GB,Photovoltaic,,59154.0
+2014,2,GB,Photovoltaic 50kW DNC or less,,18.0
+2014,2,GB,Sewage Gas,,43060.0
+2014,2,GB,Tidal Flow,,550.0
+2014,2,GB,Wave Power,,0.0
+2014,2,GB,Wind 50kW DNC or less,,4.0
+2014,3,GB,Biomass 50kW DNC or less,,0.0
+2014,3,GB,Fuelled,,1048300.0
+2014,3,GB,Hydro 20MW DNC or less,,283006.0
+2014,3,GB,Hydro 50kW DNC or less,,41.0
+2014,3,GB,Hydro greater than 20MW DNC,,36265.0
+2014,3,GB,Landfill Gas,,407494.0
+2014,3,GB,Micro Hydro,,8638.0
+2014,3,GB,Off-shore Wind,,2052309.0
+2014,3,GB,On-shore Wind,,1935229.0
+2014,3,GB,Photovoltaic,,133301.0
+2014,3,GB,Photovoltaic 50kW DNC or less,,29.0
+2014,3,GB,Sewage Gas,,55590.0
+2014,3,GB,Tidal Flow,,952.0
+2014,3,GB,Wave Power,,0.0
+2014,3,GB,Wind 50kW DNC or less,,3.0
+2014,4,GB,Biomass 50kW DNC or less,,0.0
+2014,4,GB,Fuelled,,1109329.0
+2014,4,GB,Hydro 20MW DNC or less,,211490.0
+2014,4,GB,Hydro 50kW DNC or less,,5232.0
+2014,4,GB,Hydro greater than 20MW DNC,,22675.0
+2014,4,GB,Landfill Gas,,393271.0
+2014,4,GB,Micro Hydro,,6303.0
+2014,4,GB,Off-shore Wind,,1510858.0
+2014,4,GB,On-shore Wind,,1340786.0
+2014,4,GB,Photovoltaic,,247211.0
+2014,4,GB,Photovoltaic 50kW DNC or less,,133502.0
+2014,4,GB,Sewage Gas,,55869.0
+2014,4,GB,Tidal Flow,,49.0
+2014,4,GB,Wave Power,,0.0
+2014,4,GB,Wind 50kW DNC or less,,10885.0
+2014,5,GB,Biomass 50kW DNC or less,,41.0
+2014,5,GB,Fuelled,,1150606.0
+2014,5,GB,Hydro 20MW DNC or less,,152732.0
+2014,5,GB,Hydro 50kW DNC or less,,31.0
+2014,5,GB,Hydro greater than 20MW DNC,,6436.0
+2014,5,GB,Landfill Gas,,402366.0
+2014,5,GB,Micro Hydro,,5679.0
+2014,5,GB,Off-shore Wind,,1473401.0
+2014,5,GB,On-shore Wind,,964642.0
+2014,5,GB,Photovoltaic,,327381.0
+2014,5,GB,Photovoltaic 50kW DNC or less,,56.0
+2014,5,GB,Sewage Gas,,59099.0
+2014,5,GB,Tidal Flow,,574.0
+2014,5,GB,Wave Power,,72.0
+2014,5,GB,Wind 50kW DNC or less,,5.0
+2014,6,GB,Biomass 50kW DNC or less,,31.0
+2014,6,GB,Fuelled,,1359103.0
+2014,6,GB,Hydro 20MW DNC or less,,107093.0
+2014,6,GB,Hydro 50kW DNC or less,,23.0
+2014,6,GB,Hydro greater than 20MW DNC,,3159.0
+2014,6,GB,Landfill Gas,,383237.0
+2014,6,GB,Micro Hydro,,3761.0
+2014,6,GB,Off-shore Wind,,812898.0
+2014,6,GB,On-shore Wind,,512673.0
+2014,6,GB,Photovoltaic,,388464.0
+2014,6,GB,Photovoltaic 50kW DNC or less,,116.0
+2014,6,GB,Sewage Gas,,55476.0
+2014,6,GB,Tidal Flow,,101.0
+2014,6,GB,Wave Power,,9.0
+2014,6,GB,Wind 50kW DNC or less,,10.0
+2014,7,GB,Biomass 50kW DNC or less,,89.0
+2014,7,GB,Fuelled,,1278006.0
+2014,7,GB,Hydro 20MW DNC or less,,74124.0
+2014,7,GB,Hydro 50kW DNC or less,,16.0
+2014,7,GB,Hydro greater than 20MW DNC,,2619.0
+2014,7,GB,Landfill Gas,,383766.0
+2014,7,GB,Micro Hydro,,3025.0
+2014,7,GB,Off-shore Wind,,1214187.0
+2014,7,GB,On-shore Wind,,771577.0
+2014,7,GB,Photovoltaic,,411377.0
+2014,7,GB,Photovoltaic 50kW DNC or less,,94.0
+2014,7,GB,Sewage Gas,,54846.0
+2014,7,GB,Tidal Flow,,519.0
+2014,7,GB,Wave Power,,0.0
+2014,7,GB,Wind 50kW DNC or less,,8.0
+2014,8,GB,Biomass 50kW DNC or less,,74.0
+2014,8,GB,Fuelled,,1381333.0
+2014,8,GB,Hydro 20MW DNC or less,,156001.0
+2014,8,GB,Hydro 50kW DNC or less,,25.0
+2014,8,GB,Hydro greater than 20MW DNC,,17794.0
+2014,8,GB,Landfill Gas,,395714.0
+2014,8,GB,Micro Hydro,,5841.0
+2014,8,GB,Off-shore Wind,,2098323.0
+2014,8,GB,On-shore Wind,,1341763.0
+2014,8,GB,Photovoltaic,,358065.0
+2014,8,GB,Photovoltaic 50kW DNC or less,,96.0
+2014,8,GB,Sewage Gas,,52550.0
+2014,8,GB,Tidal Flow,,0.0
+2014,8,GB,Wave Power,,0.0
+2014,8,GB,Wind 50kW DNC or less,,14.0
+2014,9,GB,Biomass 50kW DNC or less,,67.0
+2014,9,GB,Fuelled,,1300741.0
+2014,9,GB,Hydro 20MW DNC or less,,104466.0
+2014,9,GB,Hydro 50kW DNC or less,,14.0
+2014,9,GB,Hydro greater than 20MW DNC,,4961.0
+2014,9,GB,Landfill Gas,,380925.0
+2014,9,GB,Micro Hydro,,2976.0
+2014,9,GB,Off-shore Wind,,797157.0
+2014,9,GB,On-shore Wind,,577286.0
+2014,9,GB,Photovoltaic,,287446.0
+2014,9,GB,Photovoltaic 50kW DNC or less,,75.0
+2014,9,GB,Sewage Gas,,51559.0
+2014,9,GB,Tidal Flow,,320.0
+2014,9,GB,Wave Power,,0.0
+2014,9,GB,Wind 50kW DNC or less,,8.0
+2014,10,GB,Biomass 50kW DNC or less,,104.0
+2014,10,GB,Fuelled,,1606403.0
+2014,10,GB,Hydro 20MW DNC or less,,182447.0
+2014,10,GB,Hydro 50kW DNC or less,,29.0
+2014,10,GB,Hydro greater than 20MW DNC,,23339.0
+2014,10,GB,Landfill Gas,,396446.0
+2014,10,GB,Micro Hydro,,6084.0
+2014,10,GB,Off-shore Wind,,2920846.0
+2014,10,GB,On-shore Wind,,1931748.0
+2014,10,GB,Photovoltaic,,185554.0
+2014,10,GB,Photovoltaic 50kW DNC or less,,51.0
+2014,10,GB,Sewage Gas,,53267.0
+2014,10,GB,Tidal Flow,,962.0
+2014,10,GB,Wave Power,,0.0
+2014,10,GB,Wind 50kW DNC or less,,19.0
+2014,11,GB,Biomass 50kW DNC or less,,166.0
+2014,11,GB,Fuelled,,1569559.0
+2014,11,GB,Hydro 20MW DNC or less,,243144.0
+2014,11,GB,Hydro 50kW DNC or less,,80.0
+2014,11,GB,Hydro greater than 20MW DNC,,15670.0
+2014,11,GB,Landfill Gas,,386330.0
+2014,11,GB,Micro Hydro,,7508.0
+2014,11,GB,Off-shore Wind,,2325906.0
+2014,11,GB,On-shore Wind,,1350887.0
+2014,11,GB,Photovoltaic,,101462.0
+2014,11,GB,Photovoltaic 50kW DNC or less,,29.0
+2014,11,GB,Sewage Gas,,50867.0
+2014,11,GB,Tidal Flow,,691.0
+2014,11,GB,Wave Power,,0.0
+2014,11,GB,Wind 50kW DNC or less,,15.0
+2014,12,GB,Biomass 50kW DNC or less,,188.0
+2014,12,GB,Fuelled,,1613655.0
+2014,12,GB,Hydro 20MW DNC or less,,264481.0
+2014,12,GB,Hydro 50kW DNC or less,,100.0
+2014,12,GB,Hydro greater than 20MW DNC,,24532.0
+2014,12,GB,Landfill Gas,,399356.0
+2014,12,GB,Micro Hydro,,7880.0
+2014,12,GB,Off-shore Wind,,3530036.0
+2014,12,GB,On-shore Wind,,2344932.0
+2014,12,GB,Photovoltaic,,83859.0
+2014,12,GB,Photovoltaic 50kW DNC or less,,17.0
+2014,12,GB,Sewage Gas,,54962.0
+2014,12,GB,Tidal Flow,,634.0
+2014,12,GB,Wave Power,,0.0
+2014,12,GB,Wind 50kW DNC or less,,17.0
+2015,1,GB,Biomass 50kW DNC or less,,188.0
+2015,1,GB,Fuelled,,1603091.0
+2015,1,GB,Hydro 20MW DNC or less,,298028.0
+2015,1,GB,Hydro 50kW DNC or less,,97.0
+2015,1,GB,Hydro greater than 20MW DNC,,28305.0
+2015,1,GB,Landfill Gas,,392525.0
+2015,1,GB,Micro Hydro,,8528.0
+2015,1,GB,Off-shore Wind,,3455330.0
+2015,1,GB,On-shore Wind,,2687174.0
+2015,1,GB,Photovoltaic,,109322.0
+2015,1,GB,Photovoltaic 50kW DNC or less,,27.0
+2015,1,GB,Sewage Gas,,56154.0
+2015,1,GB,Tidal Flow,,29.0
+2015,1,GB,Wave Power,,0.0
+2015,1,GB,Wind 50kW DNC or less,,25.0
+2015,2,GB,Biomass 50kW DNC or less,,162.0
+2015,2,GB,Fuelled,,1571259.0
+2015,2,GB,Hydro 20MW DNC or less,,231570.0
+2015,2,GB,Hydro 50kW DNC or less,,80.0
+2015,2,GB,Hydro greater than 20MW DNC,,16756.0
+2015,2,GB,Landfill Gas,,356434.0
+2015,2,GB,Micro Hydro,,7553.0
+2015,2,GB,Off-shore Wind,,2369079.0
+2015,2,GB,On-shore Wind,,1815463.0
+2015,2,GB,Photovoltaic,,186625.0
+2015,2,GB,Photovoltaic 50kW DNC or less,,49.0
+2015,2,GB,Sewage Gas,,52121.0
+2015,2,GB,Tidal Flow,,351.0
+2015,2,GB,Wave Power,,0.0
+2015,2,GB,Wind 50kW DNC or less,,17.0
+2015,3,GB,Biomass 50kW DNC or less,,88.0
+2015,3,GB,Fuelled,,1626210.0
+2015,3,GB,Hydro 20MW DNC or less,,260820.0
+2015,3,GB,Hydro 50kW DNC or less,,78.0
+2015,3,GB,Hydro greater than 20MW DNC,,28522.0
+2015,3,GB,Landfill Gas,,391308.0
+2015,3,GB,Micro Hydro,,8525.0
+2015,3,GB,Off-shore Wind,,2869022.0
+2015,3,GB,On-shore Wind,,2156007.0
+2015,3,GB,Photovoltaic,,404741.0
+2015,3,GB,Photovoltaic 50kW DNC or less,,95.0
+2015,3,GB,Sewage Gas,,59933.0
+2015,3,GB,Tidal Flow,,0.0
+2015,3,GB,Wave Power,,0.0
+2015,3,GB,Wind 50kW DNC or less,,20.0
+2015,4,GB,Biomass 50kW DNC or less,,206.0
+2015,4,GB,Fuelled,,1622459.0
+2015,4,GB,Hydro 20MW DNC or less,,202702.0
+2015,4,GB,Hydro 50kW DNC or less,,6403.0
+2015,4,GB,Hydro greater than 20MW DNC,,25109.0
+2015,4,GB,Landfill Gas,,368501.0
+2015,4,GB,Micro Hydro,,5760.0
+2015,4,GB,Off-shore Wind,,1837450.0
+2015,4,GB,On-shore Wind,,1234754.0
+2015,4,GB,Photovoltaic,,857568.0
+2015,4,GB,Photovoltaic 50kW DNC or less,,251824.0
+2015,4,GB,Sewage Gas,,57405.0
+2015,4,GB,Wind 50kW DNC or less,,12979.0
+2015,5,GB,Biomass 50kW DNC or less,,204.0
+2015,5,GB,Fuelled,,1628590.0
+2015,5,GB,Hydro 20MW DNC or less,,212017.0
+2015,5,GB,Hydro 50kW DNC or less,,60.0
+2015,5,GB,Hydro greater than 20MW DNC,,19972.0
+2015,5,GB,Landfill Gas,,377533.0
+2015,5,GB,Micro Hydro,,6919.0
+2015,5,GB,Off-shore Wind,,2873975.0
+2015,5,GB,On-shore Wind,,1931249.0
+2015,5,GB,Photovoltaic,,869882.0
+2015,5,GB,Photovoltaic 50kW DNC or less,,174.0
+2015,5,GB,Sewage Gas,,60322.0
+2015,5,GB,Wind 50kW DNC or less,,18.0
+2015,6,GB,Biomass 50kW DNC or less,,209.0
+2015,6,GB,Fuelled,,1602742.0
+2015,6,GB,Hydro 20MW DNC or less,,170593.0
+2015,6,GB,Hydro 50kW DNC or less,,21.0
+2015,6,GB,Hydro greater than 20MW DNC,,8277.0
+2015,6,GB,Landfill Gas,,357732.0
+2015,6,GB,Micro Hydro,,4500.0
+2015,6,GB,Off-shore Wind,,1996616.0
+2015,6,GB,On-shore Wind,,1241418.0
+2015,6,GB,Photovoltaic,,986881.0
+2015,6,GB,Photovoltaic 50kW DNC or less,,231.0
+2015,6,GB,Sewage Gas,,57243.0
+2015,6,GB,Wind 50kW DNC or less,,13.0
+2015,7,GB,Biomass 50kW DNC or less,,183.0
+2015,7,GB,Fuelled,,1555459.0
+2015,7,GB,Hydro 20MW DNC or less,,191172.0
+2015,7,GB,Hydro 50kW DNC or less,,25.0
+2015,7,GB,Hydro greater than 20MW DNC,,9440.0
+2015,7,GB,Landfill Gas,,368093.0
+2015,7,GB,Micro Hydro,,5565.0
+2015,7,GB,Off-shore Wind,,2401031.0
+2015,7,GB,On-shore Wind,,1197174.0
+2015,7,GB,Photovoltaic,,874760.0
+2015,7,GB,Photovoltaic 50kW DNC or less,,197.0
+2015,7,GB,Sewage Gas,,57023.0
+2015,7,GB,Wind 50kW DNC or less,,13.0
+2015,8,GB,Biomass 50kW DNC or less,,209.0
+2015,8,GB,Fuelled,,1592963.0
+2015,8,GB,Hydro 20MW DNC or less,,157372.0
+2015,8,GB,Hydro 50kW DNC or less,,42.0
+2015,8,GB,Hydro greater than 20MW DNC,,8841.0
+2015,8,GB,Landfill Gas,,368997.0
+2015,8,GB,Micro Hydro,,5819.0
+2015,8,GB,Off-shore Wind,,2104979.0
+2015,8,GB,On-shore Wind,,1261492.0
+2015,8,GB,Photovoltaic,,725179.0
+2015,8,GB,Photovoltaic 50kW DNC or less,,211.0
+2015,8,GB,Sewage Gas,,54712.0
+2015,8,GB,Wind 50kW DNC or less,,13.0
+2015,9,GB,Biomass 50kW DNC or less,,203.0
+2015,9,GB,Fuelled,,1598805.0
+2015,9,GB,Hydro 20MW DNC or less,,83740.0
+2015,9,GB,Hydro 50kW DNC or less,,37.0
+2015,9,GB,Hydro greater than 20MW DNC,,7642.0
+2015,9,GB,Landfill Gas,,361992.0
+2015,9,GB,Micro Hydro,,3264.0
+2015,9,GB,Off-shore Wind,,1957186.0
+2015,9,GB,On-shore Wind,,1046271.0
+2015,9,GB,Photovoltaic,,709668.0
+2015,9,GB,Photovoltaic 50kW DNC or less,,205.0
+2015,9,GB,Sewage Gas,,51697.0
+2015,9,GB,Wind 50kW DNC or less,,13.0
+2015,10,GB,Biomass 50kW DNC or less,,209.0
+2015,10,GB,Fuelled,,1943145.0
+2015,10,GB,Hydro 20MW DNC or less,,88968.0
+2015,10,GB,Hydro 50kW DNC or less,,34.0
+2015,10,GB,Hydro greater than 20MW DNC,,5702.0
+2015,10,GB,Landfill Gas,,375074.0
+2015,10,GB,Micro Hydro,,3580.0
+2015,10,GB,Off-shore Wind,,2116764.0
+2015,10,GB,On-shore Wind,,1202745.0
+2015,10,GB,Photovoltaic,,411191.0
+2015,10,GB,Photovoltaic 50kW DNC or less,,186.0
+2015,10,GB,Sewage Gas,,55024.0
+2015,10,GB,Wind 50kW DNC or less,,13.0
+2015,11,GB,Biomass 50kW DNC or less,,257.0
+2015,11,GB,Fuelled,,1977404.0
+2015,11,GB,Hydro 20MW DNC or less,,238177.0
+2015,11,GB,Hydro 50kW DNC or less,,100.0
+2015,11,GB,Hydro greater than 20MW DNC,,31597.0
+2015,11,GB,Landfill Gas,,360936.0
+2015,11,GB,Micro Hydro,,7473.0
+2015,11,GB,Off-shore Wind,,4080769.0
+2015,11,GB,On-shore Wind,,2389326.0
+2015,11,GB,Photovoltaic,,146716.0
+2015,11,GB,Photovoltaic 50kW DNC or less,,71.0
+2015,11,GB,Sewage Gas,,53244.0
+2015,11,GB,Wind 50kW DNC or less,,19.0
+2015,12,GB,Biomass 50kW DNC or less,,304.0
+2015,12,GB,Fuelled,,1960289.0
+2015,12,GB,Hydro 20MW DNC or less,,347301.0
+2015,12,GB,Hydro 50kW DNC or less,,169.0
+2015,12,GB,Hydro greater than 20MW DNC,,41406.0
+2015,12,GB,Landfill Gas,,370845.0
+2015,12,GB,Micro Hydro,,8489.0
+2015,12,GB,Off-shore Wind,,4656559.0
+2015,12,GB,On-shore Wind,,2959694.0
+2015,12,GB,Photovoltaic,,103682.0
+2015,12,GB,Photovoltaic 50kW DNC or less,,47.0
+2015,12,GB,Sewage Gas,,55705.0
+2015,12,GB,Wind 50kW DNC or less,,23.0
+2016,1,GB,Biomass 50kW DNC or less,,360.0
+2016,1,GB,Fuelled,,2083742.0
+2016,1,GB,Hydro 20MW DNC or less,,300012.0
+2016,1,GB,Hydro 50kW DNC or less,,164.0
+2016,1,GB,Hydro greater than 20MW DNC,,23687.0
+2016,1,GB,Landfill Gas,,367563.0
+2016,1,GB,Micro Hydro,,7908.0
+2016,1,GB,Off-shore Wind,,3966272.0
+2016,1,GB,On-shore Wind,,2361005.0
+2016,1,GB,Photovoltaic,,172464.0
+2016,1,GB,Photovoltaic 50kW DNC or less,,72.0
+2016,1,GB,Sewage Gas,,51392.0
+2016,1,GB,Wind 50kW DNC or less,,22.0
+2016,2,GB,Biomass 50kW DNC or less,,424.0
+2016,2,GB,Fuelled,,1949729.0
+2016,2,GB,Hydro 20MW DNC or less,,279513.0
+2016,2,GB,Hydro 50kW DNC or less,,162.0
+2016,2,GB,Hydro greater than 20MW DNC,,11428.0
+2016,2,GB,Landfill Gas,,341854.0
+2016,2,GB,Micro Hydro,,7522.0
+2016,2,GB,Off-shore Wind,,3249573.0
+2016,2,GB,On-shore Wind,,2003452.0
+2016,2,GB,Photovoltaic,,373065.0
+2016,2,GB,Photovoltaic 50kW DNC or less,,152.0
+2016,2,GB,Sewage Gas,,52797.0
+2016,2,GB,Wind 50kW DNC or less,,19.0
+2016,3,GB,Biomass 50kW DNC or less,,481.0
+2016,3,GB,Fuelled,,2061565.0
+2016,3,GB,Hydro 20MW DNC or less,,229924.0
+2016,3,GB,Hydro 50kW DNC or less,,133.0
+2016,3,GB,Hydro greater than 20MW DNC,,21422.0
+2016,3,GB,Landfill Gas,,360358.0
+2016,3,GB,Micro Hydro,,6681.0
+2016,3,GB,Off-shore Wind,,2522662.0
+2016,3,GB,On-shore Wind,,1419428.0
+2016,3,GB,Photovoltaic,,633826.0
+2016,3,GB,Photovoltaic 50kW DNC or less,,306.0
+2016,3,GB,Sewage Gas,,57089.0
+2016,3,GB,Wind 50kW DNC or less,,15.0
+2016,4,GB,Biomass 50kW DNC or less,,1771.0
+2016,4,GB,Fuelled,,1894628.0
+2016,4,GB,Hydro 20MW DNC or less,,177773.0
+2016,4,GB,Hydro 50kW DNC or less,,4771.0
+2016,4,GB,Hydro greater than 20MW DNC,,15547.0
+2016,4,GB,Landfill Gas,,345495.0
+2016,4,GB,Micro Hydro,,5436.0
+2016,4,GB,Off-shore Wind,,2396154.0
+2016,4,GB,On-shore Wind,,1461489.0
+2016,4,GB,Photovoltaic,,947676.0
+2016,4,GB,Photovoltaic 50kW DNC or less,,325600.0
+2016,4,GB,Sewage Gas,,58520.0
+2016,4,GB,Tidal Flow,,0.0
+2016,4,GB,Wind 50kW DNC or less,,11371.0
+2016,5,GB,Biomass 50kW DNC or less,,720.0
+2016,5,GB,Fuelled,,1903445.0
+2016,5,GB,Hydro 20MW DNC or less,,141087.0
+2016,5,GB,Hydro 50kW DNC or less,,39.0
+2016,5,GB,Hydro greater than 20MW DNC,,11294.0
+2016,5,GB,Landfill Gas,,348508.0
+2016,5,GB,Micro Hydro,,3540.0
+2016,5,GB,Off-shore Wind,,2395095.0
+2016,5,GB,On-shore Wind,,1354691.0
+2016,5,GB,Photovoltaic,,1163942.0
+2016,5,GB,Photovoltaic 50kW DNC or less,,584.0
+2016,5,GB,Sewage Gas,,61909.0
+2016,5,GB,Tidal Flow,,0.0
+2016,5,GB,Wind 50kW DNC or less,,26.0
+2016,6,GB,Biomass 50kW DNC or less,,833.0
+2016,6,GB,Fuelled,,1603528.0
+2016,6,GB,Hydro 20MW DNC or less,,65423.0
+2016,6,GB,Hydro 50kW DNC or less,,30.0
+2016,6,GB,Hydro greater than 20MW DNC,,5861.0
+2016,6,GB,Landfill Gas,,335515.0
+2016,6,GB,Micro Hydro,,2532.0
+2016,6,GB,Off-shore Wind,,1371290.0
+2016,6,GB,On-shore Wind,,778246.0
+2016,6,GB,Photovoltaic,,975928.0
+2016,6,GB,Photovoltaic 50kW DNC or less,,504.0
+2016,6,GB,Sewage Gas,,56579.0
+2016,6,GB,Tidal Flow,,0.0
+2016,6,GB,Wind 50kW DNC or less,,18.0
+2016,7,GB,Biomass 50kW DNC or less,,1033.0
+2016,7,GB,Fuelled,,1338875.0
+2016,7,GB,Hydro 20MW DNC or less,,142348.0
+2016,7,GB,Hydro 50kW DNC or less,,50.0
+2016,7,GB,Hydro greater than 20MW DNC,,10771.0
+2016,7,GB,Landfill Gas,,347448.0
+2016,7,GB,Micro Hydro,,4839.0
+2016,7,GB,Off-shore Wind,,1971615.0
+2016,7,GB,On-shore Wind,,1196767.0
+2016,7,GB,Photovoltaic,,1130334.0
+2016,7,GB,Photovoltaic 50kW DNC or less,,469.0
+2016,7,GB,Sewage Gas,,57287.0
+2016,7,GB,Tidal Flow,,0.0
+2016,7,GB,Wind 50kW DNC or less,,21.0
+2016,8,GB,Biomass 50kW DNC or less,,1155.0
+2016,8,GB,Fuelled,,1277943.0
+2016,8,GB,Hydro 20MW DNC or less,,153949.0
+2016,8,GB,Hydro 50kW DNC or less,,32.0
+2016,8,GB,Hydro greater than 20MW DNC,,9755.0
+2016,8,GB,Landfill Gas,,342295.0
+2016,8,GB,Micro Hydro,,4354.0
+2016,8,GB,Off-shore Wind,,2455868.0
+2016,8,GB,On-shore Wind,,1365443.0
+2016,8,GB,Photovoltaic,,1084894.0
+2016,8,GB,Photovoltaic 50kW DNC or less,,437.0
+2016,8,GB,Sewage Gas,,55066.0
+2016,8,GB,Tidal Flow,,0.0
+2016,8,GB,Wind 50kW DNC or less,,29.0
+2016,9,GB,Biomass 50kW DNC or less,,1480.0
+2016,9,GB,Fuelled,,1521028.0
+2016,9,GB,Hydro 20MW DNC or less,,170302.0
+2016,9,GB,Hydro 50kW DNC or less,,41.0
+2016,9,GB,Hydro greater than 20MW DNC,,13471.0
+2016,9,GB,Landfill Gas,,330131.0
+2016,9,GB,Micro Hydro,,4996.0
+2016,9,GB,Off-shore Wind,,2359387.0
+2016,9,GB,On-shore Wind,,1592630.0
+2016,9,GB,Photovoltaic,,727512.0
+2016,9,GB,Photovoltaic 50kW DNC or less,,307.0
+2016,9,GB,Sewage Gas,,52521.0
+2016,9,GB,Tidal Flow,,0.0
+2016,9,GB,Wind 50kW DNC or less,,30.0
+2016,10,GB,Biomass 50kW DNC or less,,1734.0
+2016,10,GB,Fuelled,,1497773.0
+2016,10,GB,Hydro 20MW DNC or less,,145170.0
+2016,10,GB,Hydro 50kW DNC or less,,44.0
+2016,10,GB,Hydro greater than 20MW DNC,,8298.0
+2016,10,GB,Landfill Gas,,343149.0
+2016,10,GB,Micro Hydro,,3712.0
+2016,10,GB,Off-shore Wind,,2427799.0
+2016,10,GB,On-shore Wind,,1358324.0
+2016,10,GB,Photovoltaic,,576983.0
+2016,10,GB,Photovoltaic 50kW DNC or less,,227.0
+2016,10,GB,Sewage Gas,,56063.0
+2016,10,GB,Tidal Flow,,0.0
+2016,10,GB,Wind 50kW DNC or less,,27.0
+2016,11,GB,Biomass 50kW DNC or less,,1681.0
+2016,11,GB,Fuelled,,1805429.0
+2016,11,GB,Hydro 20MW DNC or less,,161397.0
+2016,11,GB,Hydro 50kW DNC or less,,69.0
+2016,11,GB,Hydro greater than 20MW DNC,,10526.0
+2016,11,GB,Landfill Gas,,329684.0
+2016,11,GB,Micro Hydro,,5296.0
+2016,11,GB,Off-shore Wind,,3092559.0
+2016,11,GB,On-shore Wind,,1603114.0
+2016,11,GB,Photovoltaic,,301006.0
+2016,11,GB,Photovoltaic 50kW DNC or less,,134.0
+2016,11,GB,Sewage Gas,,54611.0
+2016,11,GB,Tidal Flow,,0.0
+2016,11,GB,Wind 50kW DNC or less,,28.0
+2016,12,GB,Biomass 50kW DNC or less,,1998.0
+2016,12,GB,Fuelled,,2013671.0
+2016,12,GB,Hydro 20MW DNC or less,,184153.0
+2016,12,GB,Hydro 50kW DNC or less,,102.0
+2016,12,GB,Hydro greater than 20MW DNC,,17301.0
+2016,12,GB,Landfill Gas,,340418.0
+2016,12,GB,Micro Hydro,,5977.0
+2016,12,GB,Off-shore Wind,,2870368.0
+2016,12,GB,On-shore Wind,,2397916.0
+2016,12,GB,Photovoltaic,,171223.0
+2016,12,GB,Photovoltaic 50kW DNC or less,,66.0
+2016,12,GB,Sewage Gas,,59218.0
+2016,12,GB,Tidal Flow,,43.0
+2016,12,GB,Wind 50kW DNC or less,,32.0
+2017,1,GB,Biomass 50kW DNC or less,,1797.0
+2017,1,GB,Fuelled,,1754188.0
+2017,1,GB,Hydro 20MW DNC or less,,220799.0
+2017,1,GB,Hydro 50kW DNC or less,,102.0
+2017,1,GB,Hydro greater than 20MW DNC,,19497.0
+2017,1,GB,Landfill Gas,,336543.0
+2017,1,GB,Micro Hydro,,6348.0
+2017,1,GB,Off-shore Wind,,2841212.0
+2017,1,GB,On-shore Wind,,2173049.0
+2017,1,GB,Photovoltaic,,227014.0
+2017,1,GB,Photovoltaic 50kW DNC or less,,85.0
+2017,1,GB,Sewage Gas,,60931.0
+2017,1,GB,Tidal Flow,,0.0
+2017,1,GB,Wind 50kW DNC or less,,31.0
+2017,2,GB,Biomass 50kW DNC or less,,1958.0
+2017,2,GB,Fuelled,,1604182.0
+2017,2,GB,Hydro 20MW DNC or less,,201038.0
+2017,2,GB,Hydro 50kW DNC or less,,125.0
+2017,2,GB,Hydro greater than 20MW DNC,,13911.0
+2017,2,GB,Landfill Gas,,301533.0
+2017,2,GB,Micro Hydro,,6609.0
+2017,2,GB,Off-shore Wind,,3455577.0
+2017,2,GB,On-shore Wind,,2489383.0
+2017,2,GB,Photovoltaic,,320243.0
+2017,2,GB,Photovoltaic 50kW DNC or less,,140.0
+2017,2,GB,Sewage Gas,,54750.0
+2017,2,GB,Tidal Flow,,583.0
+2017,2,GB,Wind 50kW DNC or less,,39.0
+2017,3,GB,Biomass 50kW DNC or less,,2228.0
+2017,3,GB,Fuelled,,1837327.0
+2017,3,GB,Hydro 20MW DNC or less,,261833.0
+2017,3,GB,Hydro 50kW DNC or less,,187.0
+2017,3,GB,Hydro greater than 20MW DNC,,20309.0
+2017,3,GB,Landfill Gas,,323727.0
+2017,3,GB,Micro Hydro,,7599.0
+2017,3,GB,Off-shore Wind,,3116653.0
+2017,3,GB,On-shore Wind,,2335255.0
+2017,3,GB,Photovoltaic,,739450.0
+2017,3,GB,Photovoltaic 50kW DNC or less,,352.0
+2017,3,GB,Sewage Gas,,64620.0
+2017,3,GB,Tidal Flow,,1072.0
+2017,3,GB,Wind 50kW DNC or less,,32.0
+2017,4,GB,Biomass 50kW DNC or less,,3434.0
+2017,4,GB,Fuelled,,1464183.0
+2017,4,GB,Hydro 20MW DNC or less,,127502.0
+2017,4,GB,Hydro 50kW DNC or less,,8010.0
+2017,4,GB,Hydro greater than 20MW DNC,,4530.0
+2017,4,GB,Landfill Gas,,307460.0
+2017,4,GB,Micro Hydro,,4232.0
+2017,4,GB,Off-shore Wind,,2120767.0
+2017,4,GB,On-shore Wind,,2085941.0
+2017,4,GB,Photovoltaic,,1150068.0
+2017,4,GB,Photovoltaic 50kW DNC or less,,342105.0
+2017,4,GB,Sewage Gas,,61378.0
+2017,4,GB,Tidal Flow,,360.0
+2017,4,GB,Wind 50kW DNC or less,,12745.0
+2017,5,GB,Biomass 50kW DNC or less,,2673.0
+2017,5,GB,Fuelled,,1693171.0
+2017,5,GB,Hydro 20MW DNC or less,,98760.0
+2017,5,GB,Hydro 50kW DNC or less,,37.0
+2017,5,GB,Hydro greater than 20MW DNC,,4251.0
+2017,5,GB,Landfill Gas,,312608.0
+2017,5,GB,Micro Hydro,,2295.0
+2017,5,GB,Off-shore Wind,,2205486.0
+2017,5,GB,On-shore Wind,,1553535.0
+2017,5,GB,Photovoltaic,,1253047.0
+2017,5,GB,Photovoltaic 50kW DNC or less,,714.0
+2017,5,GB,Sewage Gas,,62329.0
+2017,5,GB,Tidal Flow,,87.0
+2017,5,GB,Wind 50kW DNC or less,,23.0
+2017,6,GB,Biomass 50kW DNC or less,,2631.0
+2017,6,GB,Fuelled,,1300505.0
+2017,6,GB,Hydro 20MW DNC or less,,110166.0
+2017,6,GB,Hydro 50kW DNC or less,,72.0
+2017,6,GB,Hydro greater than 20MW DNC,,10068.0
+2017,6,GB,Landfill Gas,,299766.0
+2017,6,GB,Micro Hydro,,4638.0
+2017,6,GB,Off-shore Wind,,2593029.0
+2017,6,GB,On-shore Wind,,1955951.0
+2017,6,GB,Photovoltaic,,1254443.0
+2017,6,GB,Photovoltaic 50kW DNC or less,,585.0
+2017,6,GB,Sewage Gas,,57269.0
+2017,6,GB,Tidal Flow,,61.0
+2017,6,GB,Wind 50kW DNC or less,,32.0
+2017,7,GB,Biomass 50kW DNC or less,,2760.0
+2017,7,GB,Fuelled,,1622376.0
+2017,7,GB,Hydro 20MW DNC or less,,121590.0
+2017,7,GB,Hydro 50kW DNC or less,,99.0
+2017,7,GB,Hydro greater than 20MW DNC,,6242.0
+2017,7,GB,Landfill Gas,,307263.0
+2017,7,GB,Micro Hydro,,4440.0
+2017,7,GB,Off-shore Wind,,2040397.0
+2017,7,GB,On-shore Wind,,1547558.0
+2017,7,GB,Photovoltaic,,1225417.0
+2017,7,GB,Photovoltaic 50kW DNC or less,,585.0
+2017,7,GB,Sewage Gas,,59677.0
+2017,7,GB,Tidal Flow,,2793.0
+2017,7,GB,Wind 50kW DNC or less,,22.0
+2017,8,GB,Biomass 50kW DNC or less,,2714.0
+2017,8,GB,Fuelled,,1645590.0
+2017,8,GB,Hydro 20MW DNC or less,,164267.0
+2017,8,GB,Hydro 50kW DNC or less,,169.0
+2017,8,GB,Hydro greater than 20MW DNC,,13913.0
+2017,8,GB,Landfill Gas,,309604.0
+2017,8,GB,Micro Hydro,,6744.0
+2017,8,GB,Off-shore Wind,,2021637.0
+2017,8,GB,On-shore Wind,,1587180.0
+2017,8,GB,Photovoltaic,,1121186.0
+2017,8,GB,Photovoltaic 50kW DNC or less,,483.0
+2017,8,GB,Sewage Gas,,56119.0
+2017,8,GB,Tidal Flow,,4432.0
+2017,8,GB,Wind 50kW DNC or less,,26.0
+2017,9,GB,Biomass 50kW DNC or less,,2620.0
+2017,9,GB,Fuelled,,1499371.0
+2017,9,GB,Hydro 20MW DNC or less,,174227.0
+2017,9,GB,Hydro 50kW DNC or less,,208.0
+2017,9,GB,Hydro greater than 20MW DNC,,14735.0
+2017,9,GB,Landfill Gas,,304653.0
+2017,9,GB,Micro Hydro,,7428.0
+2017,9,GB,Off-shore Wind,,2605570.0
+2017,9,GB,On-shore Wind,,1925991.0
+2017,9,GB,Photovoltaic,,815664.0
+2017,9,GB,Photovoltaic 50kW DNC or less,,342.0
+2017,9,GB,Sewage Gas,,55531.0
+2017,9,GB,Tidal Flow,,5038.0
+2017,9,GB,Wind 50kW DNC or less,,34.0
+2017,10,GB,Biomass 50kW DNC or less,,2818.0
+2017,10,GB,Fuelled,,1438298.0
+2017,10,GB,Hydro 20MW DNC or less,,239705.0
+2017,10,GB,Hydro 50kW DNC or less,,228.0
+2017,10,GB,Hydro greater than 20MW DNC,,23115.0
+2017,10,GB,Landfill Gas,,313116.0
+2017,10,GB,Micro Hydro,,8504.0
+2017,10,GB,Off-shore Wind,,4261683.0
+2017,10,GB,On-shore Wind,,3004171.0
+2017,10,GB,Photovoltaic,,529323.0
+2017,10,GB,Photovoltaic 50kW DNC or less,,189.0
+2017,10,GB,Sewage Gas,,59460.0
+2017,10,GB,Tidal Flow,,2627.0
+2017,10,GB,Wind 50kW DNC or less,,33.0
+2017,11,GB,Biomass 50kW DNC or less,,2790.0
+2017,11,GB,Fuelled,,1765267.0
+2017,11,GB,Hydro 20MW DNC or less,,236031.0
+2017,11,GB,Hydro 50kW DNC or less,,237.0
+2017,11,GB,Hydro greater than 20MW DNC,,16611.0
+2017,11,GB,Landfill Gas,,304299.0
+2017,11,GB,Micro Hydro,,7993.0
+2017,11,GB,Off-shore Wind,,4027966.0
+2017,11,GB,On-shore Wind,,2589474.0
+2017,11,GB,Photovoltaic,,346007.0
+2017,11,GB,Photovoltaic 50kW DNC or less,,125.0
+2017,11,GB,Sewage Gas,,58605.0
+2017,11,GB,Tidal Flow,,2374.0
+2017,11,GB,Wind 50kW DNC or less,,31.0
+2017,12,GB,Biomass 50kW DNC or less,,2909.0
+2017,12,GB,Fuelled,,1559782.0
+2017,12,GB,Hydro 20MW DNC or less,,246942.0
+2017,12,GB,Hydro 50kW DNC or less,,307.0
+2017,12,GB,Hydro greater than 20MW DNC,,20184.0
+2017,12,GB,Landfill Gas,,308532.0
+2017,12,GB,Micro Hydro,,8357.0
+2017,12,GB,Off-shore Wind,,4518000.0
+2017,12,GB,On-shore Wind,,2798232.0
+2017,12,GB,Photovoltaic,,182458.0
+2017,12,GB,Photovoltaic 50kW DNC or less,,66.0
+2017,12,GB,Sewage Gas,,58734.0
+2017,12,GB,Tidal Flow,,1595.0
+2017,12,GB,Wind 50kW DNC or less,,35.0
+2018,1,GB,Biomass 50kW DNC or less,,2874.0
+2018,1,GB,Fuelled,,1206356.0
+2018,1,GB,Hydro 20MW DNC or less,,232426.0
+2018,1,GB,Hydro 50kW DNC or less,,324.0
+2018,1,GB,Hydro greater than 20MW DNC,,13947.0
+2018,1,GB,Landfill Gas,,302276.0
+2018,1,GB,Micro Hydro,,8966.0
+2018,1,GB,Off-shore Wind,,4972971.0
+2018,1,GB,On-shore Wind,,3395332.0
+2018,1,GB,Photovoltaic,,236085.0
+2018,1,GB,Photovoltaic 50kW DNC or less,,85.0
+2018,1,GB,Sewage Gas,,57849.0
+2018,1,GB,Tidal Flow,,1809.0
+2018,1,GB,Wind 50kW DNC or less,,42.0
+2018,2,GB,Biomass 50kW DNC or less,,2743.0
+2018,2,GB,Fuelled,,1197311.0
+2018,2,GB,Hydro 20MW DNC or less,,217812.0
+2018,2,GB,Hydro 50kW DNC or less,,267.0
+2018,2,GB,Hydro greater than 20MW DNC,,7657.0
+2018,2,GB,Landfill Gas,,272680.0
+2018,2,GB,Micro Hydro,,7602.0
+2018,2,GB,Off-shore Wind,,3925482.0
+2018,2,GB,On-shore Wind,,2514611.0
+2018,2,GB,Photovoltaic,,546354.0
+2018,2,GB,Photovoltaic 50kW DNC or less,,187.0
+2018,2,GB,Sewage Gas,,54526.0
+2018,2,GB,Tidal Flow,,5765.0
+2018,2,GB,Wind 50kW DNC or less,,37.0
+2018,3,GB,Biomass 50kW DNC or less,,2916.0
+2018,3,GB,Fuelled,,1522247.0
+2018,3,GB,Hydro 20MW DNC or less,,172669.0
+2018,3,GB,Hydro 50kW DNC or less,,240.0
+2018,3,GB,Hydro greater than 20MW DNC,,5220.0
+2018,3,GB,Landfill Gas,,294579.0
+2018,3,GB,Micro Hydro,,6818.0
+2018,3,GB,Off-shore Wind,,3761183.0
+2018,3,GB,On-shore Wind,,2838399.0
+2018,3,GB,Photovoltaic,,637248.0
+2018,3,GB,Photovoltaic 50kW DNC or less,,280.0
+2018,3,GB,Sewage Gas,,53564.0
+2018,3,GB,Tidal Flow,,8119.0
+2018,3,GB,Wind 50kW DNC or less,,38.0

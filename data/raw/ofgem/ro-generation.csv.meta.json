@@ -1,8 +1,15 @@
 {
-  "backfilled_at": "2026-04-22",
   "http_status": null,
   "publisher_last_modified": null,
-  "retrieved_at": "2026-04-22T00:00:00+00:00",
-  "sha256": "e2a787c4f0a373672e48a7eae9b7ed530432155295d77bb14b8885fa4ba21ab6",
-  "upstream_url": "option-d-stub:ofgem-rer-manual"
+  "retrieved_at": "2026-04-25T03:09:20.228955+00:00",
+  "sha256": "88d2ba5d86bad62fe9d9cae0d3fc69fd647c722fbf5cb7fd165b48a098767a35",
+  "sources": [
+    {
+      "notes": "Ofgem 12-year XLSX (Apr 2006 \u2013 Mar 2018); ro-generation.csv derived from 'ROCs by Tech & Month' sheet via parse_xlsx_to_monthly()",
+      "retrieved_on": "2026-04-24",
+      "sha256": "76104acfbb46304867c14549e32fe98e1d0bc3791da1e1a431e8958a80d890b1",
+      "url": "https://www.ofgem.gov.uk/sites/default/files/2025-05/rocs_report_2006_to_2018_20250410081520.xlsx"
+    }
+  ],
+  "upstream_url": "https://www.ofgem.gov.uk/sites/default/files/2025-05/rocs_report_2006_to_2018_20250410081520.xlsx"
 }
