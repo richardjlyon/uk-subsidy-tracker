@@ -20,6 +20,13 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
+      - name: Build derived RO parquets
+        # data/derived/ is gitignored per Phase 4 (regenerated, not committed).
+        # tests/test_benchmarks.py::test_ref_constable_ro_reconciliation reads
+        # data/derived/ro/annual_summary.parquet and pytest.fails 9 should-pass
+        # years if the parquet is absent. Build it here to match local pytest.
+        run: uv run --frozen python -c "from uk_subsidy_tracker.schemes import ro; ro.rebuild_derived()"
+
       - name: Run tests
         run: uv run --frozen pytest -v
 
@@ -37,6 +44,10 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --frozen
+
+      - name: Build derived RO parquets
+        # Charts read data/derived/ro/*.parquet — build them before plotting.
+        run: uv run --frozen python -c "from uk_subsidy_tracker.schemes import ro; ro.rebuild_derived()"
 
       - name: Regenerate charts
         run: uv run --frozen python -m uk_subsidy_tracker.plotting
