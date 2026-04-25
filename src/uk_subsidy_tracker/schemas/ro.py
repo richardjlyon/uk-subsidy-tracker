@@ -175,10 +175,13 @@ class RoAnnualSummaryRow(BaseModel):
         ),
         json_schema_extra={"dtype": "float64", "unit": "GBP"},
     )
-    ro_cost_gbp_eroc: float = Field(
+    ro_cost_gbp_eroc: float | None = Field(
+        default=None,
         description=(
             "Sum of station_month.ro_cost_gbp_eroc across this (year, country) — "
-            "e-ROC sensitivity per D-02."
+            "e-ROC sensitivity per D-02. Null under aggregate grain (Phase 05.2 — "
+            "no per-station e-ROC clearing dispatch); populated when station-level "
+            "data re-activates on backlog 999.1."
         ),
         json_schema_extra={"dtype": "float64", "unit": "GBP"},
     )
@@ -223,8 +226,14 @@ class RoByTechnologyRow(BaseModel):
         description="Sum of station_month.ro_cost_gbp for this (year, technology).",
         json_schema_extra={"dtype": "float64", "unit": "GBP"},
     )
-    ro_cost_gbp_eroc: float = Field(
-        description="Sum of station_month.ro_cost_gbp_eroc for this (year, technology).",
+    ro_cost_gbp_eroc: float | None = Field(
+        default=None,
+        description=(
+            "Sum of station_month.ro_cost_gbp_eroc for this (year, technology) — "
+            "e-ROC sensitivity per D-02. Null under aggregate grain (Phase 05.2 — "
+            "no per-station e-ROC clearing dispatch); populated when station-level "
+            "data re-activates on backlog 999.1."
+        ),
         json_schema_extra={"dtype": "float64", "unit": "GBP"},
     )
     methodology_version: str = Field(

@@ -197,3 +197,50 @@ def test_ro_parquet_grain_schema(grain, model, ro_derived_dir):
     # Validate each row via the Pydantic model.
     for row in df.to_dict(orient="records"):
         model.model_validate(row)
+
+
+# ===========================================================================
+# RO aggregate-grain nullability tests (Plan 05.2-03 Task 1 — D-04).
+# ===========================================================================
+
+
+def test_ro_annual_summary_row_eroc_nullable():
+    """D-04: ro_cost_gbp_eroc must accept None under aggregate grain (Phase 05.2)."""
+    from uk_subsidy_tracker.schemas.ro import RoAnnualSummaryRow
+    row = RoAnnualSummaryRow(
+        year=2020,
+        country="GB",
+        ro_generation_mwh=100.0,
+        ro_cost_gbp=50.0,
+        ro_cost_gbp_eroc=None,
+        gas_counterfactual_gbp=30.0,
+        premium_gbp=20.0,
+        mutualisation_gbp=None,
+        methodology_version="0.1.0",
+    )
+    assert row.ro_cost_gbp_eroc is None
+
+
+def test_ro_annual_summary_row_eroc_still_accepts_float():
+    """Backward compat — non-null eroc still valid."""
+    from uk_subsidy_tracker.schemas.ro import RoAnnualSummaryRow
+    row = RoAnnualSummaryRow(
+        year=2020, country="GB",
+        ro_generation_mwh=100.0, ro_cost_gbp=50.0,
+        ro_cost_gbp_eroc=45.0, gas_counterfactual_gbp=30.0,
+        premium_gbp=20.0, mutualisation_gbp=None,
+        methodology_version="0.1.0",
+    )
+    assert row.ro_cost_gbp_eroc == 45.0
+
+
+def test_ro_by_technology_row_eroc_nullable():
+    """D-04: by_technology also gets nullable eroc."""
+    from uk_subsidy_tracker.schemas.ro import RoByTechnologyRow
+    row = RoByTechnologyRow(
+        year=2020, technology="Offshore wind",
+        ro_generation_mwh=100.0, ro_cost_gbp=50.0,
+        ro_cost_gbp_eroc=None,
+        methodology_version="0.1.0",
+    )
+    assert row.ro_cost_gbp_eroc is None
