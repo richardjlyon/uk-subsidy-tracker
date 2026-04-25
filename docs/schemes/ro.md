@@ -1,6 +1,6 @@
 # UK Renewables Obligation (RO)
 
-**The Renewables Obligation is the scheme you've never heard of, twice the size of the one you have. Between 2002 and 2024, British electricity consumers paid approximately £58.6 bn in reconstructed RO subsidies — the largest single renewable energy subsidy scheme in UK history by cumulative consumer cost, and materially larger than the more widely discussed Contracts for Difference scheme over the same period.**
+**The Renewables Obligation is the scheme you've never heard of, twice the size of the one you have. Across the covered scheme years 2006-2017 and 2019-2023, British electricity consumers paid approximately £58.6 bn in reconstructed RO subsidies. Including the deferred-data-gated years (2002-2005 and 2018, see [§7 Data access](#data-access)), independent estimates put the full 2002-2024 total in the £65-70 bn range — making the RO the largest single renewable energy subsidy scheme in UK history by cumulative consumer cost, and materially larger than the more widely discussed Contracts for Difference scheme over the same period.**
 
 Unlike CfD, where payments flow from a central counterparty, RO costs are embedded directly in retail electricity bills via supplier obligations. The scheme closed to new accreditations in 2017 but continues to pay out until 2037 under 20-year support windows locked in during the 2002–2017 build-out phase.
 
