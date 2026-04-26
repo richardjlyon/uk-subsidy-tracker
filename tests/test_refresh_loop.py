@@ -295,3 +295,32 @@ def test_manifest_includes_both_schemes_after_end_to_end_refresh(tmp_path):
         f"Plan 05-07 truth: 5 CfD + 5 RO = 10 Dataset entries; "
         f"got {len(manifest.datasets)}: {sorted(ids)}"
     )
+
+
+# ---------------------------------------------------------------------------
+# Plan 06-01 — Portal _refresh invariants (D-18 per-scheme).
+#
+# Portal has no upstream URL, so refresh() is a no-op. upstream_changed()
+# returns True when cross_scheme.parquet is absent. Use the importlib
+# shadow-bypass per PATTERNS lines 1142-1151 (schemes/portal/__init__.py
+# aliases `from ._refresh import refresh as _refresh`, shadowing the submodule
+# at the package level).
+# ---------------------------------------------------------------------------
+
+
+portal_refresh = importlib.import_module("uk_subsidy_tracker.schemes.portal._refresh")
+
+
+def test_portal_upstream_changed_returns_true_when_cross_scheme_absent(tmp_path, monkeypatch):
+    """Portal dirty-check: cross_scheme.parquet absent → upstream_changed() = True."""
+    monkeypatch.setattr(portal_refresh, "PROJECT_ROOT", tmp_path)
+    assert portal_refresh.upstream_changed() is True
+
+
+def test_portal_refresh_is_no_op(monkeypatch, tmp_path):
+    """Portal refresh() is a no-op (no upstream URL); MUST NOT raise."""
+    monkeypatch.setattr(portal_refresh, "PROJECT_ROOT", tmp_path)
+    # No assertion needed beyond non-raise; explicit assignment captures the
+    # None return as documentation.
+    result = portal_refresh.refresh()
+    assert result is None

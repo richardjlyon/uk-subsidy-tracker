@@ -244,3 +244,64 @@ def test_ro_by_technology_row_eroc_nullable():
         methodology_version="0.1.0",
     )
     assert row.ro_cost_gbp_eroc is None
+
+
+# ===========================================================================
+# Plan 06-01 — Portal cross-scheme parquet schema conformance (TEST-02 / D-19).
+#
+# Independent module-scoped fixture rebuilds CfD + RO into the project derived
+# tree (cross_scheme_model reads from PROJECT_ROOT) AND emits cross_scheme.parquet
+# into a tmp dir. CrossSchemeRow column-order discipline (D-10) + per-row
+# Pydantic validation. NaN handling: households_uk may be NaN for pre-2014
+# RO years (RESEARCH Q3 — pre-2014 X3 bars omitted) — those rows are skipped
+# so Pydantic int validation does not fail. generation_mwh may be NaN for
+# pre-SY18 RO — the field is Optional so coerce NaN→None.
+# ===========================================================================
+
+
+from uk_subsidy_tracker.schemas.portal import CrossSchemeRow  # noqa: E402
+
+_PORTAL_GRAIN_MODELS = {"cross_scheme": CrossSchemeRow}
+
+
+@pytest.fixture(scope="module")
+def portal_derived_dir(tmp_path_factory) -> Path:
+    from uk_subsidy_tracker.schemes import cfd, portal, ro
+    out = tmp_path_factory.mktemp("test-schemas-portal-derived")
+    cfd.rebuild_derived()
+    ro.rebuild_derived()
+    portal.rebuild_derived(output_dir=out)
+    return out
+
+
+@pytest.mark.parametrize("grain, model", list(_PORTAL_GRAIN_MODELS.items()))
+def test_portal_parquet_grain_schema(grain, model, portal_derived_dir):
+    """TEST-02 / D-19: cross_scheme.parquet conforms to CrossSchemeRow.
+
+    Column-order discipline (D-10) + per-row Pydantic validation. Rows with
+    NaN ``households_uk`` (pre-2014 RO years per RESEARCH Q3) are skipped —
+    the X3 plotting layer filters them; row-level int validation cannot run
+    on NaN.
+    """
+    import math
+    path = portal_derived_dir / f"{grain}.parquet"
+    assert path.exists(), f"{grain}.parquet missing — portal.rebuild_derived did not emit"
+    df = pq.read_table(path).to_pandas()
+    expected_columns = list(model.model_fields.keys())
+    assert list(df.columns) == expected_columns, (
+        f"{grain} column order drift: got {list(df.columns)} "
+        f"vs expected {expected_columns}"
+    )
+    for row in df.to_dict(orient="records"):
+        # households_uk may be NaN for years pre-2014 (RESEARCH Q3 — pre-2014
+        # X3 bars omitted). The CrossSchemeRow households_uk: int field cannot
+        # accept NaN, so skip those rows. The X3 chart filters them at render time.
+        h = row.get("households_uk")
+        if h is None or (isinstance(h, float) and math.isnan(h)):
+            continue
+        # generation_mwh may also be NaN for pre-SY18 RO; the field is Optional
+        # so coerce NaN→None for Pydantic validation.
+        g = row.get("generation_mwh")
+        if isinstance(g, float) and math.isnan(g):
+            row["generation_mwh"] = None
+        model.model_validate(row)

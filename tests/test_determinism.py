@@ -140,3 +140,56 @@ def test_ro_file_metadata_created_by_is_pyarrow(grain, ro_derived_once):
     assert meta.created_by.startswith("parquet-cpp-arrow"), (
         f"RO Parquet writer changed for {grain}: {meta.created_by!r}"
     )
+
+
+# ===========================================================================
+# Plan 06-01 — Portal byte-identity parametrisation (TEST-05 / D-21).
+#
+# Two consecutive portal.rebuild_derived() runs from the same source state
+# must produce content-identical cross_scheme.parquet. Catches non-determinism
+# introduced via wall-clock reads, random.shuffle, or unstable concat/sort.
+# Refresh CfD + RO in-place once before each portal rebuild so the source
+# parquets are stable across runs.
+# ===========================================================================
+
+
+PORTAL_GRAINS = ("cross_scheme",)
+
+
+@pytest.fixture(scope="module")
+def portal_derived_once(tmp_path_factory) -> Path:
+    from uk_subsidy_tracker.schemes import cfd, portal, ro
+    out = tmp_path_factory.mktemp("portal-derived-run-1")
+    cfd.rebuild_derived()
+    ro.rebuild_derived()
+    portal.rebuild_derived(output_dir=out)
+    return out
+
+
+@pytest.fixture(scope="module")
+def portal_derived_twice(tmp_path_factory) -> Path:
+    from uk_subsidy_tracker.schemes import cfd, portal, ro
+    out = tmp_path_factory.mktemp("portal-derived-run-2")
+    cfd.rebuild_derived()
+    ro.rebuild_derived()
+    portal.rebuild_derived(output_dir=out)
+    return out
+
+
+@pytest.mark.parametrize("grain", PORTAL_GRAINS)
+def test_portal_parquet_content_identical(grain, portal_derived_once, portal_derived_twice):
+    """TEST-05 / D-21: two consecutive portal.rebuild_derived() runs produce content-identical Parquet."""
+    t1 = pq.read_table(portal_derived_once / f"{grain}.parquet")
+    t2 = pq.read_table(portal_derived_twice / f"{grain}.parquet")
+    assert t1.schema.equals(t2.schema, check_metadata=False), (
+        f"Portal Parquet schema drift for {grain}:\n  run1: {t1.schema}\n  run2: {t2.schema}"
+    )
+    assert t1.num_rows == t2.num_rows, (
+        f"Portal row count drift for {grain}: {t1.num_rows} vs {t2.num_rows}"
+    )
+    assert t1.equals(t2), (
+        f"Portal Parquet content drift for {grain} — same source state should "
+        f"produce identical rows. If intentional (methodology change), bump "
+        f"METHODOLOGY_VERSION (currently {METHODOLOGY_VERSION!r}) and add a "
+        f"CHANGES.md `## Methodology versions` entry."
+    )

@@ -254,3 +254,102 @@ def test_ro_by_allocation_round_vs_station_month_parquet(
         ].sort_index()
     )
     pd.testing.assert_series_equal(from_sm, from_by_round, check_names=False)
+
+
+# ===========================================================================
+# Plan 06-01 — Cross-scheme portal row-conservation tests (TEST-03 / D-20).
+#
+# Per PATTERNS.md directive, the portal uses INDEPENDENT module-scoped fixtures
+# that rebuild CfD + RO into the *project* derived tree (the cross_scheme_model
+# reads from PROJECT_ROOT-relative paths, not from `out`) and emit the portal
+# parquet into `out`. Row-conservation invariant: per-scheme cost subset of
+# cross_scheme.parquet must equal each scheme's annual_summary.parquet total
+# to ±£1, AND per (year, scheme) row.
+# ===========================================================================
+
+
+from uk_subsidy_tracker import PROJECT_ROOT  # noqa: E402
+
+
+@pytest.fixture(scope="module")
+def portal_derived_dir(tmp_path_factory) -> Path:
+    """Rebuild CfD + RO + portal once for the module."""
+    from uk_subsidy_tracker.schemes import cfd, portal, ro
+
+    out = tmp_path_factory.mktemp("test-aggregates-portal-derived")
+    # cross_scheme_model reads from PROJECT_ROOT-relative paths, so refresh
+    # CfD + RO derived parquets in-place in data/derived/<scheme>/ first.
+    cfd.rebuild_derived()
+    ro.rebuild_derived()
+    portal.rebuild_derived(output_dir=out)
+    return out
+
+
+@pytest.fixture(scope="module")
+def cross_scheme(portal_derived_dir) -> pd.DataFrame:
+    return pq.read_table(portal_derived_dir / "cross_scheme.parquet").to_pandas()
+
+
+def test_cross_scheme_row_conservation(cross_scheme):
+    """TEST-03 / D-20: per-scheme cost subset matches source annual_summary totals.
+
+    CfD: sum(cross_scheme[scheme=='CfD']['cost_gbp']) == sum(cfd_annual['cfd_payments_gbp'])
+    RO:  sum(cross_scheme[scheme=='RO']['cost_gbp']) == sum(ro_annual_GB['ro_cost_gbp'])
+         (with HAZARD #1 GB filter + HAZARD #2 NaN-cost drop)
+    """
+    # CfD subset row-conservation
+    cfd_total_cross = float(cross_scheme[cross_scheme["scheme"] == "CfD"]["cost_gbp"].sum())
+    cfd_src = pq.read_table(
+        PROJECT_ROOT / "data/derived/cfd/annual_summary.parquet"
+    ).to_pandas()
+    cfd_total_src = float(cfd_src["cfd_payments_gbp"].sum())
+    assert abs(cfd_total_cross - cfd_total_src) <= 1.0, (
+        f"CfD row-conservation failed: cross=£{cfd_total_cross:,.0f} "
+        f"src=£{cfd_total_src:,.0f}"
+    )
+    # RO subset row-conservation (GB-only, NaN-cost dropped per HAZARD #1+#2)
+    ro_total_cross = float(cross_scheme[cross_scheme["scheme"] == "RO"]["cost_gbp"].sum())
+    ro_src = pq.read_table(
+        PROJECT_ROOT / "data/derived/ro/annual_summary.parquet"
+    ).to_pandas()
+    ro_src_gb = ro_src[(ro_src["country"] == "GB") & ro_src["ro_cost_gbp"].notna()]
+    ro_total_src = float(ro_src_gb["ro_cost_gbp"].sum())
+    assert abs(ro_total_cross - ro_total_src) <= 1.0, (
+        f"RO row-conservation failed: cross=£{ro_total_cross:,.0f} "
+        f"src=£{ro_total_src:,.0f}"
+    )
+
+
+def test_cross_scheme_per_year_conservation(cross_scheme):
+    """TEST-03 / D-20: every (year, scheme) row matches its source annual_summary cell.
+
+    Per-row conservation is the strict variant — exposes any year-mapping or
+    type-coercion drift that the aggregate-totals check would mask.
+    """
+    cfd_src = pq.read_table(
+        PROJECT_ROOT / "data/derived/cfd/annual_summary.parquet"
+    ).to_pandas()
+    ro_src = pq.read_table(
+        PROJECT_ROOT / "data/derived/ro/annual_summary.parquet"
+    ).to_pandas()
+    ro_src_gb = ro_src[(ro_src["country"] == "GB") & ro_src["ro_cost_gbp"].notna()]
+
+    cfd_lookup = dict(zip(cfd_src["year"].astype(int), cfd_src["cfd_payments_gbp"]))
+    ro_lookup = dict(zip(ro_src_gb["year"].astype(int), ro_src_gb["ro_cost_gbp"]))
+
+    for row in cross_scheme.to_dict(orient="records"):
+        year = int(row["year"])
+        scheme = row["scheme"]
+        cross_cost = float(row["cost_gbp"])
+        if scheme == "CfD":
+            assert year in cfd_lookup, f"CfD year {year} missing in source annual_summary"
+            assert abs(cross_cost - float(cfd_lookup[year])) <= 1.0, (
+                f"CfD year={year}: cross=£{cross_cost:,.2f} "
+                f"vs src=£{float(cfd_lookup[year]):,.2f}"
+            )
+        elif scheme == "RO":
+            assert year in ro_lookup, f"RO year {year} missing in source annual_summary GB"
+            assert abs(cross_cost - float(ro_lookup[year])) <= 1.0, (
+                f"RO year={year}: cross=£{cross_cost:,.2f} "
+                f"vs src=£{float(ro_lookup[year]):,.2f}"
+            )
