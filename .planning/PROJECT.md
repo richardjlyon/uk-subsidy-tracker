@@ -66,12 +66,13 @@ Currently a single-scheme prototype (`cfd-payment`) covering only Contracts for 
 - [ ] **BAL-01**: Balancing services delta (pre/post-renewables comparison)
 - [ ] **GRID-01**: Grid socialisation with low/central/high sensitivity bounds
 - [ ] **SEG-01**: SEG + REGOs aggregate-only pages
-- [ ] **X1**: Cross-scheme stacked total by scheme, annual (portal flagship)
-- [ ] **X2**: Combined premium over gas, cumulative (portal flagship)
-- [ ] **X3**: Cost per household decomposed by scheme (portal flagship)
-- [ ] **X4**: Cost per MWh of subsidised generation by scheme
-- [ ] **X5**: 2022 crisis comparison across schemes
-- [ ] **PORTAL-01**: Portal homepage — three headline cards + X1 chart with time-horizon tabs + 2×4 scheme grid + theme nav (iamkate.com/grid pattern)
+- [x] **X1**: Cross-scheme stacked total by scheme, annual (portal flagship) — Validated in Phase 6
+- [x] **X2**: Combined premium over gas, cumulative (portal flagship) — Validated in Phase 6
+- [x] **X3**: Cost per household decomposed by scheme (portal flagship) — Validated in Phase 6
+- [x] **X4**: Cost per MWh of subsidised generation by scheme — Validated in Phase 6
+- [x] **X5**: 2022 crisis comparison across schemes — Validated in Phase 6
+- [x] **PORTAL-01**: Portal homepage — three headline cards + X1 chart with time-horizon tabs + 2×4 scheme grid + theme nav (iamkate.com/grid pattern) — Validated in Phase 6
+- [x] **PORTAL-02**: Each populated scheme tile clickthrough to scheme detail page — Validated in Phase 6
 - [x] **SCHEMEPAGE-01**: Cross-scheme page-template symmetry — `docs/schemes/cfd.md` mirrors `docs/schemes/ro.md` (8-section structure + adversarial lead + 4 chart embeds + GOV-01 four-way coverage + Headline FAQ); homepage pivoted to 2×4 scheme grid (CfD + RO populated, Phases 7–12 placeholder) — Validated in Phase 05.1
 
 **Governance (cross-cutting):**
@@ -177,4 +178,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-23 — Phase 05.1 (CfD Scheme Page Retrofit) complete. SCHEMEPAGE-01 validated; `docs/schemes/cfd.md` mirrors `docs/schemes/ro.md`; homepage pivoted to 2×4 scheme grid; 4 overlap CfD theme pages deleted; cross-scheme page-template symmetry restored ahead of Phase 6 PORTAL-01.*
+*Last updated: 2026-04-25 — Phase 6 (Flagship Cross-Scheme Charts) complete. X-01..X-05 + PORTAL-01 + PORTAL-02 validated; `docs/portal/` tier shipped (Overview + 5 X-chart narratives + shared methodology + mkdocs Portal nav); `cross_scheme.parquet` joins CfD + RO annual summaries; homepage carries 3 headline cards (£8.0bn / £0.1bn / £282 for SY2023) + X1 hero above the 2×4 scheme grid; cross-surface headline-sync regression test pins prose to parquet; REF Constable + Turver entries transcribed into `tests/fixtures/benchmarks.yaml` as clinical tolerance anchors; 235/235 pytest pass + mkdocs --strict clean.*
