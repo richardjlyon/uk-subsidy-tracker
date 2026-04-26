@@ -136,6 +136,22 @@ GRAIN_SOURCES: dict[str, dict[str, list[str]]] = {
             "ofgem/ro-register.xlsx",
         ],
     },
+    # Phase 6 Plan 06-01 — portal cross-scheme aggregation. Portal reads each
+    # per-scheme annual_summary.parquet downstream, but raw provenance flows
+    # from each shipped scheme's raw inputs (CfD + RO today; FiT/Constraints/
+    # CM/Balancing/Grid/SEG appended in Phases 7-12). The sources[] block on
+    # the manifest entry traces back to primary regulator data per GOV-02.
+    "portal": {
+        "cross_scheme": [
+            "lccc/actual-cfd-generation.csv",
+            "lccc/cfd-contract-portfolio-status.csv",
+            "ons/gas-sap.xlsx",
+            "elexon/system-prices.csv",
+            "ofgem/ro-generation.csv",
+            "ofgem/ro-annual-aggregate.csv",
+            "ofgem/roc-prices.csv",
+        ],
+    },
 }
 
 GRAIN_TITLES: dict[str, dict[str, str]] = {
@@ -153,6 +169,9 @@ GRAIN_TITLES: dict[str, dict[str, str]] = {
         "by_allocation_round": "RO by Allocation Round",
         "forward_projection": "RO Forward Projection",
     },
+    "portal": {
+        "cross_scheme": "Cross-scheme annual aggregation (CfD + RO)",
+    },
 }
 
 GRAIN_DESCRIPTIONS: dict[str, dict[str, str]] = {
@@ -169,6 +188,9 @@ GRAIN_DESCRIPTIONS: dict[str, dict[str, str]] = {
         "by_technology": "year × technology",
         "by_allocation_round": "year × allocation round",
         "forward_projection": "year (forward)",
+    },
+    "portal": {
+        "cross_scheme": "year × scheme",
     },
 }
 

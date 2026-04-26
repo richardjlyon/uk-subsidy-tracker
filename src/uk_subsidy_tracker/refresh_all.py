@@ -27,12 +27,17 @@ from pathlib import Path
 
 from uk_subsidy_tracker import DATA_DIR, PROJECT_ROOT
 from uk_subsidy_tracker.publish import csv_mirror, manifest as manifest_mod
-from uk_subsidy_tracker.schemes import cfd, ro
+from uk_subsidy_tracker.schemes import cfd, portal, ro
 
 # Known schemes (Phase 5+ appends here: ('fit', fit), ...).
+# Phase 6: portal is appended LAST — it is downstream of all per-scheme rebuilds
+# and reads each ('cfd', cfd), ('ro', ro), ... annual_summary.parquet to produce
+# cross_scheme.parquet. Iteration order in refresh_scheme() means portal sees
+# fresh derived data for every scheme.
 SCHEMES = (
     ("cfd", cfd),
     ("ro", ro),
+    ("portal", portal),  # MUST be last — downstream of all per-scheme rebuilds.
 )
 
 SITE_DATA_DIR = PROJECT_ROOT / "site" / "data"
