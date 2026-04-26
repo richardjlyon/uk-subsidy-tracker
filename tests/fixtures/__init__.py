@@ -52,6 +52,12 @@ class Benchmarks(BaseModel):
     # benchmark anchor. Exposed alongside external anchors but carries its own
     # HARD-BLOCK tolerance (REF_TOLERANCE_PCT = 3.0) per D-14 — not D-11 fallback.
     ref_constable: list[BenchmarkEntry] = Field(default_factory=list)
+    # Phase 6 Plan 06-07: REF Constable 2025 Table 1 CfD column entries
+    # (sibling to ref_constable RO entries). Tolerance anchor for the
+    # CfD subset arm of test_ref_total_reconciliation. Default-factory
+    # list preserves backward compatibility — older benchmarks.yaml files
+    # without this section still load.
+    ref_constable_cfd: list[BenchmarkEntry] = Field(default_factory=list)
 
     def all_external_entries(self) -> list[BenchmarkEntry]:
         """All non-LCCC-floor entries (for parametrised external-anchor tests).

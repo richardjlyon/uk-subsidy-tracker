@@ -220,3 +220,98 @@ ref_constable:
     retrieved_on: 2026-04-22
     notes: "SY 2023-24; REF series end"
     tolerance_pct: 3.0
+
+# ============================================================================
+# ref_constable_cfd — REF Constable 2025-05-01 Table 1, CfD column (Phase 6 Plan 06-07)
+# ============================================================================
+# Tolerance anchor for CfD per-year reconciliation against the cross_scheme.parquet
+# CfD subset (Phase 6 D-03 / D-Discretion option b: per-scheme REF subset cross-check).
+#
+# Source: REF Table 1 "Direct Subsidies to Renewable Electricity Generation in the
+#         United Kingdom (£bn, nominal) 2002-2024", CfD column (page 7 of the PDF).
+# PDF:    https://ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf
+# Retrieved: 2026-04-25 (transcribed verbatim from REF Table 1 CfD column).
+# Basis: Scheme Year (April-March) CfD subsidy cost, £bn nominal; matches the
+#        same SY basis as the existing ref_constable RO entries above.
+# Scope alignment with pipeline D-12 headline: pipeline reports CY (calendar year);
+#        REF reports SY (April-March). The benchmarks.yaml header note above documents
+#        a ±1% reporting-precision delta for cumulative measures, but per-year SY-vs-CY
+#        skew can exceed 3% in years bracketing major energy-market events (e.g. SY
+#        2021/22 captures Apr 2021–Mar 2022 with the gas-crisis tail, while CY 2021
+#        captures only Jan–Dec 2021). The cumulative-window comparison in
+#        test_ref_total_reconciliation accepts a wider tolerance band to absorb this
+#        SY-vs-CY phase noise; per-year strict-±3% comparisons would xfail on the
+#        same root cause as the RO drift entries in tests/fixtures/divergences.yaml.
+# Tolerance: REF_TOLERANCE_PCT = 3.0 (D-14 hard block, per-entry — but cumulative
+#            cross-check uses CUMULATIVE_REF_TOLERANCE_PCT = 5.0 to absorb SY/CY
+#            phase noise across a multi-year subset, see tests/test_benchmarks.py
+#            docstring on test_ref_total_reconciliation).
+#
+# REF Table 1 CfD column verbatim (SY label → REF £bn nominal):
+#   2011/2012 0     2012/2013 0     2013/2014 0     2014/2015 0     2015/2016 0
+#   2016/2017 0.1   2017/2018 0.5   2018/2019 1.0   2019/2020 1.8   2020/2021 2.3
+#   2021/2022 0.3   2022/2023 0.0   2023/2024 1.8   Totals = 7.8
+#
+# Year keying convention: each entry's `year:` is the SY's first calendar year
+# (matches the existing ref_constable RO entries, e.g. SY 2002-03 → year 2002).
+# Years 2011..2014 omitted — REF Table 1 reports 0 for SY 2011/12..2014/15
+# (CfD scheme delivery began with first AR1 contracts in CY 2016); transcribing
+# zeros adds no signal to per-year reconciliation. Years 2015..2023 transcribed
+# verbatim (9 entries) including the 0 / 0.0 entries at SY 2015/16 + 2022/23
+# for completeness — these are valid REF data points. Sum of values: £7.8bn
+# (matches REF Table 1 CfD column total).
+ref_constable_cfd:
+  - year: 2015
+    value_gbp_bn: 0.0
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2015-16; REF Table 1 CfD column = 0 (pre-AR1 delivery). Tolerance anchor only — REF=0 means per-year ratio is undefined."
+    tolerance_pct: 3.0
+  - year: 2016
+    value_gbp_bn: 0.1
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2016-17; first non-zero CfD entry (AR1 commissioning ramp); REF Table 1 CfD column"
+    tolerance_pct: 3.0
+  - year: 2017
+    value_gbp_bn: 0.5
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2017-18; REF Table 1 CfD column"
+    tolerance_pct: 3.0
+  - year: 2018
+    value_gbp_bn: 1.0
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2018-19; REF Table 1 CfD column"
+    tolerance_pct: 3.0
+  - year: 2019
+    value_gbp_bn: 1.8
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2019-20; REF Table 1 CfD column"
+    tolerance_pct: 3.0
+  - year: 2020
+    value_gbp_bn: 2.3
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2020-21; REF Table 1 CfD column"
+    tolerance_pct: 3.0
+  - year: 2021
+    value_gbp_bn: 0.3
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2021-22; REF Table 1 CfD column. Note: SY-vs-CY phase mismatch is largest here (SY 2021/22 Apr 2021–Mar 2022 includes gas-crisis tail; pipeline CY 2021 is pre-crisis); cumulative-window cross-check absorbs this."
+    tolerance_pct: 3.0
+  - year: 2022
+    value_gbp_bn: 0.0
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2022-23; REF Table 1 CfD column = 0.0 (gas crisis pushed strike refs negative; AR4 delivery lag). Tolerance anchor only — REF=0 means per-year ratio is undefined."
+    tolerance_pct: 3.0
+  - year: 2023
+    value_gbp_bn: 1.8
+    url: "https://www.ref.org.uk/attachments/article/390/renewables.subsidies.01.05.25.pdf"
+    retrieved_on: 2026-04-25
+    notes: "SY 2023-24; REF Table 1 CfD column; REF series end"
+    tolerance_pct: 3.0
