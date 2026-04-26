@@ -80,6 +80,14 @@ nav:
       - Overview: schemes/index.md
       - Contracts for Difference (CfD): schemes/cfd.md
       - Renewables Obligation (RO): schemes/ro.md
+  - Portal:
+      - Overview: portal/index.md
+      - X1 Total subsidy stacked by scheme: portal/x1-stacked-total.md
+      - X2 Cumulative premium over gas: portal/x2-cumulative-premium.md
+      - X3 Cost per household by scheme: portal/x3-per-household.md
+      - X4 Cost per MWh by scheme: portal/x4-cost-per-mwh.md
+      - X5 2022 crisis comparison: portal/x5-2022-crisis.md
+      - Methodology: portal/methodology.md
   - Data: data/index.md
   - Methodology:
       - Gas counterfactual: methodology/gas-counterfactual.md
