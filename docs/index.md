@@ -17,6 +17,30 @@ every methodology documented.
 
 ---
 
+<div class="grid cards" markdown>
+
+-   **£8.0 bn**
+
+    Total subsidy (latest scheme year)
+
+-   **£0.1 bn**
+
+    Premium over gas (latest scheme year)
+
+-   **£282**
+
+    Per household (latest scheme year)
+
+</div>
+
+*Covers 2 of 8 schemes; full coverage in Phases 7-12.*
+
+![Total UK subsidy stacked by scheme — covered schemes only](charts/html/x1_stacked_total_twitter.png)
+
+[Interactive version](charts/html/x1_stacked_total.html){target="_blank"}
+
+---
+
 ## Schemes
 
 <div class="grid cards" markdown>
@@ -91,4 +115,4 @@ The charts are organised into five argument themes:
 
 ## Status
 
-Version 0.x prototype. Two scheme modules are shipped — Contracts for Difference and Renewables Obligation. The remaining six modules are sequenced in the project [roadmap](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/.planning/ROADMAP.md) and will populate the grid above as they ship. Corrections and contributions welcome via [GitHub Issues](https://github.com/richardjlyon/uk-subsidy-tracker/issues).
+Version 0.x prototype. Two scheme modules are shipped — Contracts for Difference and Renewables Obligation — and a cross-scheme aggregation layer (`data/derived/portal/cross_scheme.parquet`) joins them for the headline figures and the X1 chart above. See the [Portal](portal/index.md) for the five flagship cross-scheme charts and methodology. The remaining six modules are sequenced in the project [roadmap](https://github.com/richardjlyon/uk-subsidy-tracker/blob/main/.planning/ROADMAP.md) and will populate the grid above as they ship. Corrections and contributions welcome via [GitHub Issues](https://github.com/richardjlyon/uk-subsidy-tracker/issues).
