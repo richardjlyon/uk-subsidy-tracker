@@ -1,10 +1,10 @@
 # UK Contracts for Difference (CfD)
 
-**The price floor sold as a shield — ten years in, UK consumers have paid £29 billion for CfD electricity and £14 billion more than the existing gas fleet would have cost for the same MWh.**
+**The price floor sold as a shield — eleven years in, UK consumers have paid £13.0 billion in net CfD levy payments. Net of the 2022 gas-crisis clawback the policy ran £1.4 billion *cheaper* than the gas counterfactual; before that crisis it ran roughly £4 billion *more expensive*. Both readings are real; both belong on the page.**
 
-The premium is paid every month. In only one year — 2022, the worst gas crisis in living memory — did CfD electricity come close to matching the gas alternative, and even then it still cost 7% more. In normal years the CfD price is roughly twice the gas alternative; in 2020, when gas was cheap, it was five times more expensive.
+In normal years (2018-2020, 2024) the CfD price has cost more than the existing gas fleet would have charged for the same MWh: the policy is a price-certainty premium consumers pay over fluctuating gas. In gas-crisis years (2021-2023) the CfD strike floor became cheaper than spot gas at the wholesale margin, and CfD generators paid back into the levy: 2022 alone netted -£3.5 billion of premium relative to gas as crisis-priced gas drove the counterfactual far above contracted strikes. The cumulative net premium signed across all years is **negative** (-£1.4bn) — but only because one extreme year dwarfs every other normal year combined. The forward question is whether the next decade will look more like 2018-2020 (premium positive) or like 2022 (premium negative); see [§4 Forward commitment](#forward-commitment-chart-s5).
 
-Every component is visible and auditable. Primary source is the LCCC data portal (daily CfD settlements, generation, and portfolio). The gas counterfactual is shared with RO (see [methodology/gas-counterfactual.md](../methodology/gas-counterfactual.md)). Days before January 2018 have no gas counterfactual (ONS/UK ETS coverage starts then), so approximately 5.6 TWh of early 2016–17 generation is excluded; including it would add at most ~£0.4bn to the cumulative £14bn figure. Structural concentration is visible in the data: 6 projects receive 50% of the £29bn paid to date — see §5 (Concentration, Chart S4) for the project-level breakdown.
+Every component is visible and auditable. Primary source is the LCCC data portal (daily CfD settlements, generation, and portfolio). The gas counterfactual is shared with RO (see [methodology/gas-counterfactual.md](../methodology/gas-counterfactual.md)). Days before January 2018 have no gas counterfactual (ONS/UK ETS coverage starts then), so approximately 5.6 TWh of early 2016–17 generation is excluded; including it would shift the cumulative net premium by at most ~£0.4bn. Structural concentration is visible in the data: 6 projects receive 50% of the £13.0bn paid to date — see §5 (Concentration, Chart S4) for the project-level breakdown.
 
 ## What is the CfD?
 
@@ -21,7 +21,7 @@ The mechanism in brief:
 
 ### Why the CfD dominates the renewables-subsidy conversation
 
-CfD has a public profile that the Renewables Obligation does not. It is named in DESNZ press releases, debated in select committees, and reported on after every Allocation Round. The result is that the CfD is the scheme most readers already know — and yet its headline consumer cost (£29bn) is materially smaller than the RO's (£67bn). This page documents what the CfD costs and who receives it, with the same methodology and the same adversarial scrutiny the [RO scheme page](ro.md) applies to its numbers.
+CfD has a public profile that the Renewables Obligation does not. It is named in DESNZ press releases, debated in select committees, and reported on after every Allocation Round. The result is that the CfD is the scheme most readers already know — and yet its headline consumer cost (£13bn paid; ~£14bn counterfactual) is materially smaller than the RO's (£67bn). This page documents what the CfD costs and who receives it, with the same methodology and the same adversarial scrutiny the [RO scheme page](ro.md) applies to its numbers.
 
 ### Why a 15-year strike-price lock matters
 
@@ -39,15 +39,13 @@ Four panels, each a direct consequence of the one above:
 
 2. **Panel [2] — Unit prices (£/MWh).** The mechanism itself. Blue is the fleet-weighted strike price consumers pay for every CfD MWh. Orange is the generation-weighted gas counterfactual — what the same MWh would have cost from the existing UK CCGT fleet. The shaded blue gap between them is the per-MWh cost of the policy.
 
-3. **Panel [3] — Premium per MWh (£/MWh).** Strike minus counterfactual. **Red** when consumers overpay relative to gas; **green** when the scheme is genuinely cheaper. Watch 2022 dip toward zero — but never below it.
+3. **Panel [3] — Premium per MWh (£/MWh).** Strike minus counterfactual. **Red** when consumers overpay relative to gas; **green** when the scheme is genuinely cheaper. The premium-per-MWh sits firmly red across 2018-2020, dips below zero through 2021-2023 as crisis-priced gas exceeds contracted strikes, and oscillates near zero from 2024 onward.
 
-4. **Panel [4] — Cumulative premium (£bn).** Running total of `premium_per_mwh × generation` since the scheme began. This is the bill consumers paid *over and above* what the existing gas fleet would have cost for the same electricity. Endpoint currently **£14.0bn** (panel [4] aggregates to daily fleet-weighted strike prices; the row-level decomposition on [cfd-vs-gas-cost](../themes/cost/cfd-vs-gas-cost.md) gives £14.1bn — the two figures are the same quantity to rounding at the 0.1bn level).
+4. **Panel [4] — Cumulative premium (£bn).** Running total of `premium_per_mwh × generation` since the scheme began. This is the bill consumers paid *over and above* what the existing gas fleet would have cost for the same electricity, year-by-year and signed. Endpoint currently **-£1.4bn** (i.e. cumulative net £1.4bn cheaper than gas across all years to date) — the curve climbed steadily through 2018-2020 to a peak around +£3bn before the 2021-2023 gas crisis drove it back down through zero and into negative territory; the row-level decomposition on [cfd-vs-gas-cost](../themes/cost/cfd-vs-gas-cost.md) gives the same quantity to rounding at the 0.1bn level.
 
-The CfD shield does not work. In every year of the scheme's operation the blue line has sat above the orange line — *including 2022*, the worst gas crisis in living memory. The one year the two nearly converged, CfD electricity still cost consumers 7% more than gas would have.
+The CfD shield's behaviour is bidirectional and asymmetric in time. In normal-gas years (2018, 2019, 2020, 2024) the blue strike line sits above the orange gas counterfactual: consumers pay roughly **2× the gas alternative** in 2018-2019 and as much as **5×** in 2020 when gas was cheap. In crisis-gas years (2021, 2022, 2023) the orange counterfactual climbs above the blue strike: gas was so expensive that contracted strikes were a bargain by comparison and CfD generators paid back into the levy. The scheme was sold as protection from crisis prices; what the data shows is that the price-certainty mechanism *did* work in the one extreme crisis to date, while costing consumers a price-certainty premium in every normal year.
 
-In normal years — 2018, 2019, 2020, 2023, 2024, 2025 — CfD electricity has cost roughly **2× the gas alternative**. In 2020, when gas was cheap, it cost **5×**. The scheme was sold as protection from crisis prices. What it actually did was take the ceiling of volatility and turn it into the floor of consumer bills.
-
-Panel [4]'s red cumulative curve tells the cost of that policy choice: ~£14bn more than consumers would have paid for the same electricity from the gas fleet Britain already owned.
+Panel [4]'s cumulative curve tells the *signed* net of that policy choice: through 2020 consumers paid up to ~£3bn *more* than the existing gas fleet would have charged; through 2023 the 2021-2022 crisis-priced gas drove the cumulative back below zero; the latest endpoint is a net ~£1.4bn *cheaper* than gas across all years combined. The curve's path matters more than its endpoint — it is the policy's price-certainty premium expressed as a running balance.
 
 How the numbers stack — for each day:
 
@@ -74,7 +72,7 @@ Colours follow the `TECHNOLOGY_COLORS` convention used across the site (Offshore
 
 **Offshore wind and Drax biomass dominate. Almost every pound of CfD subsidy flows to one of two categories.**
 
-The per-project [Lorenz chart (§5)](#concentration-chart-s4) makes the point at the unit level: 6 projects capture half the £29bn. This chart makes the same point along a different axis: when you collapse those individual contracts into technology categories, the cumulative stacked area in the bottom panel shows the vast majority of lifetime CfD spend falls inside two bands — Offshore Wind (largest single band) and Biomass (entirely Drax + a small Lynemouth contribution). Onshore wind is a thin band despite its large installed-capacity share of the wider UK renewables fleet, because most onshore wind in Great Britain predates the CfD scheme and was built under the Renewables Obligation regime.
+The per-project [Lorenz chart (§5)](#concentration-chart-s4) makes the point at the unit level: 6 projects capture half the £13bn paid to date. This chart makes the same point along a different axis: when you collapse those individual contracts into technology categories, the cumulative stacked area in the bottom panel shows the vast majority of lifetime CfD spend falls inside two bands — Offshore Wind (largest single band) and Biomass (entirely Drax + a small Lynemouth contribution). Onshore wind is a thin band despite its large installed-capacity share of the wider UK renewables fleet, because most onshore wind in Great Britain predates the CfD scheme and was built under the Renewables Obligation regime.
 
 This is not a criticism of offshore wind or Drax individually. It is a statement about what the CfD mechanism is actually doing with the consumer levy pound. A reader evaluating "does the UK need CfDs?" should evaluate the offshore wind contracts and the Drax biomass contract *on their specific merits* — strike price, carbon intensity, supply-chain economics — rather than on a diffuse "supports renewables in general" argument. The chart forces the concentration into the foreground.
 
@@ -110,7 +108,7 @@ Two threshold annotations sit on the red curve: one marking the smallest number 
 
 **Six projects receive 50% of all CfD subsidy. Eleven receive 80%. The "renewables revolution" is a concentrated industrial-scale transfer to a handful of offshore wind farms and one converted coal station.**
 
-The headline framing of the CfD scheme — "supporting Britain's renewable industry" — implies breadth. The arithmetic implies the opposite. Of roughly ~80 projects with positive net CfD payments to date, the top 6 alone capture half the £29bn. One of those six is Drax, which is a biomass unit, not wind or solar. Strip Drax out and the remainder is dominated by Investment-Contract-era offshore wind built 2014–2019: Hornsea, Beatrice, Walney, East Anglia ONE, Burbo Bank Extension. These are all very large single-owner sites operated by three or four multinational developers (Ørsted, SSE, Iberdrola, Equinor).
+The headline framing of the CfD scheme — "supporting Britain's renewable industry" — implies breadth. The arithmetic implies the opposite. Of roughly ~80 projects with positive net CfD payments to date, the top 6 alone capture half the £13bn paid. One of those six is Drax, which is a biomass unit, not wind or solar. Strip Drax out and the remainder is dominated by Investment-Contract-era offshore wind built 2014–2019: Hornsea, Beatrice, Walney, East Anglia ONE, Burbo Bank Extension. These are all very large single-owner sites operated by three or four multinational developers (Ørsted, SSE, Iberdrola, Equinor).
 
 This concentration is a feature of the subsidy design, not an accident of the current fleet. Strike prices were set via competitive auction *per project*, and the economics of offshore wind favour very large single sites for capex efficiency. The result is that the CfD mechanism's total spend is structurally dominated by a small number of very large contracts — and adversarial readers should evaluate the scheme's merits *on those contracts specifically*, not on the distributed "many small projects" framing the policy is usually defended with.
 
@@ -127,7 +125,7 @@ cum_pct_projects   = rank(unit) / n_units × 100
 
 The two threshold annotations (50% and 80%) are computed as the smallest rank whose `cum_pct_payments` first crosses the threshold — `(cum_pct_payments >= threshold).argmax()` in numpy terms. Top-three labels attach the raw £m figure to each of the first three ranked units.
 
-No gas counterfactual is used. Lorenz is pure *attribution* of money already spent: where did the £29bn go?
+No gas counterfactual is used. Lorenz is pure *attribution* of money already spent: where did the £13bn go?
 
 Concentration caveats:
 
@@ -202,7 +200,7 @@ Forward-commitment caveats:
 - **Gas counterfactual:** shared with RO. See [`methodology/gas-counterfactual.md`](../methodology/gas-counterfactual.md) for the single source of truth on the displaced-gas assumption (CCGT efficiency 0.55, ONS gas wholesale, UK ETS carbon overlay, £5/MWh fixed O&M existing-fleet).
 - **Calendar year axis:** all charts use calendar year. Scheme-year (Apr-Mar) is preserved in raw LCCC settlements but derived grains aggregate to CY.
 - **Scope:** GB-only; CfD is a GB-scheme (no NIRO equivalent). LCCC settlements cover GB generation only.
-- **Wholesale+levy decomposition:** For the breakdown of the £14bn premium into wholesale-price + consumer-levy cash flows, see [what consumers paid vs what gas would have cost](../themes/cost/cfd-vs-gas-cost.md) — the chart stays on its own theme page; the scheme page cross-links to it rather than duplicating.
+- **Wholesale+levy decomposition:** For the breakdown of the signed cumulative premium into wholesale-price + consumer-levy cash flows, see [what consumers paid vs what gas would have cost](../themes/cost/cfd-vs-gas-cost.md) — the chart stays on its own theme page; the scheme page cross-links to it rather than duplicating.
 - **Methodology version:** `counterfactual.METHODOLOGY_VERSION = "0.1.0"` (see `CHANGES.md ## Methodology versions`); bump to 1.0.0 reserved for Phase 6 portal launch.
 - **Benchmark:** reconciled against LCCC self-reconciliation floor per `tests/test_benchmarks.py`; external cross-check candidates include published CfD settlement totals.
 
@@ -260,19 +258,19 @@ Forward-commitment caveats:
 
 ## Headline FAQ
 
-**Q: Is £29bn / £14bn the only figure that matters?**
+**Q: Is the cumulative payment / cumulative premium the only figure that matters?**
 
-No. The £29bn is the cumulative consumer payment for CfD electricity since scheme start; the £14bn is the premium over the gas counterfactual for the same period. Three other numbers carry comparable weight: the **annual current-year CfD levy** (~£3–5bn/yr depending on wholesale prices), the **forward-committed total** (visible on chart S5; currently ~£33bn floor, >£50bn including AR3+), and the **per-MWh premium** (chart S2 panel 3). Neither headline number alone tells the forward-commitment story, which is chart S5's load-bearing contribution.
+No. The £13bn is the cumulative consumer payment for CfD electricity since scheme start; the cumulative net premium over gas (signed) is currently -£1.4bn — meaning across all years the policy has run net cheaper than the gas counterfactual, but only because the 2021-2022 gas crisis dwarfed the previous cumulative overcharge of roughly £4bn. Three other numbers carry comparable weight: the **annual current-year CfD levy** (~£3–5bn/yr depending on wholesale prices), the **forward-committed total** (visible on chart S5; currently ~£33bn floor, >£50bn including AR3+), and the **per-MWh premium** (chart S2 panel 3). No single number alone tells the forward-commitment story, which is chart S5's load-bearing contribution.
 
 **Q: Why compare to gas rather than to renewables-without-subsidy?**
 
 The gas counterfactual asks "what would the same MWh have cost from the existing CCGT fleet?" — this is the marginal-displacement question. The UK has a large fleet of gas plant that would have generated those MWh absent CfDs. Comparing to renewables-without-subsidy would require modelling a counterfactual generation mix that does not exist. The full methodology and sensitivity analysis live at [`methodology/gas-counterfactual.md`](../methodology/gas-counterfactual.md); alternative framings (£/tCO₂ avoided, new-build gas comparison) are documented on other site themes.
 
-**Q: What about 2022? Didn't the scheme work that year?**
+**Q: What about 2022? Did the scheme work that year?**
 
-CfD still cost 7% more than gas even at the 2022 crisis peak — see chart S2 panel 3. The premium-per-MWh inverted briefly for the highest-strike contracts (those units' `CFD_Payments_GBP` went negative, meaning generators paid consumers back), but the cumulative bill in panel 4 kept climbing throughout. The "shield" framing rests on 2022 as evidence; the chart shows 2022 was the hardest possible test and the scheme still failed it at the fleet-weighted average level.
+In 2022 CfD payments went *negative* at the fleet level — see chart S2 panel 3. Net `CFD_Payments_GBP` of -£0.35bn meant CfD generators paid consumers back into the levy because spot gas wholesale prices exceeded contracted strike prices for most of the year. Against a counterfactual gas cost of ~£3.1bn for the same MWh, the 2022 net premium was -£3.5bn — by far the largest single-year saving the policy has delivered, and the principal reason the cumulative net premium across all years is now negative. The "shield" framing earned its strongest evidence in 2022; the open question is how often a 2022-magnitude crisis recurs in the contracts' remaining lifetime.
 
-**Q: How is £29bn different from LCCC's published CfD figures?**
+**Q: How is the £13bn paid figure different from LCCC's published CfD figures?**
 
 LCCC publishes `CFD_Payments_GBP` directly — the net levy cash flow between the Low Carbon Contracts Company and generators. This site derives consumer cost as `reference_price × generation + CFD_Payments_GBP`, which is mathematically `strike × generation` and represents the total consumer payment including both the wholesale-market component and the levy top-up. The two figures converge to the same £/MWh when reference prices are low but diverge when wholesale exceeds strike (2022: LCCC published negative levy payments; this site's consumer-cost figure smoothed upward because the wholesale component kept rising). See [LCCC Actual CfD Generation data portal](https://www.lowcarboncontracts.uk/data-portal/dataset/actual-cfd-generation-and-avoided-ghg-emissions/actual-cfd-generation-and-avoided-ghg-emissions) for the raw figures.
 
