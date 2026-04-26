@@ -58,3 +58,37 @@ def create_color_map(items: list[str], palette: str = "generation") -> dict[str,
         color_map[item] = fallback_colors[i % len(fallback_colors)]
 
     return color_map
+
+
+# ---------------------------------------------------------------------------
+# Phase 6 Plan 06-01 — per-scheme palette for cross-scheme charts (X1, X4, X5).
+# ---------------------------------------------------------------------------
+
+SCHEME_COLORS: dict[str, str] = {
+    "CfD": "#1f77b4",
+    "RO": "#d62728",
+    "FiT": "#ff7f0e",
+    "Constraint Payments": "#17becf",
+    "Capacity Market": "#9467bd",
+    "Balancing Services": "#bcbd22",
+    "Grid Socialisation": "#e377c2",
+    "SEG": "#8c564b",
+}
+"""Per-scheme color palette for cross-scheme charts (X1, X4, X5).
+
+Selection criteria (UI-SPEC §"Per-scheme palette" — locked):
+1. Colorblind-safe (Tol bright qualitative palette).
+2. Reuse TECHNOLOGY_COLORS / ALLOCATION_ROUND_COLORS hexes where the scheme's
+   biggest band already has an established theme color (CfD = offshore wind blue;
+   RO = biomass red; FiT = solar PV orange).
+3. Stable across X-chart variants — same scheme = same color in X1/X4/X5.
+4. Anti-aliasing-safe in PNG (WCAG AA contrast against PLOT_BG=#252936).
+
+Provenance:
+  source:       Tol Bright Qualitative Palette + project TECHNOLOGY_COLORS reuse
+  url:          https://personal.sron.nl/~pault/
+  basis:        Deuteranopia/protanopia/tritanopia tested; reuses existing
+                colors.py palette where the scheme's biggest band has a theme anchor.
+  retrieved_on: 2026-04-25
+  next_audit:   when WCAG / colorblind standards revise
+"""
