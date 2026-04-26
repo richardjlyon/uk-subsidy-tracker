@@ -9,6 +9,99 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Phase 6 — Flagship Cross-Scheme Charts
+
+**Added** (Plans 06-01..06-07):
+
+- `src/uk_subsidy_tracker/schemes/portal/` — third scheme module satisfying
+  ARCHITECTURE §6.1 contract; `rebuild_derived()` joins shipped scheme
+  `annual_summary.parquet` outputs into long-format
+  `data/derived/portal/cross_scheme.parquet`. (Plan 06-01)
+- `src/uk_subsidy_tracker/schemas/portal.py::CrossSchemeRow` — Pydantic row
+  model for cross_scheme.parquet (year + scheme + cost_gbp + premium_gbp +
+  generation_mwh + households_uk + methodology_version per D-02; declaration
+  order IS Parquet column order per D-10). (Plan 06-01)
+- `src/uk_subsidy_tracker/data/uk_households.py` — per-year UK households-count
+  dict for X3 chart denominator; ONS Families and Households 2025 edition
+  source. Provenance: docstring grep-discoverable. (Plan 06-01)
+- `data/raw/ons/familiesandhouseholdsuk2025.xlsx` (208 KB) + `.meta.json`
+  sidecar — primary ONS source data committed (sha256-pinned). (Plan 06-01)
+- `src/uk_subsidy_tracker/plotting/colors.py::SCHEME_COLORS` — 8-entry
+  per-scheme palette (CfD + RO populated; 6 reserved slots for Phases 7-12).
+  Provenance: docstring grep-discoverable. (Plan 06-01)
+- `src/uk_subsidy_tracker/plotting/portal/x{1..5}_*.py` — 5 flagship
+  cross-scheme charts: X1 stacked total (TWO-figure pattern: PNG hero static
+  All-time + HTML with Plotly rangeselector 1y/5y/All per D-07), X2 cumulative
+  premium, X3 per-household, X4 cost-per-MWh, X5 2022 crisis. (Plans 06-02
+  + 06-03)
+- `docs/portal/` tier — Overview + 5 X-chart 6-section narrative pages +
+  8-section cross-scheme methodology page. GOV-01 four-way coverage on every
+  X-chart page. (Plan 06-04)
+- `mkdocs.yml::nav` — top-level `Portal:` block per UI-SPEC §6 lock (between
+  Schemes and Data). (Plan 06-04)
+- `tests/test_aggregates.py::test_cross_scheme_row_conservation` +
+  `test_cross_scheme_per_year_conservation` — D-03 row-conservation discipline
+  at cross-scheme grain. (Plan 06-01)
+- `tests/test_schemas.py::test_portal_parquet_grain_schema` — D-10 column-order
+  discipline + per-row CrossSchemeRow Pydantic validation. (Plan 06-01)
+- `tests/test_determinism.py::test_portal_parquet_content_identical` — D-21
+  byte-identical rebuild discipline. (Plan 06-01)
+- `tests/test_refresh_loop.py::test_portal_upstream_changed_*` +
+  `test_portal_refresh_is_no_op` — GOV-03 mtime-based dirty-check discipline.
+  (Plan 06-01)
+- `tests/test_constants_provenance.py` extended — 11 new `UK_HOUSEHOLDS_YYYY`
+  synthetic keys (years 2014-2024) tracked under SEED-001 Tier 2 drift
+  tripwire. (Plan 06-01)
+- `tests/test_headline_sync.py` — single parametrised regression test
+  covering 7 cross-surface assertions (homepage cards + cfd.md + ro.md prose
+  vs parquet totals). Generalises Phase 05.2 ro.md headline-sync precedent
+  per D-09 + D-11. (Plan 06-06)
+- `tests/test_benchmarks.py::test_ref_total_reconciliation` — REF Constable
+  per-scheme subset cross-check (CfD + RO; option b per D-Discretion). HARD
+  BLOCK at ±3% on cleaned per-scheme subsets per D-14 inheritance. (Plan
+  06-07)
+- `tests/fixtures/benchmarks.yaml::ref_constable_cfd` — REF Constable Table 1
+  CfD per-year entries (SY 2015/16–2023/24; 9 entries; total £7.8bn; tolerance
+  3.0). (Plan 06-07)
+
+**Changed** (Plans 06-01..06-06):
+
+- `src/uk_subsidy_tracker/refresh_all.SCHEMES` — appended `("portal", portal)`
+  as the LAST entry; portal rebuild fires after CfD + RO rebuilds in cron
+  order. (Plan 06-01)
+- `src/uk_subsidy_tracker/publish/manifest.py::GRAIN_SOURCES/GRAIN_TITLES/
+  GRAIN_DESCRIPTIONS` — added `"portal"` dict-of-dicts entries; cross_scheme
+  grain auto-publishes via existing scheme-iteration pattern. (Plan 06-01)
+- `src/uk_subsidy_tracker/plotting/__main__.py` — appended 5 X-chart `main()`
+  entries to charts list; orchestrator now runs 23 charts (18 existing + 5
+  portal). (Plans 06-02 + 06-03)
+- `docs/index.md` — inserted 3 headline cards (Total subsidy £8.0 bn / Premium
+  over gas £0.1 bn / Per household £282 for `latest_fully_reconciled_year` =
+  2023) + italic caveat + X1 hero PNG + Interactive HTML link, above existing
+  2×4 scheme grid (Phase 05.1 D-10 layout preserved). 6 placeholder tiles
+  unchanged. (Plan 06-05)
+- `docs/schemes/cfd.md` — lead paragraph + Chart S2 narrative + Concentration
+  §4 + FAQ updated to reflect live parquet (£13.0bn cumulative paid; net
+  -£1.4bn cumulative premium); 9 in-page back-references swept for narrative
+  coherence. Driven by Wave 6 D-12 cadence (test_headline_sync RED → prose
+  update → mkdocs --strict GREEN). (Plan 06-06)
+- `tests/fixtures/__init__.py::Benchmarks` — added `ref_constable_cfd:
+  list[BenchmarkEntry]` field (default-factory list for backward
+  compatibility). (Plan 06-07)
+
+**Removed:**
+
+- `tests/test_docs_ro_headline_sync.py` — single-surface RO test deleted;
+  subsumed by `tests/test_headline_sync.py::test_headline_matches_parquet[
+  ro_covered]` parametrised case per D-11 generalisation. (Plan 06-06)
+
+**Notes (Plan 06-07):**
+
+- METHODOLOGY_VERSION HELD at 0.1.0 — Phase 6 introduces no new counterfactual
+  rule (pure substrate + presentation layer per cross-scheme aggregation).
+  Bump reserved for future phase that introduces a methodology rule not
+  already captured per-scheme.
+
 #### Phase 05.2 — RO Data Reconstruction (Aggregate-Grain)
 
 - `src/uk_subsidy_tracker/data/ofgem_aggregate.py` — Ofgem 12-year XLSX download
