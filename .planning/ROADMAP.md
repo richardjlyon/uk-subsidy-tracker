@@ -182,7 +182,7 @@ Plans:
 - [x] 06-04-PLAN.md — Wave 4 docs/portal/ tier: index + 5 X-chart 6-section narrative pages + 8-section methodology.md + mkdocs.yml top-level Portal nav (X-01..X-05, PORTAL-01)
 - [x] 06-05-PLAN.md — Wave 5 docs/index.md retrofit: 3 headline cards (latest_fully_reconciled_year=2023) + caveat + X1 hero embed; CfD/RO scheme-grid tile headline figures updated (PORTAL-01, PORTAL-02)
 - [x] 06-06-PLAN.md — Wave 6 cross-surface headline-sync regression test (D-09 + D-11): 7 parametrised cases; tests/test_docs_ro_headline_sync.py deleted (PORTAL-01, PORTAL-02)
-- [ ] 06-07-PLAN.md — Wave 7 phase-exit: REF Constable CfD entries transcription + test_ref_total_reconciliation per-scheme subset cross-check (option b) + CHANGES.md [Unreleased] audit trail + final mkdocs --strict + pytest gate (X-01..X-05, PORTAL-01, PORTAL-02)
+- [x] 06-07-PLAN.md — Wave 7 phase-exit: REF Constable CfD entries transcription + test_ref_total_reconciliation per-scheme subset cross-check (option b) + CHANGES.md [Unreleased] audit trail + final mkdocs --strict + pytest gate (X-01..X-05, PORTAL-01, PORTAL-02)
 **UI hint**: yes
 
 ### Phase 7: FiT Module
