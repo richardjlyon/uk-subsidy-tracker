@@ -174,9 +174,9 @@ Plans:
   3. X4 (cost per MWh by scheme) and X5 (2022 crisis comparison) charts are published
   4. Scheme grid tiles show latest headline figure for CfD and RO; remaining tiles show placeholder figures
   5. `PORTAL-02`: Each populated scheme tile links to its scheme detail page
-**Plans:** 7 plans
+**Plans:** 1/7 plans executed
 Plans:
-- [ ] 06-01-PLAN.md — Wave 1 cross-scheme substrate: schemas/portal.py + schemes/portal/ module + uk_households constant + ONS XLSX + SCHEME_COLORS + manifest/refresh_all wiring + Wave-1 test extensions (X-01..X-05 substrate)
+- [x] 06-01-PLAN.md — Wave 1 cross-scheme substrate: schemas/portal.py + schemes/portal/ module + uk_households constant + ONS XLSX + SCHEME_COLORS + manifest/refresh_all wiring + Wave-1 test extensions (X-01..X-05 substrate)
 - [ ] 06-02-PLAN.md — Wave 2 X1/X2/X3 plotting modules: X1 stacked total (TWO-figure rangeselector pattern), X2 cumulative premium, X3 per-household; orchestrator wiring (X-01, X-02, X-03)
 - [ ] 06-03-PLAN.md — Wave 3 X4/X5 plotting modules: X4 cost-per-MWh, X5 2022 crisis grouped bars (D-15); EXCLUDED_SCHEMES discipline armed for Phases 9-11 (X-04, X-05)
 - [ ] 06-04-PLAN.md — Wave 4 docs/portal/ tier: index + 5 X-chart 6-section narrative pages + 8-section methodology.md + mkdocs.yml top-level Portal nav (X-01..X-05, PORTAL-01)
@@ -261,7 +261,7 @@ Plans:
 | 5. RO Module | 13/13 | Complete   | 2026-04-25 |
 | 05.1. CfD Scheme Page Retrofit | 4/4 | Complete    | 2026-04-24 |
 | 05.2. RO Data Reconstruction (Aggregate-Grain) | 6/6 | Complete   | 2026-04-25 |
-| 6. Flagship Cross-Scheme Charts | 0/7 | Not started | - |
+| 6. Flagship Cross-Scheme Charts | 1/7 | In Progress|  |
 | 7. FiT Module | 0/0 | Not started | - |
 | 8. Constraint Payments Module | 0/0 | Not started | - |
 | 9. Capacity Market Module | 0/0 | Not started | - |

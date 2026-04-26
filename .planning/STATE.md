@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-04-26T01:06:29.710Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-04-26T01:31:23.069Z"
 progress:
   total_phases: 18
   completed_phases: 7
   total_plans: 50
-  completed_plans: 43
-  percent: 86
+  completed_plans: 44
+  percent: 88
 ---
 
 # Project State: UK Renewable Subsidy Tracker
@@ -38,8 +38,8 @@ progress:
 
 ## Current Position
 
-Phase: 05.2 (ro-data-reconstruction-aggregate-grain) — EXECUTING
-Plan: 6 of 6
+Phase: 06 (flagship-cross-scheme-charts) — EXECUTING
+Plan: 2 of 7
 **Status:** Ready to execute
 **Focus:** Plan 05.2-01 shipped Wave-1 foundations (sidecar sources[] extension + ofgem_aggregate.py loader skeleton + tests/conftest.py @pytest.mark.dormant auto-skip hook). Three independent building blocks landed across 5 atomic commits with TDD RED→GREEN for Tasks 1+2; full suite 175 passed + 14 skipped + 22 xfailed (zero regressions). **Plan 05.2-02 (Wave 2 raw data landing — XLSX commit + transcribed CSVs with multi-source sidecars) is unblocked next** — has the `sources[]` kwarg + `XLSX_URL` constant + comment-aware loaders ready to consume.
 
@@ -99,6 +99,7 @@ Progress: [█████████░] 88% (38/43 plans)
 | Phase 05.2 P04 | 6 | 3 tasks | 10 files |
 | Phase 05.2-ro-data-reconstruction-aggregate-grain P05 | 30 | 3 tasks | 3 files |
 | Phase 05.2 P06 | 9 | 5 tasks | 7 files |
+| Phase 06-flagship-cross-scheme-charts P01 | 12min | 4 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -175,6 +176,12 @@ Progress: [█████████░] 88% (38/43 plans)
 | Plan 05-10 RO test parametrisations use INDEPENDENT module-scoped fixtures alongside CfD (PATTERNS.md directive — NOT merged) | PATTERNS.md "Do NOT merge CfD + RO into one parametrisation — keep separate for clarity and independent module-scoped fixtures." Each scheme rebuilds into its own tmp dir; cross-scheme ordering assumption is impossible. Naming convention: scheme-A keeps existing names (`derived_dir`, `GRAINS`); scheme-B prefixes with the scheme key (`ro_derived_dir`, `RO_GRAINS`). FiT (Phase 7) and onwards inherit the same naming pattern by default. |
 | Plan 05-10 D-11 stub-data fallback skip helper for RO row-conservation tests | pandas `assert_series_equal` rejects empty MultiIndex levels because `inferred_type` differs between an empty groupby result (carries column dtype, e.g. `'string'`) and an empty `set_index` result (reports `'empty'`). Same shape, different metadata. Cleanest fix: extract `_skip_if_empty_ro_station_month()` helper called at the top of every parametrisation; reason string mentions "real RER data wired" for grep-discoverability when seed-stub data is replaced. Tests re-arm automatically the moment a single non-empty Ofgem RER row arrives — no test code change required. |
 | Plan 05-10 D-10 column-order assertion runs unconditionally on empty Parquets | Plan's literal `test_ro_parquet_grain_schema` placed `pytest.skip()` for empty data BEFORE the column-order assertion. Reordered so column-order check runs first (always), per-row Pydantic validation skips on empty. Parquet column metadata is a file-header property meaningful even with zero rows — if a future plan accidentally reordered RO row-model fields, the regression surfaces immediately rather than waiting for real data. Same robustness bias as the D-11 helper above: lose as little contract coverage as possible to stub-data conditions. |
+| Plan 06-01 UK_HOUSEHOLDS dict covers 2014-2024 only; pre-2014 X3 bars omitted | RESEARCH §"Open Questions Q3" recommendation + threat T-06-01-05 acceptance posture. ONS Families and Households 2025 edition Sheet 7 "All households" row publishes 2014-onwards; pre-2014 RO bars on X3 (years 2006-2013) would require Census-derived historical series with a methodology footnote. Cleanest is to omit pre-2014 bars entirely — methodology page documents the omission for hostile readers; X3 plotting layer (Wave 2/3) filters NaN households_uk rows. |
+| Plan 06-01 latest_fully_reconciled_year() = 2023 | Intersection rule: CfD complete years (`year <= LATEST_COMPLETE_CFD_YEAR=2025`) ∩ RO complete years (GB-only with non-null `ro_cost_gbp`) → max. Today = `{2016, 2017, 2019, 2020, 2021, 2022, 2023}` ∩ → 2023. Used by Wave 5 docs/index.md headline-card values + Wave 6 headline-sync test. Phase 06-RESEARCH §"Today's value (verified 2026-04-25)" pinned 2023 ahead of execution; the helper computes it from disk for forward compatibility. |
+| Plan 06-01 portal manifest entries via in-dict literal style | Plan suggested post-dict assignment `GRAIN_SOURCES["portal"] = {...}`. Shipped as in-dict literal `"portal": {...}` consistent with existing CfD + RO patterns at lines 75-139 of manifest.py. Functionally equivalent at runtime (`GRAIN_SOURCES["portal"]["cross_scheme"]` resolves identically); style consistency is the tie-breaker. |
+| Plan 06-01 refresh_all.SCHEMES orders portal LAST | The portal's `cross_scheme_model.py` reads from `data/derived/cfd/annual_summary.parquet` and `data/derived/ro/annual_summary.parquet` at PROJECT_ROOT-relative paths (NOT from a passed `output_dir`). Iterating CfD → RO → portal in `refresh_scheme()` ensures the portal sees the freshly-rebuilt per-scheme parquets. Documented inline in the SCHEMES tuple comment + reinforced in 06-PATTERNS.md "MUST be last" directive. |
+| Plan 06-01 ONS XLSX downloaded from `/current/` URL slug, not `/2025/` | Plan-specified URL `https://www.ons.gov.uk/file?uri=/.../familiesandhouseholdsfamiliesandhouseholds/2025/familiesandhouseholdsuk2025.xlsx` returns 404 (the literal `/2025/` path does not exist). ONS publishes the latest edition at `/current/familiesandhouseholdsuk2025.xlsx`; this URL is also the daily-refresh canonical (ONS rotates the same URL through annual editions). Sidecar `upstream_url` records the `/current/` path — when the 2026 edition lands, the same URL will resolve to it and the daily refresh's `upstream_changed()` will fire. |
+| Plan 06-01 build_cross_scheme empty-frame fallback declares all 7 columns explicitly (Rule 2 fix) | RESEARCH skeleton (lines 510-514) handled the all-empty case with only 6 columns — dropped `households_uk`. Without `households_uk` the empty frame breaks D-10 (column count mismatch with `CrossSchemeRow.model_fields.keys()`). Fixed at the producer side: explicit 7-column frame with dtype-coerced types (year=int64, scheme=object, cost_gbp=float64, premium_gbp=float64, generation_mwh=float64, households_uk=int64, methodology_version=object). `test_portal_parquet_grain_schema` enforces column-order on every grain, so this defensiveness is testable on the bootstrap-empty path. |
 
 ### Blockers
 
@@ -253,7 +260,7 @@ None currently.
 
 **Next command:** `/gsd-execute-phase 5 --plan 13` (Phase 5 Plan 12 COMPLETE — CHANGES.md consolidation shipped; Phase 5 audit trail now grep-verifiable with 6 RO requirement closures + 4 ## Methodology versions H3 audit entries). Plan 05-12 shipped 1 atomic commit (`22bb8c5`), 1 file modified (CHANGES.md), 1 file created (05-12-SUMMARY.md), ~4 min duration. Test count unchanged: **163 passed + 12 skipped + 22 xfailed**. RO-01..RO-06 marked complete in REQUIREMENTS.md; ROADMAP.md plan-progress row reflects 12/13. Phase 5 progress: 12/13 plans. Plan 05-13 (Post-Execution Human Review) is the only remaining plan — handles 8 follow-up items: replace 3 ofgem stub raws with real RER exports, plumb OFGEM_RER_* secrets if Playwright path approved, transcribe roc-prices.csv from public PDFs, decide on Option-C pdfplumber middle-ground, re-examine RESEARCH §2 stale URL templates, transcribe NIROC primary source for 12 [ASSUMED] entries, audit 2005-2017 DEFAULT_CARBON_PRICES against EEA + BoE primary sources, delete `.planning/phases/05-ro-module/05-09-DIVERGENCE.md` sentinel to re-arm REF reconciliation D-14 hard-block. **Earlier:** `/gsd-execute-phase 5 --auto --plan 12` (Plan 11 COMPLETE). | Earlier: `/gsd-execute-phase 5 --auto --plan 08` (Phase 5 Plan 07 COMPLETE — Wave 3 lead-off shipped; RO end-to-end refresh path closed). Plan 05-07 shipped 3 atomic commits (`8b2fc1d`, `86bf146`, `6bb38b7`), 3 files modified (refresh_all.py, manifest.py, test_refresh_loop.py), ~4 min duration. 153 passed + 4 skipped (+2 new RO refresh-loop tests; zero regressions). Phase 5 progress: 7/13 plans. `refresh_all.SCHEMES` now iterates both CfD and RO under D-18 per-scheme dirty-check; `manifest.build()` emits 10 Dataset entries (5 CfD + 5 RO) once `data/derived/ro/*.parquet` is rebuilt from non-stub raw data. Plan 05-08 (RO chart files: ro_dynamics, ro_by_technology, ro_concentration, ro_forward_projection) is next. Earlier: `/gsd-execute-phase 5 --auto --plan 07` (Phase 5 Plan 06 COMPLETE — manifest.py multi-scheme scaffolding); `/gsd-execute-phase 5 --auto --plan 03` (Phase 5 Plan 02 COMPLETE — partial RO-02 progress, bandings foundation shipped). Earlier: `/gsd-execute-phase 5 --auto --plan 02` (Phase 5 Plan 01 COMPLETE — RO-01 closed via Option-D fallback). Plan 05-01 shipped 2 atomic commits (8c71cde, 5729d02), 11 created files, 1 modified, 12-file file count, 7-min duration. 82 passed + 4 skipped (+8 new from `tests/data/test_ofgem_ro.py`). Phase 5 progress: 1/13 plans. RO-01 closed; remaining requirements (RO-02..RO-06) routed to Plans 05-02 through 05-13. Plan 05-13 will pick up the 6 Plan 05-01 follow-ups during post-execution review (replace 3 ofgem stubs with real exports, plumb `OFGEM_RER_*` secrets if Playwright path approved, transcribe `roc-prices.csv`, decide on `pdfplumber` middle-ground, re-examine RESEARCH §2 stale URLs). | Earlier: Phase 4 closed 7/7 plans: 04-01 (wave-0 deps + SEED-001 Tier-2 drift tripwire), 04-02 (raw-layer migration), 04-03 (derived layer + schemes/cfd/), 04-04 (publishing layer manifest + csv_mirror + snapshot), 04-05 (refresh.yml + deploy.yml + refresh-failure-template.md), 04-06 (docs/data/index.md + nav tab + citation versioned-snapshot pattern + D-11 lccc_self audit note Disposition C), 04-07 (refresh-loop closure: sidecar.write_sidecar + refresh() wires all 3 downloaders + rewrites all 5 sidecars + ons_gas fail-loud fix + refresh-loop invariant test + backfill script refactor). All five ROADMAP Phase-4 success criteria delivered. PUB-04 closed by 04-06; PUB-01/02/03/05/06 + GOV-02/03/06 closed by 04-04/05; GOV-03 robustness + PUB-05 end-to-end loop locked by 04-07. D-11 fallback preserved with explicit 2026-04-22 audit evidence per user-selected Disposition C (ARA 2024/25 FY-only limitation, RESEARCH Pitfall 7). 74 passed + 4 skipped; `mkdocs build --strict` green; METHODOLOGY_VERSION stays "0.1.0" (bump is Phase 6+). Phase 5 is unblocked: schemes/cfd/ is the §6.1 Protocol template for schemes/ro/ (now including a complete refresh-loop reference implementation that writes sidecars via the shared `sidecar.write_sidecar()` helper); `refresh_all.SCHEMES` is a one-line append; manifest iteration is SCHEMES-driven; docs/data/index.md works unchanged for new schemes. Outstanding user setup (deferred to user, dashboard-only, does not block Phase 5 planning): "Allow GitHub Actions to create and approve pull requests" toggle + `daily-refresh`/`refresh-failure` label creation + (from 04-06 follow-up) LCCC ARA CY-aggregate transcription when a future quarterly publication surfaces.
 
-**Stopped at:** Phase 6 UI-SPEC approved
+**Stopped at:** Completed 06-01-PLAN.md
 
 ---
 *State initialized: 2026-04-21 after roadmap creation*

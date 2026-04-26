@@ -99,11 +99,11 @@ Requirements for the portal's first public release: expansion from single-scheme
 
 ### Cross-Scheme / Portal Integration
 
-- [ ] **X-01**: Total UK subsidy stacked by scheme, annual, all-time (portal P1 flagship)
-- [ ] **X-02**: Combined premium over gas, cumulative (portal P1 flagship)
-- [ ] **X-03**: Cost per household decomposed by scheme (portal P1 flagship)
-- [ ] **X-04**: Cost per MWh of subsidised generation by scheme (P2)
-- [ ] **X-05**: 2022 crisis comparison across schemes (P2)
+- [x] **X-01**: Total UK subsidy stacked by scheme, annual, all-time (portal P1 flagship)
+- [x] **X-02**: Combined premium over gas, cumulative (portal P1 flagship)
+- [x] **X-03**: Cost per household decomposed by scheme (portal P1 flagship)
+- [x] **X-04**: Cost per MWh of subsidised generation by scheme (P2)
+- [x] **X-05**: 2022 crisis comparison across schemes (P2)
 - [ ] **PORTAL-01**: Portal homepage (`docs/index.md`) renders three headline cards (total / premium / per-household) + X1 chart with Latest-year / Last-5-years / All-time tabs + 2×4 scheme grid + theme navigation (iamkate.com/grid pattern adapted)
 - [ ] **PORTAL-02**: Scheme grid tiles show latest headline figure per scheme and link to scheme detail page
 
@@ -200,11 +200,11 @@ Each requirement maps to exactly one phase. GOV requirements are distributed to 
 | RO-05 | Phase 5 | Complete |
 | RO-06 | Phase 5 | Complete |
 | SCHEMEPAGE-01 | Phase 05.1 | Complete |
-| X-01 | Phase 6 | Pending |
-| X-02 | Phase 6 | Pending |
-| X-03 | Phase 6 | Pending |
-| X-04 | Phase 6 | Pending |
-| X-05 | Phase 6 | Pending |
+| X-01 | Phase 6 | Complete |
+| X-02 | Phase 6 | Complete |
+| X-03 | Phase 6 | Complete |
+| X-04 | Phase 6 | Complete |
+| X-05 | Phase 6 | Complete |
 | PORTAL-01 | Phase 6 | Pending |
 | PORTAL-02 | Phase 6 | Pending |
 | FIT-01 | Phase 7 | Pending |
