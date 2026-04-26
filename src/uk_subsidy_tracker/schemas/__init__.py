@@ -16,6 +16,7 @@ from uk_subsidy_tracker.schemas.cfd import (
     StationMonthRow,
     emit_schema_json,
 )
+from uk_subsidy_tracker.schemas.portal import CrossSchemeRow
 from uk_subsidy_tracker.schemas.ro import (
     RoAnnualSummaryRow,
     RoByAllocationRoundRow,
@@ -37,6 +38,8 @@ __all__ = [
     "RoByTechnologyRow",
     "RoByAllocationRoundRow",
     "RoForwardProjectionRow",
+    # Portal cross-scheme row model (Plan 06-01).
+    "CrossSchemeRow",
     # Scheme-agnostic emitter (DRY-shared via schemas.cfd).
     "emit_schema_json",
 ]

@@ -297,3 +297,120 @@ DEFAULT_CARBON_PRICES_2026:
   value: 40.0
   unit: "£/tCO2"
   notes: "Pre-existing counterfactual.py value; drift-test completion per Phase 5 Plan 05-04. Forward-year OBR reference estimate."
+
+# ---------------------------------------------------------------------------
+# UK_HOUSEHOLDS_YYYY — ONS Families and Households 2025 edition (Plan 06-01).
+# Per-year drift tracker for the X3 cross-scheme cost-per-household chart.
+# Values transcribed from Sheet 7 "All households" row of
+# data/raw/ons/familiesandhouseholdsuk2025.xlsx (full count, not thousands).
+# ---------------------------------------------------------------------------
+
+UK_HOUSEHOLDS_2014:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2014 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 26734000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2015:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2015 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 27046000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2016:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2016 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 27109000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2017:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2017 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 27226000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2018:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2018 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 27576000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2019:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2019 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 27824000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2020:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2020 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 27893000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2021:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2021 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 28119000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2022:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2022 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 28243000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2023:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2023 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 28358000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."
+
+UK_HOUSEHOLDS_2024:
+  source: "ONS Families and Households Dataset 2025 edition"
+  url: "https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/families/datasets/familiesandhouseholdsfamiliesandhouseholds"
+  basis: "Labour Force Survey Apr-Jun 2024 reference quarter; UK total of single-family + multi-family + lone-person households (Sheet 7 'All households')."
+  retrieved_on: 2026-04-25
+  next_audit: 2027-04-30
+  value: 28609000
+  unit: "households (count)"
+  notes: "Released 17 April 2026 as part of the 2025 edition multi-year time series."

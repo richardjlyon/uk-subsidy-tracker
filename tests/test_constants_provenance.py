@@ -71,8 +71,12 @@ _TRACKED = {
     "DEFAULT_CARBON_PRICES_2024",
     "DEFAULT_CARBON_PRICES_2025",
     "DEFAULT_CARBON_PRICES_2026",
+    # Phase 6 Plan 06-01 — UK_HOUSEHOLDS per-year drift tracker for the X3
+    # cross-scheme cost-per-household chart. Sourced from
+    # data/raw/ons/familiesandhouseholdsuk2025.xlsx Sheet 7 'All households'.
+    *(f"UK_HOUSEHOLDS_{y}" for y in range(2014, 2025)),
 }
-# 3 base + 25 DEFAULT_CARBON_PRICES_YYYY year keys = 28 tracked constants.
+# 3 base + 25 DEFAULT_CARBON_PRICES_YYYY + 11 UK_HOUSEHOLDS_YYYY = 39 tracked constants.
 
 
 def _live_constants() -> dict[str, float]:
@@ -81,6 +85,10 @@ def _live_constants() -> dict[str, float]:
     Scalar constants (int/float) are returned as-is. The `DEFAULT_CARBON_PRICES`
     dict is expanded into synthetic `DEFAULT_CARBON_PRICES_{year}` keys so each
     year-price pair can be tracked separately in the YAML.
+
+    Phase 6 Plan 06-01: also expands ``data.uk_households.UK_HOUSEHOLDS`` into
+    synthetic ``UK_HOUSEHOLDS_{year}`` keys so each per-year ONS household
+    count can be tracked in the YAML.
     """
     live: dict[str, float] = {}
     for attr in dir(counterfactual):
@@ -96,6 +104,10 @@ def _live_constants() -> dict[str, float]:
         elif attr == "DEFAULT_CARBON_PRICES" and isinstance(value, dict):
             for year, price in value.items():
                 live[f"DEFAULT_CARBON_PRICES_{year}"] = float(price)
+    # Phase 6 Plan 06-01 — expand UK_HOUSEHOLDS dict into synthetic per-year keys.
+    from uk_subsidy_tracker.data import uk_households
+    for year, count in uk_households.UK_HOUSEHOLDS.items():
+        live[f"UK_HOUSEHOLDS_{year}"] = float(count)
     return live
 
 
