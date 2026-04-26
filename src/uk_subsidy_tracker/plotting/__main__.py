@@ -46,6 +46,8 @@ from uk_subsidy_tracker.plotting.subsidy.subsidy_per_avoided_co2_tonne import (
 from uk_subsidy_tracker.plotting.portal.x1_stacked_total import main as x1_stacked_total
 from uk_subsidy_tracker.plotting.portal.x2_cumulative_premium import main as x2_cumulative_premium
 from uk_subsidy_tracker.plotting.portal.x3_per_household import main as x3_per_household
+from uk_subsidy_tracker.plotting.portal.x4_cost_per_mwh import main as x4_cost_per_mwh
+from uk_subsidy_tracker.plotting.portal.x5_2022_crisis import main as x5_2022_crisis
 
 
 def _is_dormant_module(path: Path | str) -> bool:
@@ -90,10 +92,12 @@ def main() -> None:
         # Cannibalisation
         ("capture_ratio", capture_ratio),
         ("price_vs_wind", price_vs_wind),
-        # Cross-scheme portal flagship charts (Phase 6, REQUIREMENTS X-01..X-03)
+        # Cross-scheme portal flagship charts (Phase 6, REQUIREMENTS X-01..X-05)
         ("x1_stacked_total", x1_stacked_total),
         ("x2_cumulative_premium", x2_cumulative_premium),
         ("x3_per_household", x3_per_household),
+        ("x4_cost_per_mwh", x4_cost_per_mwh),
+        ("x5_2022_crisis", x5_2022_crisis),
     ]
 
     failures: list[tuple[str, Exception]] = []
