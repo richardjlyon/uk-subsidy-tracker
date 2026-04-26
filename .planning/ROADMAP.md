@@ -179,7 +179,7 @@ Plans:
 - [x] 06-01-PLAN.md — Wave 1 cross-scheme substrate: schemas/portal.py + schemes/portal/ module + uk_households constant + ONS XLSX + SCHEME_COLORS + manifest/refresh_all wiring + Wave-1 test extensions (X-01..X-05 substrate)
 - [x] 06-02-PLAN.md — Wave 2 X1/X2/X3 plotting modules: X1 stacked total (TWO-figure rangeselector pattern), X2 cumulative premium, X3 per-household; orchestrator wiring (X-01, X-02, X-03)
 - [x] 06-03-PLAN.md — Wave 3 X4/X5 plotting modules: X4 cost-per-MWh, X5 2022 crisis grouped bars (D-15); EXCLUDED_SCHEMES discipline armed for Phases 9-11 (X-04, X-05)
-- [ ] 06-04-PLAN.md — Wave 4 docs/portal/ tier: index + 5 X-chart 6-section narrative pages + 8-section methodology.md + mkdocs.yml top-level Portal nav (X-01..X-05, PORTAL-01)
+- [x] 06-04-PLAN.md — Wave 4 docs/portal/ tier: index + 5 X-chart 6-section narrative pages + 8-section methodology.md + mkdocs.yml top-level Portal nav (X-01..X-05, PORTAL-01)
 - [ ] 06-05-PLAN.md — Wave 5 docs/index.md retrofit: 3 headline cards (latest_fully_reconciled_year=2023) + caveat + X1 hero embed; CfD/RO scheme-grid tile headline figures updated (PORTAL-01, PORTAL-02)
 - [ ] 06-06-PLAN.md — Wave 6 cross-surface headline-sync regression test (D-09 + D-11): 7 parametrised cases; tests/test_docs_ro_headline_sync.py deleted (PORTAL-01, PORTAL-02)
 - [ ] 06-07-PLAN.md — Wave 7 phase-exit: REF Constable CfD entries transcription + test_ref_total_reconciliation per-scheme subset cross-check (option b) + CHANGES.md [Unreleased] audit trail + final mkdocs --strict + pytest gate (X-01..X-05, PORTAL-01, PORTAL-02)
