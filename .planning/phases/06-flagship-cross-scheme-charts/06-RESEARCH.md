@@ -1282,7 +1282,7 @@ Both already enabled. No `mkdocs.yml` change required for grid cards.
 ```bash
 $ uv run mkdocs build --strict
 INFO    -  Cleaning site directory
-INFO    -  Building documentation to directory: /Users/rjl/Code/github/cfd-payment/site
+INFO    -  Building documentation to directory: /Users/rjl/Code/research-cfd-payments/site
 INFO    -  Documentation built in 0.53 seconds
 ```
 

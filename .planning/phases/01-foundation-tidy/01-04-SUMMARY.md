@@ -128,7 +128,7 @@ exit=0
 --- stderr (only) ---
 [red-boxed Material team advisory about MkDocs 2.0 breaking changes — framework informational, not a strict-mode warning]
 INFO    -  Cleaning site directory
-INFO    -  Building documentation to directory: /Users/rjl/Code/github/cfd-payment/site
+INFO    -  Building documentation to directory: /Users/rjl/Code/research-cfd-payments/site
 INFO    -  Documentation built in 0.33 seconds
 ```
 
@@ -179,7 +179,7 @@ Pre-computed status matches execution — all five criteria verify green in a si
 
 ```
 $ uv run python -c 'import uk_subsidy_tracker; print("OK:", uk_subsidy_tracker.DATA_DIR)'
-OK: /Users/rjl/Code/github/cfd-payment/data
+OK: /Users/rjl/Code/research-cfd-payments/data
 exit=0
 ```
 

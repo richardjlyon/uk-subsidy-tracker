@@ -181,7 +181,7 @@ single-task changelog-editing plan; no Rule 1-3 auto-fixes were triggered.
 
 ## Self-Check: PASSED
 
-- ✅ CHANGES.md exists at `/Users/rjl/Code/github/cfd-payment/CHANGES.md` (621 lines)
+- ✅ CHANGES.md exists at `/Users/rjl/Code/research-cfd-payments/CHANGES.md` (621 lines)
 - ✅ Commit `22bb8c5` exists on `main` (`git log --oneline | grep 22bb8c5` resolves)
 - ✅ All 6 RO-NN requirement IDs grep-verifiable in CHANGES.md
 - ✅ All 4 ## Methodology versions H3 entries grep-verifiable

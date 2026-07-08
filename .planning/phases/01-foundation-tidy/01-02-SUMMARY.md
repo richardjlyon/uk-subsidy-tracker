@@ -95,7 +95,7 @@ Also dropped `(4-panel)` suffix from `CfD Dynamics` nav entry per D-10.
 
 ```
 INFO    -  Cleaning site directory
-INFO    -  Building documentation to directory: /Users/rjl/Code/github/cfd-payment/site
+INFO    -  Building documentation to directory: /Users/rjl/Code/research-cfd-payments/site
 WARNING -  A reference to 'about/corrections.md' is included in the 'nav' configuration, which is not found in the documentation files.
 WARNING -  A reference to 'about/citation.md' is included in the 'nav' configuration, which is not found in the documentation files.
 INFO    -  Documentation built in 0.26 seconds

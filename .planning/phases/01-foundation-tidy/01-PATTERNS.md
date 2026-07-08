@@ -465,10 +465,10 @@ from uk_subsidy_tracker.data import load_gas_price            # absolute — sub
 ## Metadata
 
 **Analog search scope:**
-- `/Users/rjl/Code/github/cfd-payment/src/cfd_payment/` (Python package)
-- `/Users/rjl/Code/github/cfd-payment/docs/` (site source)
-- `/Users/rjl/Code/github/cfd-payment/` (root config + root docs)
-- `/Users/rjl/Code/github/cfd-payment/tests/` (test call sites)
+- `/Users/rjl/Code/research-cfd-payments/src/cfd_payment/` (Python package)
+- `/Users/rjl/Code/research-cfd-payments/docs/` (site source)
+- `/Users/rjl/Code/research-cfd-payments/` (root config + root docs)
+- `/Users/rjl/Code/research-cfd-payments/tests/` (test call sites)
 
 **Files scanned:** 52 contain `cfd_payment`/`cfd-payment` tokens (257 total occurrences). 24 Python source files require import rewrites in the rename sweep. 6 docs/config files require URL + module-path rewrites.
 

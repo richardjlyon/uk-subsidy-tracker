@@ -30,7 +30,7 @@ This document maps the **existing architecture** against the target defined in `
 
 **Purpose:** Preserve primary data exactly as published.
 
-**Location:** `/Users/rjl/Code/github/cfd-payment/data/`
+**Location:** `/Users/rjl/Code/research-cfd-payments/data/`
 
 **Current Contents:**
 - `lccc-actual-cfd-generation.csv` — LCCC daily settlement (raw)
