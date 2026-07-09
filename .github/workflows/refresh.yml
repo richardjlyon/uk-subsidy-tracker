@@ -16,8 +16,10 @@
 name: Daily Refresh
 
 on:
-  schedule:
-    - cron: '0 6 * * *'          # 06:00 UTC
+  # Daily refresh DISABLED 2026-07-09 — project archived as superseded by the
+  # Subsidy Clock (subsidyclock.co.uk). Re-add the `schedule:` block to resume.
+  #   schedule:
+  #     - cron: '0 6 * * *'          # 06:00 UTC
   workflow_dispatch:               # manual trigger for smoke tests
 
 permissions:
